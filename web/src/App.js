@@ -5,7 +5,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <span>Learn React</span>
+        <span>Tuichain</span>
       </div>
     );
   }
