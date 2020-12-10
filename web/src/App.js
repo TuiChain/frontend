@@ -10,6 +10,7 @@ import Student from "./containers/Students/Student/Student";
 import Error from "./containers/Error/Error";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
+import Students from "./containers/Students/Students";
 
 class App extends React.Component {
   constructor(props) {
@@ -33,6 +34,9 @@ class App extends React.Component {
               </Route>
               <Route path="/signup">
                 {this.state.auth ? <Redirect to="/" /> : <Signup />}
+              </Route>
+              <Route path="/students">
+                <Students />
               </Route>
               <Route component={Error} />
             </Switch>
