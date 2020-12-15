@@ -2,18 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
 import Box from "@material-ui/core/Box";
-// import theme from "./../theme";
-
-// const MinimumHeightPageBox = styled(Box)({
-//   padding: "20px 0 84px 0",
-//   minHeight: "calc(100vh - 104px)",
-//   margin: "0 auto -64px",
-//   backgroundColor: theme.palette.secondary.light,
-// });
+import theme from "./../theme";
 
 const Content = styled(Box)({
-  minHeight: "calc(100vh - 128px)",
-  backgroundColor: "white",
+  minHeight: "calc(100vh - 112px)",
+  backgroundColor: theme.palette.background.root,
+  "@media (min-width: 600px)": {
+    minHeight: "calc(100vh - 128px)",
+  },
 });
 
 const Inside = styled(Box)({
@@ -24,7 +20,6 @@ const Layout = ({ children }) => (
   <Content>
     <Inside>{children}</Inside>
   </Content>
-  //   <MinimumHeightPageBox>{children}</MinimumHeightPageBox>
 );
 
 Layout.propTypes = {

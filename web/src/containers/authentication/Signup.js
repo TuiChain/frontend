@@ -101,7 +101,9 @@ const SignUp = (props) => {
 
   return (
     <div className={classes.center}>
-      <Typography variant="h2">Sign up</Typography>
+      <Typography variant="h2" paragraph>
+        Sign up
+      </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} className={classes.margin}>
