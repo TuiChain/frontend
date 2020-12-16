@@ -27,14 +27,14 @@ class App extends React.Component {
             <Header />
             <Switch>
               <Route exact path="/" component={Home} />
-              <ProtectedRoute path="/students/:id" component={Student} />
+              <Route path="/students/:id" component={Student} />
               <Route path="/login">
                 {this.state.auth ? <Redirect to="/" /> : <Login />}
               </Route>
               <Route path="/signup">
                 {this.state.auth ? <Redirect to="/" /> : <Signup />}
               </Route>
-              <Route component={Error} />
+              <ProtectedRoute component={Error} />
             </Switch>
           </div>
         </BrowserRouter>

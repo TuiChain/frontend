@@ -1,0 +1,103 @@
+.student {
+display: flex;
+justify-content: space-evenly;
+background-color: whitesmoke;
+}
+.right-cont{
+  margin-top: 40px;
+}
+.left-cont{
+  margin-top: 20px;
+}
+.titles{
+  margin-top: 50px;
+  margin-left: -250px;
+}
+.left-cont img{
+height:400px;
+width: 400px;
+border-radius: 10%;
+}
+.left-cont input{
+  border-radius: 20em;
+  padding: 20px 40px;
+  text-align: center;
+  border: none;
+  background-color:lightgray;
+  font-size: 16px;
+  width: 200px;
+  }
+.left-cont button{
+  background-color:#3AAFA9;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 50px;
+  border-radius: 20em;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.barra{
+  margin-left: -50px;
+  width: 280px;
+
+}
+.token{
+width: 200px;
+justify-content: space-between;
+display: flex;
+}
+
+.header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 250px;
+}
+.likes {
+display: flex;
+align-items: center;
+width: 70px;
+justify-content: space-evenly;
+}
+
+.up {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 250px;
+}
+.down {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 200px;
+}
+.description {
+  word-break:break-all;
+  line-height: 1.3; 
+  padding: 2px 0; 
+  width: 400px;
+  margin: 20px auto;
+}
+.par{
+  display: flex;
+  align-items: center;
+}
+.like{
+  cursor: pointer;
+}
+.like:hover{
+  color: red;
+  fill: red;
+}
+
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
