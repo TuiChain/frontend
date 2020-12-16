@@ -1,63 +1,46 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React from "react";
+import "./App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRouter";
-import Header from "./components/Header";
-import Home from "./containers/Home";
-import Login from "./containers/authentication/Login";
-import Signup from "./containers/authentication/Signup";
-import Student from "./containers/students/Student";
-import Error from "./containers/Error";
-import { ThemeProvider, withStyles } from "@material-ui/core/styles";
+import ProtectedRoute from "./components/ProtectedRouter/ProtectedRouter";
+import Header from "./components/Header/Header";
+import Home from "./containers/Home/Home";
+import Login from "./containers/Login/Login";
+import Signup from "./containers/Signup/Signup";
+import Student from "./containers/Students/Student/Student";
+import Error from "./containers/Error/Error";
+import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
-import AuthService from "./services/auth.service";
 
-const styles = {
-  back: {
-    backgroundColor: theme.palette.background.root,
-  },
-};
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      auth: false,
+    };
+  }
 
-const App = (props) => {
-  const { classes } = props;
-  const [auth, setAuth] = useState(AuthService.getCurrentUser());
-
-  const handlerLogin = (token) => {
-    setAuth(token);
-  };
-
-  const handlerLogout = () => {
-    setAuth(AuthService.logout());
-  };
-
-  return (
-    <ThemeProvider theme={theme}>
-      <div className={classes.back}>
+  render() {
+    return (
+      <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <Header auth={auth} onLogout={handlerLogout} />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <ProtectedRoute
-              auth={auth}
-              path="/students/:id"
-              component={Student}
-            />
-            <Route path="/login">
-              {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
-            </Route>
-            <Route path="/signup">
-              {auth ? <Redirect to="/" /> : <Signup onSignUp={handlerLogin} />}
-            </Route>
-            <Route component={Error} />
-          </Switch>
+          <div className="App">
+            <Header />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/students/:id" component={Student} />
+              <Route path="/login">
+                {this.state.auth ? <Redirect to="/" /> : <Login />}
+              </Route>
+              <Route path="/signup">
+                {this.state.auth ? <Redirect to="/" /> : <Signup />}
+              </Route>
+              <ProtectedRoute component={Error} />
+            </Switch>
+          </div>
         </BrowserRouter>
-      </div>
-    </ThemeProvider>
-  );
-};
+      </ThemeProvider>
+    );
+  }
+}
 
-App.propTypes = {
-  classes: PropTypes.object,
-};
-
-export default withStyles(styles)(App);
+export default App;
