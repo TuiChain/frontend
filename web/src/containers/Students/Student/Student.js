@@ -7,9 +7,12 @@ import EuroIcon from '@material-ui/icons/Euro';
 import RoomIcon from '@material-ui/icons/Room';
 import CreateIcon from '@material-ui/icons/Create';
 import SchoolIcon from '@material-ui/icons/School';
-import Button from '@material-ui/core/Button';
 import ProgressBar from "./ProgressBar";
 const axios = require('axios').default;
+import {
+  Button,
+  Grid
+} from "@material-ui/core";
 
 
 class Student extends React.Component {
@@ -27,12 +30,15 @@ class Student extends React.Component {
     const bg="#3AAFA9";
     return (
       <div className="student">
-        <div className="left-cont">
-        <img src={this.state.user.photo}/>
+       <Grid container spacing={2} className="container">
+        <Grid className="left-cont" item xs={12} md={6}>
         <div>
-          <div className="titles">
-          <h2>Buy Tokens</h2>
-          </div>
+        <img src={this.state.user.photo}/>
+        </div>
+        <div className="left-tok">
+          <h2>
+          Buy Tokens
+          </h2>
           <div className="token">          
             <input placeholder="Tokens"/>
             <Button  variant="outlined">Buy</Button>
@@ -41,11 +47,11 @@ class Student extends React.Component {
           <ProgressBar bgcolor={bg} completed={completed}/>
           </div>
         </div>
-        </div>
-        <div className="right-cont">
+        </Grid>
+        <Grid className="right-cont" item xs={12} md={6}>
+        <div className="right">
           <div className="header">
-          <div className="nome"> <h1>{this.state.user.name}</h1> 
-            </div>
+           <h1>{this.state.user.name}</h1> 
             <div className="likes"> 
               <FavoriteBorderIcon className="like"/>
               <p>{this.state.user.likes}</p>
@@ -80,7 +86,9 @@ class Student extends React.Component {
           <div className="description">
             <p>{this.state.user.description}</p>
           </div>
-        </div>
+          </div> 
+        </Grid>
+        </Grid> 
       </div>
     );
   }
