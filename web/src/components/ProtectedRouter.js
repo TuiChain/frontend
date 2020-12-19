@@ -16,7 +16,10 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 };
 
 ProtectedRoute.propTypes = {
-  component: PropTypes.func,
+  component: PropTypes.oneOfType([
+    PropTypes.func, // normal func component
+    PropTypes.object, // withStyles component
+  ]),
 };
 
 export default ProtectedRoute;

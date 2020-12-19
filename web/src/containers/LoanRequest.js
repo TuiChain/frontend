@@ -3,14 +3,16 @@ import PropTypes from "prop-types";
 import {
   TextField,
   Button,
-  withStyles,
   Grid,
   Typography,
+  withStyles,
+  InputAdornment,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import AuthService from "../../services/auth.service";
+import LoanRequestService from "../services/loanrequest.service";
+import { useHistory } from "react-router";
 
 const styles = {
   margin: {
@@ -24,60 +26,67 @@ const styles = {
   },
 };
 
-const Login = (props) => {
-  const { classes, onLogin } = props;
+const LoanRequest = (props) => {
+  const { classes } = props;
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
-      username: "",
-      password: "",
+      school: "",
+      course: "",
+      amount: 0,
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { username, password } = values;
-      setFieldValue("error", null);
+      const { school, course, amount } = values;
 
-      const auth = await AuthService.login(username, password);
+      const valid = await LoanRequestService.createLoanRequest(
+        school,
+        course,
+        amount
+      );
 
-      if (auth) {
+      if (valid) {
         setSubmitting(false);
-
-        onLogin(auth);
+        history.replace("/");
       } else {
         setFieldValue(
           "error",
           <Grid item xs={12} className={classes.margin}>
-            <Alert severity="error">Your credentials doesn&#39;t match.</Alert>
+            <Alert severity="error">
+              You can only have one loan request at a time.
+            </Alert>
           </Grid>
         );
         setSubmitting(false);
       }
     },
     validationSchema: Yup.object().shape({
-      username: Yup.string().required("Username is required"),
-      password: Yup.string().required("Password is required"),
+      school: Yup.string().required("School is required"),
+      course: Yup.string().required("Course is required"),
+      amount: Yup.number().min(1),
     }),
   });
 
   return (
     <div className={classes.center}>
       <Typography variant="h2" paragraph>
-        Login
+        Loan Request
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
           <Grid item xs={12} className={classes.margin}>
             <TextField
-              error={formik.errors.username && formik.touched.username}
-              label="Username"
-              name="username"
-              value={formik.values.username}
+              error={formik.errors.school && formik.touched.school}
+              label="School"
+              name="school"
+              value={formik.values.school}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               helperText={
-                formik.errors.username &&
-                formik.touched.username &&
-                formik.errors.username
+                formik.errors.school &&
+                formik.touched.school &&
+                formik.errors.school
               }
               variant="outlined"
               fullWidth
@@ -86,18 +95,39 @@ const Login = (props) => {
 
           <Grid item xs={12} className={classes.margin}>
             <TextField
-              error={formik.errors.password && formik.touched.password}
-              label="Password"
-              name="password"
-              value={formik.values.password}
+              error={formik.errors.course && formik.touched.course}
+              label="Course"
+              name="course"
+              value={formik.values.course}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               helperText={
-                formik.errors.password &&
-                formik.touched.password &&
-                formik.errors.password
+                formik.errors.course &&
+                formik.touched.course &&
+                formik.errors.course
               }
-              type="password"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12} className={classes.margin}>
+            <TextField
+              error={formik.errors.amount && formik.touched.amount}
+              label="Amount"
+              name="amount"
+              value={formik.values.amount}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={
+                formik.errors.amount &&
+                formik.touched.amount &&
+                formik.errors.amount
+              }
+              type="number"
+              InputProps={{
+                endAdornment: <InputAdornment position="end">€</InputAdornment>,
+              }}
               variant="outlined"
               fullWidth
             />
@@ -121,7 +151,7 @@ const Login = (props) => {
               color="primary"
               disabled={formik.isSubmitting}
             >
-              Login
+              Request!
             </Button>
           </Grid>
         </Grid>
@@ -130,9 +160,8 @@ const Login = (props) => {
   );
 };
 
-Login.propTypes = {
+LoanRequest.propTypes = {
   classes: PropTypes.object,
-  onLogin: PropTypes.func,
 };
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(LoanRequest);
