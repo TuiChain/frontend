@@ -9,13 +9,15 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "core-util-is": "^1.0.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-native": "^0.63.4",
     "react-native-fit-image": "^1.5.5",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "redux": "^4.0.5",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

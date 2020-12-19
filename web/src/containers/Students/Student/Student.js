@@ -1,31 +1,27 @@
 import PropTypes from "prop-types";
-import React from 'react';
+import React, {useEffect,useState } from 'react';
 import './Student.css';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import HomeIcon from '@material-ui/icons/Home';
-import EuroIcon from '@material-ui/icons/Euro';
-import RoomIcon from '@material-ui/icons/Room';
-import CreateIcon from '@material-ui/icons/Create';
-import SchoolIcon from '@material-ui/icons/School';
 import ProgressBar from "./ProgressBar";
-const axios = require('axios').default;
+const axios = require('axios');
+import{
+  Home,
+  Euro,
+  FavoriteBorder,
+  Create,
+  School,
+  Room
+} from '@material-ui/icons';
 import {
   Button,
   Grid
 } from "@material-ui/core";
 
 
-class Student extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {},
-    };
-  }
-  componentDidMount() {
-    axios.get("https://my-json-server.typicode.com/pferreira101/tuichain_faker/student").then(response=>{this.setState({user: response.data})});
-  }
-  render() {
+function Student() {
+    let [user,setUser]= useState({});
+    useEffect(()=>{
+      axios.get("https://my-json-server.typicode.com/pferreira101/tuichain_faker/student").then(response=>{setUser(response.data)});
+    },[]);
     const completed=90;
     const bg="#3AAFA9";
     return (
@@ -33,7 +29,7 @@ class Student extends React.Component {
        <Grid container spacing={2} className="container">
         <Grid className="left-cont" item xs={12} md={6}>
         <div>
-        <img src={this.state.user.photo}/>
+        <img src={user.photo}/>
         </div>
         <div className="left-tok">
           <h2>
@@ -51,40 +47,41 @@ class Student extends React.Component {
         <Grid className="right-cont" item xs={12} md={6}>
         <div className="right">
           <div className="header">
-           <h1>{this.state.user.name}</h1> 
+           <h1>{user.name}</h1> 
             <div className="likes"> 
-              <FavoriteBorderIcon className="like"/>
-              <p>{this.state.user.likes}</p>
+              <FavoriteBorder className="like"/>
+              <p>{user.likes}</p>
+              <h1></h1>
             </div>
           </div>
           <div className="mid">
             <div className="up">
               <div className="par">
-                <SchoolIcon/>
-                <p>{this.state.user.degree}</p>
+                <School/>
+                <p>{user.degree}</p>
               </div>  
               <div className="par">
-                <CreateIcon/>
-                <p>{this.state.user.course}</p>
+                <Create/>
+                <p>{user.course}</p>
               </div>  
               <div className="par">
-                <RoomIcon/>
-                <p>{this.state.user.origin}</p>
+                <Room/>
+                <p>{user.origin}</p>
               </div>  
             </div>
             <div className="down">
               <div className="par">
-                <HomeIcon/>
-                <p>{this.state.user.university}</p>
+                <Home/>
+                <p>{user.university}</p>
               </div>
               <div className="par">
-                <EuroIcon/>
-                <p>{this.state.user.tuition}</p>
+                <Euro/>
+                <p>{user.tuition}</p>
               </div>
             </div>
           </div>
           <div className="description">
-            <p>{this.state.user.description}</p>
+            <p>{user.description}</p>
           </div>
           </div> 
         </Grid>
@@ -92,7 +89,6 @@ class Student extends React.Component {
       </div>
     );
   }
-}
 
 Student.propTypes = {
   match: PropTypes.shape({
