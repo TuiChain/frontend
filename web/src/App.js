@@ -12,6 +12,8 @@ import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
 import Students from "./containers/students/Students";
 import AuthService from "./services/auth.service";
+import Layout from "./components/Layout";
+import Footer from "./components/Footer";
 
 const styles = {
   back: {
@@ -36,24 +38,31 @@ const App = (props) => {
       <div className={classes.back}>
         <BrowserRouter>
           <Header auth={auth} onLogout={handlerLogout} />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <ProtectedRoute
-              auth={auth}
-              path="/students/:id"
-              component={Student}
-            />
-            <Route path="/login">
-              {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
-            </Route>
-            <Route path="/signup">
-              {auth ? <Redirect to="/" /> : <Signup onSignUp={handlerLogin} />}
-            </Route>
-            <Route path="/students">
+          <Layout>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <ProtectedRoute
+                auth={auth}
+                path="/students/:id"
+                component={Student}
+              />
+              <Route path="/login">
+                {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
+              </Route>
+              <Route path="/signup">
+                {auth ? (
+                  <Redirect to="/" />
+                ) : (
+                  <Signup onSignUp={handlerLogin} />
+                )}
+              </Route>
+              <Route path="/students">
                 <Students />
             </Route>
-            <Route component={Error} />
-          </Switch>
+              <Route component={Error} />
+            </Switch>
+          </Layout>
+          <Footer />
         </BrowserRouter>
       </div>
     </ThemeProvider>
