@@ -10,7 +10,7 @@ import Student from "./containers/students/Student";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
-import Students from "./containers/Students/Students";
+import Students from "./containers/students/Students";
 import AuthService from "./services/auth.service";
 
 const styles = {
@@ -51,7 +51,7 @@ const App = (props) => {
             </Route>
             <Route path="/students">
                 <Students />
-              </Route>
+            </Route>
             <Route component={Error} />
           </Switch>
         </BrowserRouter>
