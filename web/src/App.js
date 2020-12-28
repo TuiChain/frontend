@@ -13,6 +13,7 @@ import theme from "./theme";
 import AuthService from "./services/auth.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
+import Landing from "./containers/Landing";
 
 const styles = {
   back: {
@@ -39,7 +40,7 @@ const App = (props) => {
           <Header auth={auth} onLogout={handlerLogout} />
           <Layout>
             <Switch>
-              <Route exact path="/" component={Home} />
+              <Route exact path="/" component={auth ? Home : Landing} />
               <ProtectedRoute
                 auth={auth}
                 path="/students/:id"

@@ -33,27 +33,25 @@ const Header = (props) => {
   );
 
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container justify="flex-start">
-            <Grid item>
-              <Button
-                variant="contained"
-                color="secondary"
-                component={RouterLink}
-                to="/"
-              >
-                Home
-              </Button>
-            </Grid>
+    <AppBar position="sticky">
+      <Toolbar>
+        <Grid container justify="flex-start">
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              component={RouterLink}
+              to="/"
+            >
+              Home
+            </Button>
           </Grid>
-          <Grid container justify="flex-end">
-            {nav_items}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </div>
+        </Grid>
+        <Grid container justify="flex-end">
+          {nav_items}
+        </Grid>
+      </Toolbar>
+    </AppBar>
   );
 };
 
