@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const ProgressBar = ({ completed}) => {
   const containerStyles = {
-    height: 20,
+    height: 25,
     width: '100%',
     backgroundColor: "#e0e0de",
     borderRadius: 50,
@@ -14,11 +14,10 @@ const ProgressBar = ({ completed}) => {
     width: `${completed}%`,
     backgroundColor:"#3AAFA9",
     borderRadius: 'inherit',
-    textAlign: 'right'
+    textAlign: 'center'
   }
 
   const labelStyles = {
-    padding: 20,
     color: 'white',
     fontWeight: 'bold'
   }
@@ -26,7 +25,7 @@ const ProgressBar = ({ completed}) => {
   return (
     <div style={containerStyles}>
       <div style={fillerStyles}>
-        <span style={labelStyles}>{`${completed}%`}</span>
+        <p style={labelStyles}>{`${completed}%`}</p>
       </div>
     </div>
   );

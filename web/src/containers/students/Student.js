@@ -3,6 +3,7 @@ import React, {useEffect,useState } from 'react';
 import './Student.css';
 import ProgressBar from "./Progress";
 const axios = require('axios');
+import Box from '@material-ui/core/Box';
 import{
   Home,
   Euro,
@@ -12,6 +13,8 @@ import{
   Room
 } from '@material-ui/icons';
 import {
+  Typography,
+  TextField,
   Button,
   Grid
 } from "@material-ui/core";
@@ -23,68 +26,75 @@ function Student() {
       axios.get("https://my-json-server.typicode.com/pferreira101/tuichain_faker/student").then(response=>{setUser(response.data)});
     },[]);
     return (
-      <div className="student">
+      <Box className="student" component="span" m={1}>
        <Grid container spacing={2} className="container">
         <Grid className="left-cont" item xs={12} md={6}>
-        <div>
+        <Box>
         <img src={user.photo}/>
-        </div>
-        <div className="left-tok">
-          <h2>
-          Buy Tokens
-          </h2>
-          <div className="token">          
-            <input placeholder="Tokens"/>
-            <Button  variant="outlined">Buy</Button>
-          </div>
-          <div className="barra">
-          <ProgressBar completed={90}/>
-          </div>
-        </div>
+        </Box>
         </Grid>
         <Grid className="right-cont" item xs={12} md={6}>
-        <div className="right">
-          <div className="header">
-           <h1>{user.name}</h1> 
-            <div className="likes"> 
+        <Box className="right">
+          <Box className="header">
+           <Typography variant="h2" display="inline">{user.name}</Typography> 
+            <Box className="likes"> 
               <FavoriteBorder className="like"/>
               <p>{user.likes}</p>
               <h1></h1>
-            </div>
-          </div>
-          <div className="mid">
-            <div className="up">
-              <div className="par">
+            </Box>
+          </Box>
+            <Box className="up">
+              <Box className="par-init">
                 <School/>
                 <p>{user.degree}</p>
-              </div>  
-              <div className="par">
+              </Box>  
+              <Box className="par">
                 <Create/>
                 <p>{user.course}</p>
-              </div>  
-              <div className="par">
+              </Box>  
+              <Box className="par">
                 <Room/>
                 <p>{user.origin}</p>
-              </div>  
-            </div>
-            <div className="down">
-              <div className="par">
+              </Box>  
+            </Box>
+            <Box className="down">
+              <Box className="par-init">
                 <Home/>
                 <p>{user.university}</p>
-              </div>
-              <div className="par">
+              </Box>
+              <Box className="par">
                 <Euro/>
                 <p>{user.tuition}</p>
-              </div>
-            </div>
-          </div>
-          <div className="description">
+              </Box>
+            </Box>
+            </Box>
+          <Box className="description">
             <p>{user.description}</p>
-          </div>
-          </div> 
+          </Box> 
+        </Grid>
+        <Grid container spacing={2} className="container">
+        <Grid item xs={12} md={6}>
+          <Box className="left-tok">
+          <h1>Tokens</h1>
+          <h2>
+          Buy
+          </h2>
+          <Box className="token">          
+          <TextField
+              label="Tokens"
+              name="tokens"
+              variant="outlined"
+            />
+            <Button  variant="contained" color="primary" type="submit">Buy</Button>
+          </Box>
+          <Box className="barra">
+          <ProgressBar completed={90}/>
+          </Box>
+          </Box>
+        </Grid>
         </Grid>
         </Grid> 
-      </div>
+      </Box>
     );
   }
 
