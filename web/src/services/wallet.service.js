@@ -44,7 +44,6 @@ async function connectToWallet() {
       
     } catch (error) {
       console.log(error);
-      //return connectToWallet()
     }
 
   } else {
