@@ -1,4 +1,3 @@
-//import Web3 from "web3";
 
 /**
  * Function that checks if metamask exists.
