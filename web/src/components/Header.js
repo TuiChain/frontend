@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import WalletService from "../services/wallet.service";
 
 const Header = (props) => {
-  const { auth, onLogout} = props;
+  const { auth, onLogout } = props;
   const [wallet, setWallet] = useState(WalletService.checkAccount);
 
   const nav_items = auth ? (
@@ -36,8 +36,8 @@ const Header = (props) => {
 
   WalletService.changeAccounts(setWallet);
 
-  const connect_button = wallet == null ? 
-    (
+  const connect_button =
+    wallet == null ? (
       <Button
         variant="contained"
         color="secondary"
@@ -46,11 +46,7 @@ const Header = (props) => {
         Connect Wallet
       </Button>
     ) : (
-      <Button
-        variant="contained"
-        color="secondary"
-        disabled
-      >
+      <Button variant="contained" color="secondary" disabled>
         Connected
       </Button>
     );
