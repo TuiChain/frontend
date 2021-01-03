@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { AppBar, Toolbar, Button, Grid } from "@material-ui/core";
 import NavMenu from "../components/NavMenu";
 import { Link as RouterLink } from "react-router-dom";
+import WalletService from "../services/wallet.service";
 
 const Header = (props) => {
-  const { auth, onLogout } = props;
+  const { auth, onLogout} = props;
+  const [wallet, setWallet] = useState(WalletService.checkAccount);
 
   const nav_items = auth ? (
     <Grid item>
@@ -32,6 +34,27 @@ const Header = (props) => {
     </Grid>
   );
 
+  WalletService.changeAccounts(setWallet);
+
+  const connect_button = wallet == null ? 
+    (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => WalletService.connectToWallet()}
+      >
+        Connect Wallet
+      </Button>
+    ) : (
+      <Button
+        variant="contained"
+        color="secondary"
+        disabled
+      >
+        Connected
+      </Button>
+    );
+
   return (
     <div>
       <AppBar position="static">
@@ -49,6 +72,7 @@ const Header = (props) => {
             </Grid>
           </Grid>
           <Grid container justify="flex-end">
+            {connect_button}
             {nav_items}
           </Grid>
         </Toolbar>
