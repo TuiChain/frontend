@@ -8,12 +8,15 @@ import {
   CardContent,
   Grid,
   Icon,
+  Hidden,
+  CardHeader,
 } from "@material-ui/core";
 import { loadCSS } from "fg-loadcss";
+import world from "../assets/images/world.jpg";
 
 const useStyles = makeStyles((theme) => ({
   main: {
-    height: "100vh",
+    height: "96vh",
   },
   secondary: {
     backgroundColor: theme.palette.secondary.main,
@@ -21,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Load FontAwesome icons
+// Load FontAwesome icons - todo
 const useIcons = () => {
   useEffect(() => {
     const node = loadCSS(
@@ -57,40 +60,103 @@ Feature.propTypes = {
   desc: PropTypes.string.isRequired,
 };
 
-// const Review = () => {};
+const useTestimonialsStyles = makeStyles((theme) => ({
+  cardHeader: {
+    backgroundColor: theme.palette.primary.main,
+  },
+}));
+
+const Testimonial = ({ testimonial, name, job }) => {
+  const classes = useTestimonialsStyles();
+
+  return (
+    <Card variant="outlined">
+      <CardContent>
+        <Typography variant="h4">
+          <Box color="secondary.dark">{testimonial}</Box>
+        </Typography>
+      </CardContent>
+      <CardHeader
+        className={classes.cardHeader}
+        title={name}
+        subheader={job}
+      ></CardHeader>
+    </Card>
+  );
+};
+
+Testimonial.propTypes = {
+  testimonial: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  job: PropTypes.string.isRequired,
+};
 
 const Landing = () => {
   const classes = useStyles();
 
   return (
     <>
-      <Box bgcolor="primary.main" className={classes.main}>
-        <Typography variant="h1">
-          <Box color="secondary.dark">Landing</Box>
-        </Typography>
-      </Box>
-      <Box>
-        <Grid container spacing={4} justify="center" alignContent="center">
-          <Grid sm={6} md={3} item>
-            <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+      <Box
+        bgcolor="primary.main"
+        className={classes.main}
+        display="flex"
+        alignItems="center"
+      >
+        <Grid container>
+          <Grid xs={12} md={7} item>
+            <Typography variant="h1">
+              <Box color="secondary.dark">TUICHAIN</Box>
+            </Typography>
+            <Typography variant="h5">
+              <Box color="secondary.contrastText">
+                lorem lorem lorem lorem lorem
+              </Box>
+            </Typography>
           </Grid>
-          <Grid sm={6} md={3} item>
-            <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
-          </Grid>
-          <Grid sm={6} md={3} item>
-            <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
-          </Grid>
-          <Grid sm={6} md={3} item>
-            <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
-          </Grid>
+          <Hidden smDown>
+            <Grid md={5} item>
+              <Typography variant="h1">
+                <Box color="secondary.dark">IMAGEM</Box>
+              </Typography>
+            </Grid>
+          </Hidden>
         </Grid>
+      </Box>
+      <Box p={10}>
+        <Box mx={10}>
+          <Typography variant="h2" align="center">
+            <Box color="secondary.dark">Some text</Box>
+          </Typography>
+          <Grid container spacing={6} justify="center" alignContent="center">
+            <Grid xs={12} sm={6} md={3} item>
+              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+            </Grid>
+            <Grid xs={12} sm={6} md={3} item>
+              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+            </Grid>
+            <Grid xs={12} sm={6} md={3} item>
+              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+            </Grid>
+            <Grid xs={12} sm={6} md={3} item>
+              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+            </Grid>
+          </Grid>
+        </Box>
         cards: active users stuents satisfied
       </Box>
-      <Box bgcolor="secondary.main">
-        Mapa do mundo, levar a educação a todo o lado
+      <Box bgcolor="secondary.main" p={10}>
+        <Typography variant="h2" align="center">
+          <Box color="secondary.contrastText">Bring Education to the World</Box>
+        </Typography>
+        <img src={world} alt="Logo" />
       </Box>
 
-      <Box>Our users: lista de testemunhos</Box>
+      <Box p={10}>
+        <Typography variant="h2" align="center">
+          <Box color="secondary.dark">Our Testimonials</Box>
+        </Typography>
+        <Testimonial testimonial="Teste" name="teste" job="teste" />
+      </Box>
     </>
   );
 };
