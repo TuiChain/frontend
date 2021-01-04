@@ -7,6 +7,7 @@ import Home from "./containers/Home";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
 import Student from "./containers/students/Student";
+import LoanRequest from "./containers/LoanRequest";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
@@ -44,6 +45,11 @@ const App = (props) => {
                 auth={auth}
                 path="/students/:id"
                 component={Student}
+              />
+              <ProtectedRoute
+                auth={auth}
+                path="/request"
+                component={LoanRequest}
               />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
