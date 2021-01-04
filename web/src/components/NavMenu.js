@@ -28,7 +28,7 @@ const NavMenu = (props) => {
       </Button>
     ) : (
       <Button variant="contained" color="secondary" disabled>
-        Wallet Connected
+        Connected
       </Button>
     );
 
