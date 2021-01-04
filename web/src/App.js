@@ -58,7 +58,7 @@ const App = (props) => {
               </Route>
               <Route path="/students">
                 <Students />
-            </Route>
+              </Route>
               <Route component={Error} />
             </Switch>
           </Layout>
