@@ -13,12 +13,6 @@ import * as Yup from "yup";
 import AuthService from "../../services/auth.service";
 
 const styles = {
-  margin: {
-    padding: "20px 0",
-  },
-  center: {
-    padding: "0 20%",
-  },
   fullWidth: {
     width: "100%",
   },
@@ -46,7 +40,7 @@ const Login = (props) => {
       } else {
         setFieldValue(
           "error",
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <Alert severity="error">Your credentials doesn&#39;t match.</Alert>
           </Grid>
         );
@@ -60,13 +54,13 @@ const Login = (props) => {
   });
 
   return (
-    <div className={classes.center}>
+    <div>
       <Typography variant="h2" paragraph>
         Login
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={formik.errors.username && formik.touched.username}
               label="Username"
@@ -84,7 +78,7 @@ const Login = (props) => {
             />
           </Grid>
 
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={formik.errors.password && formik.touched.password}
               label="Password"

@@ -13,7 +13,10 @@ const Content = styled(Box)({
 });
 
 const Inside = styled(Box)({
-  paddingBottom: "50px",
+  padding: "20px 15% 50px 15%",
+  "@media (max-width: 600px)": {
+    padding: "20px 5% 50px 5%",
+  },
 });
 
 const Layout = ({ children }) => (

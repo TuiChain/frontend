@@ -15,12 +15,6 @@ import LoanRequestService from "../services/loanrequest.service";
 import { useHistory } from "react-router";
 
 const styles = {
-  margin: {
-    padding: "20px 0",
-  },
-  center: {
-    padding: "0 20%",
-  },
   fullWidth: {
     width: "100%",
   },
@@ -52,7 +46,7 @@ const LoanRequest = (props) => {
       } else {
         setFieldValue(
           "error",
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <Alert severity="error">
               You can only have one loan request at a time.
             </Alert>
@@ -69,13 +63,13 @@ const LoanRequest = (props) => {
   });
 
   return (
-    <div className={classes.center}>
+    <div>
       <Typography variant="h2" paragraph>
         Loan Request
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={formik.errors.school && formik.touched.school}
               label="School"
@@ -93,7 +87,7 @@ const LoanRequest = (props) => {
             />
           </Grid>
 
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={formik.errors.course && formik.touched.course}
               label="Course"
@@ -111,7 +105,7 @@ const LoanRequest = (props) => {
             />
           </Grid>
 
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={formik.errors.amount && formik.touched.amount}
               label="Amount"
