@@ -1,19 +1,16 @@
 /* eslint-disable no-unused-vars */
+/* eslint react/prop-types: 0 */
+
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
-import { Tabs, Tab, Box, Typography, makeStyles } from "@material-ui/core";
+import { Tabs, Tab, Typography, Grid, Box } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 
-function TabPanel(props) {
-  const { value, index, list } = props;
+function LoansList(props) {
+  const { loans } = props;
   const history = useHistory();
-  const classes = makeStyles(() => ({
-    test: {
-      width: 100,
-      height: 100,
-    },
-  }));
+
   const handleRowClick = (rowParams) => {
     const id = rowParams.row.id;
     history.push(`/loans/${id}`);
@@ -23,72 +20,57 @@ function TabPanel(props) {
 
   return (
     <div
-      style={{ height: 400, width: "100%" }}
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      className={classes.test}
+      style={{
+        display: "flex",
+        height: 300,
+      }}
     >
-      <div style={{ width: "100%", height: "100%" }}>
-        <DataGrid
-          rows={list}
-          columns={columns}
-          pageSize={5}
-          onRowClick={handleRowClick}
-          autoHeight
-        />
-      </div>
+      <DataGrid
+        rows={loans}
+        columns={columns}
+        pageSize={5}
+        onRowClick={handleRowClick}
+        autoHeight
+      />
     </div>
   );
-}
-
-TabPanel.propTypes = {
-  list: PropTypes.array.isRequired,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
 }
 
 const Loans = (props) => {
   console.log(props);
   const [value, setValue] = useState(0);
+  const [active, setActive] = useState([{ id: 0 }, { id: 1 }]);
   const [orientation] = useState("vertical");
-  //const xs_screen = useMediaQuery("(max-width:600px)");
-  //xs_screen ? setOrientation("horizontal") : setOrientation("vertical");
-  //console.log(xs_screen);
+
   const handleChange = (event, newValue) => {
+    console.log(event, newValue);
     setValue(newValue);
   };
 
   return (
-    <>
+    <Box>
       <Typography variant="h2" paragraph>
         Loans
       </Typography>
-      <Box style={{ display: "flex" }}>
-        <Tabs
-          orientation={orientation}
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          aria-label="Vertical tabs example"
-        >
-          <Tab label="In progress" {...a11yProps(0)} />
-          <Tab label="Rejected" {...a11yProps(1)} />
-          <Tab label="Canceled" {...a11yProps(2)} />
-        </Tabs>
-        <TabPanel value={value} index={0} list={[{ id: 0 }, { id: 1 }]} />
-        <TabPanel value={value} index={1} list={[{ id: 3 }, { id: 4 }]} />
-        <TabPanel value={value} index={2} list={[{ id: 5 }, { id: 6 }]} />
-      </Box>
-    </>
+      <Grid container>
+        <Grid item xs={2}>
+          <Tabs
+            orientation={orientation}
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs example"
+          >
+            <Tab label="In progress" />
+            <Tab label="Rejected" />
+            <Tab label="Canceled" />
+          </Tabs>
+        </Grid>
+        <Grid item xs={10}>
+          <LoansList loans={active} />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
