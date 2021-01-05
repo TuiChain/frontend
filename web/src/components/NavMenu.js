@@ -25,6 +25,11 @@ const NavMenu = (props) => {
     onLogout();
   };
 
+  const handleLoans = () => {
+    history.push("/loans");
+    setAnchorEl(null);
+  };
+
   return (
     <div>
       <IconButton
@@ -43,7 +48,7 @@ const NavMenu = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleLoans}>Loans</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>

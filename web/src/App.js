@@ -13,6 +13,8 @@ import theme from "./theme";
 import AuthService from "./services/auth.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
+import ManageLoan from "./containers/loans/ManageLoan";
+import Loans from "./containers/loans/Loans";
 
 const styles = {
   back: {
@@ -45,6 +47,12 @@ const App = (props) => {
                 path="/students/:id"
                 component={Student}
               />
+              <ProtectedRoute
+                auth={auth}
+                path="/loans/:id"
+                component={ManageLoan}
+              />
+              <ProtectedRoute auth={auth} path="/loans" component={Loans} />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
               </Route>
