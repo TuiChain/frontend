@@ -15,12 +15,14 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (school, course, amount) => {
+const createLoanRequest = (school, course, amount, desc, country) => {
   return instance
     .post("/new/", {
       school,
       course,
       amount,
+      desc,
+      country,
     })
     .then(() => {
       return true;
@@ -31,9 +33,9 @@ const createLoanRequest = (school, course, amount) => {
     });
 };
 
-const getLoanRequests = () => {
+const getPendingLoanRequests = () => {
   return instance
-    .get("/get_all/")
+    .get("/get_all/") // todo
     .then((response) => {
       return response.data.loanrequests;
     })
@@ -71,7 +73,7 @@ const closeLoanRequest = (id) => {
 
 export default {
   createLoanRequest,
-  getLoanRequests,
+  getPendingLoanRequests,
   validateLoanRequest,
   closeLoanRequest,
 };

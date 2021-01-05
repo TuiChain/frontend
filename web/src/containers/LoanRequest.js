@@ -7,12 +7,16 @@ import {
   Typography,
   withStyles,
   InputAdornment,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import LoanRequestService from "../services/loanrequest.service";
 import { useHistory } from "react-router";
+import { nationalities } from "../util/nationalities";
 
 const styles = {
   fullWidth: {
@@ -29,15 +33,19 @@ const LoanRequest = (props) => {
       school: "",
       course: "",
       amount: 0,
+      desc: "",
+      country: "",
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { school, course, amount } = values;
-
+      const { school, course, amount, desc, country } = values;
+      console.log(school, course, amount, desc, country);
       const valid = await LoanRequestService.createLoanRequest(
         school,
         course,
-        amount
+        amount,
+        desc,
+        country
       );
 
       if (valid) {
@@ -59,6 +67,8 @@ const LoanRequest = (props) => {
       school: Yup.string().required("School is required"),
       course: Yup.string().required("Course is required"),
       amount: Yup.number().min(1),
+      desc: Yup.string().required("Description is required"),
+      country: Yup.string().required("Country is required"),
     }),
   });
 
@@ -125,6 +135,50 @@ const LoanRequest = (props) => {
               variant="outlined"
               fullWidth
             />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              error={formik.errors.desc && formik.touched.desc}
+              label="Description"
+              name="desc"
+              value={formik.values.desc}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={
+                formik.errors.desc && formik.touched.desc && formik.errors.desc
+              }
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={4}
+            />
+          </Grid>
+          {/* TODO: form validation */}
+          <Grid item xs={12}>
+            <FormControl variant="outlined" fullWidth name="country">
+              <InputLabel htmlFor="outlined-age-native-simple">
+                Country
+              </InputLabel>
+              <Select
+                native
+                value={formik.values.country}
+                onChange={formik.handleChange("country")}
+                label="Country"
+                name="country"
+                inputProps={{
+                  name: "country",
+                  id: "outlined-age-native-simple",
+                }}
+              >
+                <option aria-label="None" value="" />
+                {nationalities.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
 
           {formik.values.error}

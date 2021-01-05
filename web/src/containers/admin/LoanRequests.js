@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useEffect, useState } from "react";
 import LoanRequestService from "../../services/loanrequest.service";
 import { DataGrid } from "@material-ui/data-grid";
@@ -6,17 +8,18 @@ import {
   makeStyles,
   Typography,
   withStyles,
-  Container as Grid,
+  Box,
+  Modal,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Toast from "../../components/Toast";
 
 const styles = {
-  container: {
-    maxWidth: 1500,
-    padding: "20px 30px",
-  },
   grid: {
     display: "flex",
     height: 600,
@@ -39,15 +42,15 @@ const ActionButton = ({ color, children, onClick }) => {
 };
 
 const Actions = (props) => {
-  const loan_id = props.row.id;
+  const loadID = props.loanID;
   const { onAccept, onReject } = props;
 
   return (
     <>
-      <ActionButton color="success" onClick={() => onAccept(loan_id)}>
+      <ActionButton color="success" onClick={() => onAccept(loadID)}>
         <CheckCircleIcon />
       </ActionButton>
-      <ActionButton color="error" onClick={() => onReject(loan_id)}>
+      <ActionButton color="error" onClick={() => onReject(loadID)}>
         <CancelIcon />
       </ActionButton>
     </>
@@ -57,6 +60,7 @@ const Actions = (props) => {
 const LoanRequests = (props) => {
   const { classes } = props;
 
+  // Toast
   const [toast, setToast] = React.useState({});
   const [open, setOpen] = React.useState(false);
   const handleClose = (event, reason) => {
@@ -66,17 +70,28 @@ const LoanRequests = (props) => {
     setOpen(false);
   };
 
+  // Pending Requests
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   useEffect(() => {
     async function fetchRequests() {
-      const data = await LoanRequestService.getLoanRequests();
+      const data = await LoanRequestService.getPendingLoanRequests();
       console.log(data);
       setRequests(data);
       setLoading(false);
     }
     fetchRequests();
   }, []);
+
+  // Description modal
+  const [modal, setModal] = useState(false);
+  const handleModalOpen = (request) => {
+    console.log(request);
+    setModal(request);
+  };
+  const handleModalClose = () => {
+    setModal(false);
+  };
 
   const acceptRequest = async (id) => {
     console.log("ID:", id);
@@ -122,7 +137,7 @@ const LoanRequests = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "student", headerName: "Student ID" },
+    { field: "student", headerName: "Student" },
     {
       field: "request_date",
       headerName: "Request Date",
@@ -133,17 +148,28 @@ const LoanRequests = (props) => {
       field: "amount",
       headerName: "Amount",
       type: "number",
-      width: 140,
+      width: 110,
     },
     {
       field: "school",
       headerName: "School",
-      width: 350,
+      width: 280,
     },
     {
       field: "course",
       headerName: "Course",
-      width: 350,
+      width: 280,
+    },
+    {
+      field: "desc",
+      headerName: "Description",
+      sortable: false,
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <button type="button" onClick={() => handleModalOpen(props.row)}>
+          More...
+        </button>
+      ),
     },
     {
       field: "actions",
@@ -153,13 +179,17 @@ const LoanRequests = (props) => {
       sortable: false,
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
-        <Actions {...props} onAccept={acceptRequest} onReject={rejectRequest} />
+        <Actions
+          loadID={props.row.id}
+          onAccept={acceptRequest}
+          onReject={rejectRequest}
+        />
       ),
     },
   ];
 
   return (
-    <Grid className={classes.container}>
+    <Box>
       <Typography variant="h2" paragraph>
         Pending Requests
       </Typography>
@@ -174,10 +204,59 @@ const LoanRequests = (props) => {
         />
       </div>
 
+      <Modal
+        open={Boolean(modal)}
+        onClose={handleModalClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Card variant="outlined">
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              Loan #{modal.id}
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Request date: {modal.request_date}
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Amount: {modal.amount}€
+            </Typography>
+            <Typography variant="h5" component="h2">
+              School: {modal.school}€
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Course: {modal.course}€
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Description: {modal.desc}
+            </Typography>
+            <Typography variant="h5" component="h2">
+              Country: {modal.country}
+            </Typography>
+            <Typography color="textSecondary">adjective</Typography>
+            <Typography variant="body2" component="p">
+              well meaning and kindly.
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Actions
+              loadID={25}
+              onAccept={acceptRequest}
+              onReject={rejectRequest}
+            />
+          </CardActions>
+        </Card>
+      </Modal>
+
       <Toast open={open} onClose={handleClose} severity={toast.severity}>
         {toast.message}
       </Toast>
-    </Grid>
+    </Box>
   );
 };
 
