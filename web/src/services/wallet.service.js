@@ -49,25 +49,39 @@ async function connectToWallet() {
 function changeAccounts(setWallet) {
   const ethereum = checkConnection();
 
+  //var suggestion = false;
+
   ethereum.on("accountsChanged", function (accounts) {
+
+    /*
+    if(!suggestion) {
+      suggestDAI();
+      suggestion = true;
+    }*/
+
+    suggestDAI();
+
     setWallet(accounts[0]);
   });
 }
 
 /**
+ * Function that suggest adding a token to user's wallet
  * 
- * 
- * @param { String } tokenAddress The address that the token is at.
- * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars.
+ * @param { String } tokenAddress The address that the token is at
+ * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars
  * @param { Number } tokenDecimals The number of decimals in the token
  * @param { String } tokenImage A string url of the token logo
  */
-function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
+async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
+
+  const ethereum = checkConnection();
+
   try {
     const wasAdded = await ethereum.request({
       method: 'wallet_watchAsset',
       params: {
-        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        type: 'ERC20',
         options: {
           address: tokenAddress, 
           symbol: tokenSymbol, 
@@ -87,8 +101,21 @@ function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
   }
 }
 
+function suggestDAI() {
+  // request to backend info with axios
+
+  suggestToken(
+    "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "DAI",
+    18,
+    "./public/favicon.ico"
+    );
+}
+
 export default {
   checkAccount,
   connectToWallet,
   changeAccounts,
+  suggestDAI,
+  suggestToken
 };
