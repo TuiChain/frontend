@@ -44,7 +44,7 @@ async function connectToWallet() {
 /**
  * Function that listens account changing
  *
- * @param setWallet Function to change the connected wallet account
+ * @param { Function } setWallet Function to change the connected wallet account state
  */
 function changeAccounts(setWallet) {
   const ethereum = checkConnection();
@@ -52,6 +52,39 @@ function changeAccounts(setWallet) {
   ethereum.on("accountsChanged", function (accounts) {
     setWallet(accounts[0]);
   });
+}
+
+/**
+ * 
+ * 
+ * @param { String } tokenAddress The address that the token is at.
+ * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars.
+ * @param { Number } tokenDecimals The number of decimals in the token
+ * @param { String } tokenImage A string url of the token logo
+ */
+function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
+  try {
+    const wasAdded = await ethereum.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address: tokenAddress, 
+          symbol: tokenSymbol, 
+          decimals: tokenDecimals, 
+          image: tokenImage, 
+        },
+      },
+    });
+  
+    if (wasAdded) {
+      console.log('Thanks for your interest!');
+    } else {
+      console.log('Your loss!');
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default {
