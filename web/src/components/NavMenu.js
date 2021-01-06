@@ -26,11 +26,19 @@ const NavMenu = (props) => {
       >
         Connect Wallet
       </Button>
-    ) : (
+    ) : ( wallet != 0 ? (
       <Button variant="contained" color="secondary" disabled>
         Connected
       </Button>
-    );
+    ) : (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => window.open('https://metamask.io/')}
+      >
+        Install Metamask
+      </Button>
+    ));
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

@@ -18,6 +18,14 @@ const Header = (props) => {
         >
           Loan Request
         </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/admin/requests"
+        >
+          Pending
+        </Button>
       </Grid>
       <Grid item>
         <NavMenu onLogout={onLogout} />
