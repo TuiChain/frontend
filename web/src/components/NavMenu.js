@@ -1,16 +1,44 @@
 /* eslint react/prop-types: 0 */
 import { React, useState } from "react";
+import { Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 //import AuthService from "../services/auth.service";
+import WalletService from "../services/wallet.service";
 import { useHistory } from "react-router-dom";
 
 const NavMenu = (props) => {
   const { onLogout } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
+
+  const [wallet, setWallet] = useState(WalletService.checkAccount);
+  WalletService.changeAccounts(setWallet);
+
+  const connect_button =
+    wallet == null ? (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => WalletService.connectToWallet()}
+      >
+        Connect Wallet
+      </Button>
+    ) : ( wallet != 0 ? (
+      <Button variant="contained" color="secondary" disabled>
+        Connected
+      </Button>
+    ) : (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => window.open('https://metamask.io/')}
+      >
+        Install Metamask
+      </Button>
+    ));
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,6 +55,7 @@ const NavMenu = (props) => {
 
   return (
     <div>
+      {connect_button}
       <IconButton
         color="secondary"
         aria-label="menu"
