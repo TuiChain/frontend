@@ -11,19 +11,15 @@ const styles = theme => ({
   }
 });
 
-const SimpleTable = (props) => {
-
-  return (
-    <DataGrid
-      rows={props.rows}
-      columns={props.columns}
-      pageSize={10}
-      hideFooterSelectedRowCount
-      autoHeight
-      onSelectionChange={props.onSelectionChange}
-    />
-  );
-}
+const SimpleTable = (props) =>
+  <DataGrid
+    rows={props.rows}
+    columns={props.columns}
+    pageSize={10}
+    hideFooterSelectedRowCount
+    autoHeight
+    onSelectionChange={props.onSelectionChange}
+  />
 
 SimpleTable.propTypes = {
   classes: PropTypes.object.isRequired,

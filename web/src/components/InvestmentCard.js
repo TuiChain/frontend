@@ -211,6 +211,7 @@ const renderPhaseContent = props => {
 
 const InvestmentCard = props => {
   const classes = useStyles()
+  
   return (
     <Card className={classes.root}>
       {investmentCardHeader(props.phase, props.loanName)}
