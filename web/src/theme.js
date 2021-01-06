@@ -18,6 +18,12 @@ const theme = createMuiTheme({
       root: "#FCFCFC",
       paper: "white",
     },
+    error: {
+      light: "#FF6161",
+      main: "#ED2E50",
+      dark: "#C30023",
+      contrastText: "#fff",
+    },
   },
   overrides: {
     MuiButton: {

@@ -26,7 +26,7 @@ const NavMenu = (props) => {
       >
         Connect Wallet
       </Button>
-    ) : ( wallet != 0 ? (
+    ) : wallet != 0 ? (
       <Button variant="contained" color="secondary" disabled>
         Connected
       </Button>
@@ -34,11 +34,11 @@ const NavMenu = (props) => {
       <Button
         variant="contained"
         color="secondary"
-        onClick={() => window.open('https://metamask.io/')}
+        onClick={() => window.open("https://metamask.io/")}
       >
         Install Metamask
       </Button>
-    ));
+    );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +54,7 @@ const NavMenu = (props) => {
   };
 
   const handleLoans = () => {
-    history.push("/loans");
+    history.push("/personal/loans");
     setAnchorEl(null);
   };
 

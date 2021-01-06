@@ -39,6 +39,19 @@ const createLoanRequest = (
     });
 };
 
+const getLoan = (id) => {
+  return instance
+    .get(`/get/${id}/`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data.loan_request;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return null;
+    });
+};
+
 const getPendingLoanRequests = () => {
   return instance
     .get("/get_all/") // todo
@@ -77,9 +90,24 @@ const closeLoanRequest = (id) => {
     });
 };
 
+const getStudentLoans = () => {
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      console.log("Personal loans: ", response.data.loanrequests);
+      return response.data.loanrequests;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
+    });
+};
+
 export default {
   createLoanRequest,
+  getLoan,
   getPendingLoanRequests,
   validateLoanRequest,
   closeLoanRequest,
+  getStudentLoans,
 };

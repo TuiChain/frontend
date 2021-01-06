@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint react/prop-types: 0 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import {
@@ -13,18 +13,53 @@ import {
   useMediaQuery,
   withWidth,
 } from "@material-ui/core";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid, GridOverlay } from "@material-ui/data-grid";
+import LoanRequestService from "../../services/loanrequest.service";
 
-function LoansList(props) {
-  const { loans } = props;
+const NoRowOverlay = () => {
+  return (
+    <GridOverlay>
+      <span>No loans matching your criteria</span>
+    </GridOverlay>
+  );
+};
+
+function LoansList({ loans, loading }) {
   const history = useHistory();
+
+  loans = loans ? loans : [];
 
   const handleRowClick = (rowParams) => {
     const id = rowParams.row.id;
     history.push(`/loans/${id}`);
   };
 
-  const columns = [{ field: "id", headerName: "ID" }];
+  const columns = [
+    { field: "id", headerName: "ID" },
+    {
+      field: "request_date",
+      headerName: "Request Date",
+      valueGetter: (params) =>
+        new Date(params.row.request_date).toLocaleString(),
+      width: 210,
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      type: "number",
+      width: 110,
+    },
+    {
+      field: "school",
+      headerName: "School",
+      width: 280,
+    },
+    {
+      field: "course",
+      headerName: "Course",
+      width: 280,
+    },
+  ];
 
   return (
     <div
@@ -39,8 +74,12 @@ function LoansList(props) {
         rows={loans}
         columns={columns}
         pageSize={5}
+        loading={loading}
         onRowClick={handleRowClick}
         autoHeight
+        components={{
+          noRowsOverlay: NoRowOverlay,
+        }}
       />
     </div>
   );
@@ -48,14 +87,7 @@ function LoansList(props) {
 
 const Loans = () => {
   const [tab, setTab] = useState(0);
-  const [selected, setSelected] = useState([]);
-  const [requested, setRequested] = useState([{ id: 2 }, { id: 3 }]);
-  const [funding, setFunding] = useState([{ id: 4 }, { id: 5 }]);
-  const [active, setActive] = useState([{ id: 6 }, { id: 7 }]);
-  const [rejected, setRejected] = useState([{ id: 8 }, { id: 9 }]);
-  const [canceled, setCanceled] = useState([{ id: 10 }, { id: 11 }]);
-  const [expired, setExpired] = useState([{ id: 12 }, { id: 13 }]);
-  const [finalized, setFinalized] = useState([{ id: 41 }, { id: 15 }]);
+  const [loans, setLoans] = useState({});
 
   const orientation = useMediaQuery("(min-width:1280px)", { noSsr: true })
     ? "vertical"
@@ -63,30 +95,31 @@ const Loans = () => {
 
   const handleChange = (event, value) => {
     setTab(value);
-    switch (value) {
-      case 0:
-        setSelected(requested);
-        break;
-      case 1:
-        setSelected(funding);
-        break;
-      case 2:
-        setSelected(active);
-        break;
-      case 3:
-        setSelected(rejected);
-        break;
-      case 4:
-        setSelected(canceled);
-        break;
-      case 5:
-        setSelected(expired);
-        break;
-      case 6:
-        setSelected(finalized);
-        break;
-    }
   };
+
+  const groupBy = (xs, key) => {
+    return xs.reduce(function (rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  };
+
+  // Student Loans
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    async function fetchLoans() {
+      //const data = await LoanRequestService.getStudentLoans();
+      const data = [
+        { id: 1, state: 0 },
+        { id: 2, state: 1 },
+        { id: 3, state: 3 },
+      ];
+      const groups = groupBy(data, "state");
+      setLoans(groups);
+      setLoading(false);
+    }
+    fetchLoans();
+  }, []);
 
   return (
     <Box>
@@ -112,7 +145,7 @@ const Loans = () => {
           </Tabs>
         </Grid>
         <Grid item xs={12} lg={10}>
-          <LoansList loans={selected} />
+          <LoansList loans={loans[tab]} loading={loading} />
         </Grid>
       </Grid>
     </Box>
