@@ -1,18 +1,10 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import {
-  Box,
-  //   FormControl,
-  //   InputLabel,
-  //   FormHelperText,
-  //   OutlinedInput,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Box, Chip, TextField, Typography } from "@material-ui/core";
 
 const ManageLoan = (props) => {
   console.log(props);
-  //   const loanID = props.match.params.id;
+  const loanID = props.match.params.id;
   //   const [loan, setLoan] = useState(null);
 
   useEffect(() => {
@@ -25,7 +17,10 @@ const ManageLoan = (props) => {
 
   return (
     <>
-      <Typography>Loan #</Typography>
+      <Typography>
+        Loan #{loanID} <Chip size="small" label="Status" />
+      </Typography>
+
       <Box>Loan info</Box>
       <hr />
       <Box>
