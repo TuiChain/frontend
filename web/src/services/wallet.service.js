@@ -19,9 +19,12 @@ function checkConnection() {
  * @returns The selected account of the connected wallet
  */
 function checkAccount() {
-  const ethereum = checkConnection();
-
-  return ethereum.selectedAddress;
+  try {
+    const ethereum = checkConnection();
+    return ethereum.selectedAddress;
+  } catch(error) {
+    return 0;
+  }
 }
 
 /**
@@ -47,22 +50,30 @@ async function connectToWallet() {
  * @param { Function } setWallet Function to change the connected wallet account state
  */
 function changeAccounts(setWallet) {
-  const ethereum = checkConnection();
+  try {
 
-  //var suggestion = false;
+    const ethereum = checkConnection();
 
-  ethereum.on("accountsChanged", function (accounts) {
+    //var suggestion = false;
 
-    /*
-    if(!suggestion) {
+    ethereum.on("accountsChanged", function (accounts) {
+
+      /*
+      if(!suggestion) {
+        suggestDAI();
+        suggestion = true;
+      }*/
+
       suggestDAI();
-      suggestion = true;
-    }*/
 
-    suggestDAI();
+      setWallet(accounts[0]);
 
-    setWallet(accounts[0]);
-  });
+    });
+
+  } catch (error) {
+    return;
+  }
+
 }
 
 /**
