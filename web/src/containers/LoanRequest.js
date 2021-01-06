@@ -16,7 +16,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import LoanRequestService from "../services/loanrequest.service";
 import { useHistory } from "react-router";
-import { nationalities } from "../util/nationalities";
+import { countries } from "../util/countries";
 
 const styles = {
   fullWidth: {
@@ -34,18 +34,18 @@ const LoanRequest = (props) => {
       course: "",
       amount: 0,
       desc: "",
-      country: "",
+      destination: "",
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { school, course, amount, desc, country } = values;
-      console.log(school, course, amount, desc, country);
+      const { school, course, amount, desc, destination } = values;
+      console.log(school, course, amount, desc, destination);
       const valid = await LoanRequestService.createLoanRequest(
         school,
         course,
         amount,
         desc,
-        country
+        destination
       );
 
       if (valid) {
@@ -68,7 +68,7 @@ const LoanRequest = (props) => {
       course: Yup.string().required("Course is required"),
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
-      country: Yup.string().required("Country is required"),
+      destination: Yup.string().required("Destination is required"),
     }),
   });
 
@@ -79,6 +79,33 @@ const LoanRequest = (props) => {
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
+          {/* TODO: form validation */}
+          <Grid item xs={12}>
+            <FormControl variant="outlined" fullWidth name="destination">
+              <InputLabel htmlFor="outlined-age-native-simple">
+                Destination
+              </InputLabel>
+              <Select
+                native
+                value={formik.values.destination}
+                onChange={formik.handleChange("destination")}
+                label="Destination"
+                name="destinantion"
+                inputProps={{
+                  name: "destination",
+                  id: "outlined-age-native-simple",
+                }}
+              >
+                <option aria-label="None" value="" />
+                {countries.map((n) => (
+                  <option key={n.name} value={n.name}>
+                    {n.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
           <Grid item xs={12}>
             <TextField
               error={formik.errors.school && formik.touched.school}
@@ -153,32 +180,6 @@ const LoanRequest = (props) => {
               multiline
               rows={4}
             />
-          </Grid>
-          {/* TODO: form validation */}
-          <Grid item xs={12}>
-            <FormControl variant="outlined" fullWidth name="country">
-              <InputLabel htmlFor="outlined-age-native-simple">
-                Country
-              </InputLabel>
-              <Select
-                native
-                value={formik.values.country}
-                onChange={formik.handleChange("country")}
-                label="Country"
-                name="country"
-                inputProps={{
-                  name: "country",
-                  id: "outlined-age-native-simple",
-                }}
-              >
-                <option aria-label="None" value="" />
-                {nationalities.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
           </Grid>
 
           {formik.values.error}

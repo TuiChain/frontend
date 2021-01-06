@@ -15,14 +15,20 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (school, course, amount, desc, country) => {
+const createLoanRequest = (
+  school,
+  course,
+  amount,
+  description,
+  destination
+) => {
   return instance
     .post("/new/", {
       school,
       course,
       amount,
-      desc,
-      country,
+      description,
+      destination,
     })
     .then(() => {
       return true;

@@ -42,20 +42,72 @@ const ActionButton = ({ color, children, onClick }) => {
 };
 
 const Actions = (props) => {
-  const loadID = props.loanID;
-  const { onAccept, onReject } = props;
+  const { onAccept, onReject, loanID } = props;
 
   return (
     <>
-      <ActionButton color="success" onClick={() => onAccept(loadID)}>
+      <ActionButton color="success" onClick={() => onAccept(loanID)}>
         <CheckCircleIcon />
       </ActionButton>
-      <ActionButton color="error" onClick={() => onReject(loadID)}>
+      <ActionButton color="error" onClick={() => onReject(loanID)}>
         <CancelIcon />
       </ActionButton>
     </>
   );
 };
+
+const Description = ({ modal, onAccept, onReject, onClose }) => (
+  <Modal
+    open={Boolean(modal)}
+    onClose={onClose}
+    aria-labelledby="simple-modal-title"
+    aria-describedby="simple-modal-description"
+    style={{
+      display: "flex",
+      maxWidth: "80%",
+      margin: "0 auto",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <Card variant="outlined">
+      <CardContent>
+        <Typography color="textSecondary" variant="h4" gutterBottom>
+          Loan #{modal.id}
+        </Typography>
+        <Typography variant="h5" component="h3">
+          Request date
+          <Typography paragraph>
+            {new Date(modal.request_date).toLocaleString()}
+          </Typography>
+        </Typography>
+        <Typography variant="h5" component="h3">
+          Destination
+          <Typography paragraph>{modal.destination}</Typography>
+        </Typography>
+        <Typography variant="h5" component="h3">
+          School
+          <Typography paragraph>{modal.school}</Typography>
+        </Typography>
+        <Typography variant="h5" component="h3">
+          Course
+          <Typography paragraph>{modal.course}</Typography>
+        </Typography>
+        <Typography variant="h5" component="h3">
+          Amount
+          <Typography paragraph>{modal.amount}€</Typography>
+        </Typography>
+        <Typography variant="h5" component="h3">
+          Description
+          <Typography paragraph>{modal.desc}</Typography>
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Actions loanID={modal.id} onAccept={onAccept} onReject={onReject} />
+      </CardActions>
+    </Card>
+  </Modal>
+);
 
 const LoanRequests = (props) => {
   const { classes } = props;
@@ -141,8 +193,9 @@ const LoanRequests = (props) => {
     {
       field: "request_date",
       headerName: "Request Date",
-      valueGetter: (params) => new Date(params.row.request_date).toISOString(),
-      width: 220,
+      valueGetter: (params) =>
+        new Date(params.row.request_date).toLocaleString(),
+      width: 210,
     },
     {
       field: "amount",
@@ -180,7 +233,7 @@ const LoanRequests = (props) => {
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
         <Actions
-          loadID={props.row.id}
+          loanID={props.row.id}
           onAccept={acceptRequest}
           onReject={rejectRequest}
         />
@@ -194,7 +247,7 @@ const LoanRequests = (props) => {
         Pending Requests
       </Typography>
 
-      <div className={classes.grid}>
+      <Box className={classes.grid}>
         <DataGrid
           rows={requests}
           loading={loading}
@@ -202,56 +255,14 @@ const LoanRequests = (props) => {
           pageSize={10}
           autoHeight
         />
-      </div>
+      </Box>
 
-      <Modal
-        open={Boolean(modal)}
+      <Description
+        modal={modal}
+        onAccept={acceptRequest}
+        onReject={rejectRequest}
         onClose={handleModalClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Card variant="outlined">
-          <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              Loan #{modal.id}
-            </Typography>
-            <Typography variant="h5" component="h2">
-              Request date: {modal.request_date}
-            </Typography>
-            <Typography variant="h5" component="h2">
-              Amount: {modal.amount}€
-            </Typography>
-            <Typography variant="h5" component="h2">
-              School: {modal.school}€
-            </Typography>
-            <Typography variant="h5" component="h2">
-              Course: {modal.course}€
-            </Typography>
-            <Typography variant="h5" component="h2">
-              Description: {modal.desc}
-            </Typography>
-            <Typography variant="h5" component="h2">
-              Country: {modal.country}
-            </Typography>
-            <Typography color="textSecondary">adjective</Typography>
-            <Typography variant="body2" component="p">
-              well meaning and kindly.
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Actions
-              loadID={25}
-              onAccept={acceptRequest}
-              onReject={rejectRequest}
-            />
-          </CardActions>
-        </Card>
-      </Modal>
+      />
 
       <Toast open={open} onClose={handleClose} severity={toast.severity}>
         {toast.message}
