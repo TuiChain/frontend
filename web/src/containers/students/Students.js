@@ -3,10 +3,20 @@ import getStudents from "../../services/students.service";
 import Grid from "@material-ui/core/Grid";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
+import theme from '../../theme';
 
 const StyledGrid = styled(Grid)({
-  paddingLeft: "20%",
-  paddingRight: "20%",
+  paddingLeft: "10%",
+  paddingRight: "10%",
+
+  [theme.breakpoints.only('sm')]: {
+    paddingLeft: "30%",
+    paddingRight: "30%",
+  },
+  [theme.breakpoints.only('xs')]: {
+    paddingLeft: "15%",
+    paddingRight: "15%",
+  },
 });
 
 const Students = () => {
@@ -40,7 +50,7 @@ const Students = () => {
             tuition,
           }) => {
             return (
-              <Grid key={id} item xs={12} md={6} xl={4}>
+              <Grid key={id} item xs={12} md={4} xl={3}>
                 <StudentCard
                   name={name}
                   photo={photo}
