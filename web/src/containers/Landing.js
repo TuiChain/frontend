@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -10,9 +10,16 @@ import {
   Icon,
   Hidden,
   CardHeader,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  SvgIcon,
 } from "@material-ui/core";
+import Carousel from "react-material-ui-carousel";
 import { loadCSS } from "fg-loadcss";
 import world from "../assets/images/world.jpg";
+import { ReactComponent as Quote } from "../assets/icons/left-quote.svg";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -66,22 +73,32 @@ const useTestimonialsStyles = makeStyles((theme) => ({
   },
 }));
 
+/* eslint-disable no-unused-vars */
 const Testimonial = ({ testimonial, name, job }) => {
   const classes = useTestimonialsStyles();
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Typography variant="h4">
-          <Box color="secondary.dark">{testimonial}</Box>
-        </Typography>
-      </CardContent>
-      <CardHeader
-        className={classes.cardHeader}
-        title={name}
-        subheader={job}
-      ></CardHeader>
-    </Card>
+    <Box maxWidth={600} margin="0 auto">
+      <Card variant="outlined">
+        <CardContent>
+          <SvgIcon
+            color="secondary"
+            style={{ fontSize: 50 }}
+            viewBox="0 0 95.3 95.3"
+          >
+            <Quote />
+          </SvgIcon>
+          <Typography variant="h5">
+            <Box color="secondary.dark">{testimonial}</Box>
+          </Typography>
+        </CardContent>
+        <CardHeader
+          className={classes.cardHeader}
+          title={name}
+          subheader={job}
+        ></CardHeader>
+      </Card>
+    </Box>
   );
 };
 
@@ -89,6 +106,142 @@ Testimonial.propTypes = {
   testimonial: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   job: PropTypes.string.isRequired,
+};
+
+// Tutorial steps
+const useStylesTutorial = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.root,
+  },
+}));
+
+function getSteps(user) {
+  return user === "student"
+    ? ["Create an account", "Make a request", "Wait to be funded", "Pay back"]
+    : ["2", "3", "4"];
+}
+
+function getStepContent(stepIndex, user) {
+  const steps = {
+    student: [
+      "Create an account",
+      "Make a request",
+      "Wait to be funded",
+      "Pay back",
+    ],
+    investor: ["ola2", "asd", "asdasd"],
+  };
+
+  return steps[user][stepIndex];
+  // switch (stepIndex) {
+  //   case 0:
+  //     return "Select campaign settings...";
+  //   case 1:
+  //     return "What is an ad group anyways?";
+  //   case 2:
+  //     return "This is the bit I really care about!";
+  //   default:
+  //     return "Unknown stepIndex";
+  // }
+}
+
+const Tutorial = () => {
+  const classes = useStylesTutorial();
+  const [activeStep, setActiveStep] = useState(0);
+  const [user, setUser] = useState(null);
+  const steps = getSteps(user);
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+    setUser(null);
+  };
+
+  return user ? (
+    <>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        className={classes.root}
+      >
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      <Box display="flex" justifyContent="center">
+        {activeStep === steps.length ? (
+          <Box>
+            <Typography>
+              You&apos;re now ready to start using our application. Good luck!
+            </Typography>
+            <Button onClick={handleReset}>Reset</Button>
+          </Box>
+        ) : (
+          <Box>
+            <Typography>{getStepContent(activeStep, user)}</Typography>
+            <Box>
+              <Button disabled={activeStep === 0} onClick={handleBack}>
+                Back
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleNext}>
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Box>
+    </>
+  ) : (
+    <Box display="flex" justifyContent="center">
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => setUser("student")}
+      >
+        I&apos;m a student
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setUser("investor")}
+      >
+        I&apos;m an investor
+      </Button>
+    </Box>
+  );
+};
+
+const Panel = ({ background, title, subtitle, color, children }) => {
+  return (
+    <Box bgcolor={background} p={10}>
+      <Typography variant="h2" align="center">
+        <Box color={color}>{title}</Box>
+      </Typography>
+      <Typography variant="h5" color="textSecondary" align="center">
+        <Box mb={5}>{subtitle}</Box>
+      </Typography>
+      {children}
+    </Box>
+  );
+};
+
+Panel.propTypes = {
+  background: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  color: PropTypes.string,
+  subtitle: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };
 
 const Landing = () => {
@@ -122,17 +275,23 @@ const Landing = () => {
           </Hidden>
         </Grid>
       </Box>
-      <Box p={10}>
+
+      <Panel title="Some text" color="secondary.dark">
         <Box mx={10}>
-          <Typography variant="h2" align="center">
-            <Box color="secondary.dark">Some text</Box>
-          </Typography>
           <Grid container spacing={6} justify="center" alignContent="center">
             <Grid xs={12} sm={6} md={3} item>
-              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+              <Feature
+                icon="fa fa-plus-circle"
+                name="Get an ISA"
+                desc="Study first. Pay later. No tuition until you are hired."
+              />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+              <Feature
+                icon="fa fa-plus-circle"
+                name="Crypto friendly"
+                desc="Invest your idle assets in supporting good cause"
+              />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
               <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
@@ -142,21 +301,36 @@ const Landing = () => {
             </Grid>
           </Grid>
         </Box>
-        cards: active users stuents satisfied
-      </Box>
-      <Box bgcolor="secondary.main" p={10}>
-        <Typography variant="h2" align="center">
-          <Box color="secondary.contrastText">Bring Education to the World</Box>
-        </Typography>
-        <img src={world} alt="Logo" />
-      </Box>
+      </Panel>
 
-      <Box p={10}>
-        <Typography variant="h2" align="center">
-          <Box color="secondary.dark">Our Testimonials</Box>
-        </Typography>
-        <Testimonial testimonial="Teste" name="teste" job="teste" />
-      </Box>
+      <Panel
+        background="secondary.main"
+        title="Bring Education to the World"
+        subtitle="Connecting and helping people all over the world"
+        color="secondary.contrastText"
+      >
+        <img src={world} alt="Logo" />
+      </Panel>
+
+      <Panel
+        title="How it works?"
+        subtitle="Choose your use case and see how simple it is to start"
+        color="secondary.dark"
+      >
+        <Tutorial />
+      </Panel>
+
+      <Panel
+        title="Our Testimonials"
+        subtitle="What our users think about us"
+        color="secondary.contrastText"
+        background="secondary.main"
+      >
+        <Carousel animation="slide">
+          <Testimonial key={1} testimonial="Teste" name="teste" job="teste" />
+          <Testimonial key={2} testimonial="Teste" name="teste" job="teste" />
+        </Carousel>
+      </Panel>
     </>
   );
 };
