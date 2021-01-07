@@ -33,6 +33,14 @@ const Home = () => {
       >
         Login
       </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={Link}
+        to="/investments"
+      >
+        Investments
+      </Button>
     </div>
   );
 };

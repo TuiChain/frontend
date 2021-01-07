@@ -10,6 +10,10 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 
 const useStyles = makeStyles({
   root: {
+    '& .MuiTypography-body1': {
+      fontSize: 20,
+      fontWeight: 300
+    },
     '& [type=number]': {
       '-moz-appearance': 'textfield',
       textAlign: 'right'
@@ -22,7 +26,16 @@ const useStyles = makeStyles({
       '-webkit-appearance': 'none',
       margin: 0,
     },
+  },
+  headers: {
+    backgroundColor: theme.palette.secondary.main, 
+    color: theme.palette.primary.contrastText
+  },
+  chip: {
+    width: 100,
+    color: theme.palette.primary.contrastText,
   }
+
 });
 
 const getPhaseChipColor = (phase) => {
@@ -36,22 +49,18 @@ const getPhaseChipColor = (phase) => {
   }
 }
 
-const investmentCardHeader = (phase, loanName) =>
+const investmentCardHeader = (classes, phase, loanName) =>
   <CardHeader
-    style={{backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.contrastText}}
+    className={classes.headers}
     action={
-      <Chip 
-          style={{width: 100, color: theme.palette.primary.contrastText ,backgroundColor: getPhaseChipColor(phase)}}
+      <Chip
+          className={classes.chip}
+          style={{backgroundColor: getPhaseChipColor(phase)}}
           label={phase}
         />
     }
     title={loanName}
   />
-
-const labelsStyle = {
-  fontSize: 20,
-  fontWeight: 300
-}  
 
 const activePhaseContent = (props) =>
   <CardContent>
@@ -64,7 +73,7 @@ const activePhaseContent = (props) =>
     <Grid style={{height: 80}} container direction='column' justify='space-between'>
       <Grid container justify='space-between'> 
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Quantity:</Typography>
+          <Typography variant='body1'>Quantity:</Typography>
         </Grid>
         <Grid item>
           <SpinnerInput 
@@ -77,7 +86,7 @@ const activePhaseContent = (props) =>
       </Grid>
       <Grid container justify='space-between'>
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Price:</Typography>
+          <Typography variant='body1'>Price:</Typography>
         </Grid>
         <Grid item>
           <SpinnerInput 
@@ -112,7 +121,7 @@ const completedPhaseContent = (props) =>
     <Grid style={{height: 80}} container direction='column' justify='space-between'>
       <Grid container justify='space-between'> 
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Quantity:</Typography>
+          <Typography variant='body1'>Quantity:</Typography>
         </Grid>
         <Grid item>
           <SpinnerInput 
@@ -125,7 +134,7 @@ const completedPhaseContent = (props) =>
       </Grid>
       <Grid container justify='space-between'>
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Price:</Typography>
+          <Typography variant='body1'>Price:</Typography>
         </Grid>
         <Grid item>
           <CurrencyTextField
@@ -160,7 +169,7 @@ const fundingPhaseContent = (props) =>
     <Grid style={{height: 80}} container direction='column' justify='space-between'>
       <Grid container justify='space-between'> 
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Lost tokens :</Typography>
+          <Typography variant='body1'>Lost tokens :</Typography>
         </Grid>
         <Grid item>
           <TextField 
@@ -174,7 +183,7 @@ const fundingPhaseContent = (props) =>
       </Grid>
       <Grid container justify='space-between'> 
         <Grid item>
-          <Typography style={labelsStyle} variant='body1'>Payback money:</Typography>
+          <Typography variant='body1'>Payback money:</Typography>
         </Grid>
         <Grid item>
           <CurrencyTextField
@@ -214,7 +223,7 @@ const InvestmentCard = props => {
   
   return (
     <Card className={classes.root}>
-      {investmentCardHeader(props.phase, props.loanName)}
+      {investmentCardHeader(classes, props.phase, props.loanName)}
       {renderPhaseContent(props)}
     </Card>
   );
