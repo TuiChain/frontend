@@ -8,9 +8,29 @@ const Header = (props) => {
   const { auth, onLogout } = props;
 
   const nav_items = auth ? (
-    <Grid item>
-      <NavMenu onLogout={onLogout} />
-    </Grid>
+    <>
+      <Grid item>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/request"
+        >
+          Loan Request
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/admin/requests"
+        >
+          Pending
+        </Button>
+      </Grid>
+      <Grid item>
+        <NavMenu onLogout={onLogout} />
+      </Grid>
+    </>
   ) : (
     <Grid item>
       <Button
@@ -58,7 +78,10 @@ const Header = (props) => {
 };
 
 Header.propTypes = {
-  auth: PropTypes.string,
+  auth: PropTypes.oneOfType([
+    PropTypes.string, // auth token
+    PropTypes.bool, // no auth token (false)
+  ]),
   onLogout: PropTypes.func,
 };
 

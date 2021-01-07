@@ -15,31 +15,64 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (school, course, amount) => {
+const createLoanRequest = (
+  school,
+  course,
+  amount,
+  description,
+  destination
+) => {
   return instance
     .post("/new/", {
       school,
       course,
       amount,
+      description,
+      destination,
     })
     .then(() => {
       return true;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
-      console.log(error);
+      console.log(error.response);
       return false;
     });
 };
 
-const getLoanRequests = () => {
+const getPendingLoanRequests = () => {
   return instance
-    .get("/get_all/")
+    .get("/get_all/") // todo
     .then((response) => {
-      return response.data.loanrequest;
+      return response.data.loanrequests;
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error.response);
+      return false;
+    });
+};
+
+const validateLoanRequest = (id) => {
+  return instance
+    .put(`/validate/${id}/`)
+    .then((response) => {
+      console.log("Validated: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
+};
+
+const closeLoanRequest = (id) => {
+  return instance
+    .put(`/close/${id}/`)
+    .then((response) => {
+      console.log("Closed: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
       return false;
     });
 };
@@ -55,9 +88,10 @@ const getLoanRequest = (id) => {
     });
 };
 
-
 export default {
   createLoanRequest,
-  getLoanRequests,
-  getLoanRequest
+  getPendingLoanRequests,
+  validateLoanRequest,
+  closeLoanRequest,
+  getLoanRequest,
 };
