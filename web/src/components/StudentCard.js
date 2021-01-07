@@ -110,7 +110,7 @@ StudentCard.propTypes = {
   course: PropTypes.string.isRequired,
   origin: PropTypes.string.isRequired,
   university: PropTypes.string.isRequired,
-  tuition: PropTypes.string.isRequired,
+  tuition: PropTypes.number.isRequired,
 };
 
 StudentInfo.propTypes = {
@@ -120,10 +120,13 @@ StudentInfo.propTypes = {
   course: PropTypes.string.isRequired,
   origin: PropTypes.string.isRequired,
   university: PropTypes.string.isRequired,
-  tuition: PropTypes.string.isRequired,
+  tuition: PropTypes.number.isRequired,
 };
 
 StatusItem.propTypes = {
   icon: PropTypes.object.isRequired,
-  text: PropTypes.string,
+  text: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
 };

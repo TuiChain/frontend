@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getStudents from "../../services/students.service";
-import { Grid, Input } from "@material-ui/core";
+import { Grid, Input, Typography, Select } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
 import theme from "../../theme";
@@ -20,14 +20,14 @@ const StudentsGrid = styled(Grid)({
   },
 });
 
-const SearchArea =  styled(Grid)({
+const SearchArea = styled(Grid)({
   paddingLeft: "10%",
   paddingRight: "10%",
   paddingBottom: "4%",
   paddingTop: "2%",
-})
+});
 
-const SearchBar = ({ input: keyword, onChange: setKeyword }) => {
+const SearchBar = ({ input, handleInput }) => {
   const BarStyling = {
     background: "#EFF0F6",
     padding: "0.7rem",
@@ -38,15 +38,32 @@ const SearchBar = ({ input: keyword, onChange: setKeyword }) => {
       fullWidth
       disableUnderline
       style={BarStyling}
-      value={keyword}
+      value={input}
       placeholder={"Search for a student..."}
-      onChange={(e) => setKeyword(e.target.value)}
+      onChange={(e) => handleInput(e.target.value)}
     />
+  );
+};
+
+const CountryFilter = ({ countryList, handleCountry }) => {
+  return (
+    <>
+      <Typography> Country </Typography>
+      <Select native onChange={(e) => handleCountry(e.target.value)}>
+        <option>All</option>
+        {countryList.map((country) => (
+          <option key={country}>{country}</option>
+
+        ))}
+        <option>Espanha</option>
+      </Select>
+    </>
   );
 };
 
 const Students = () => {
   const [searchInput, setInput] = useState("");
+  const [country, setCountry] = useState("All");
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
 
@@ -57,18 +74,44 @@ const Students = () => {
     });
   }, []);
 
-  const updateInput = async (input) => {
-    const filtered = students.filter((student) => {
-      return student.name.toLowerCase().includes(input.toLowerCase());
-    });
+  let countries = new Set();
+  students.map((s) => {
+    countries.add(s.origin);
+  });
+
+  const updateInput = (input) => {
     setInput(input);
+    filterStudents(input, country);
+  };
+
+  const updateCountry = (country) => {
+    setCountry(country);
+    filterStudents(searchInput, country);
+  };
+
+  const filterStudents = (searchInput, country) => {
+    let filtered = students;
+
+    if(searchInput != ""){
+      filtered = students.filter((student) => {
+        return student.name.toLowerCase().includes(searchInput.toLowerCase());
+      });
+    }
+
+    if(country != "All"){
+      filtered = filtered.filter((student) => {
+        return student.origin == country;
+      });
+    }
+
     setFilteredStudents(filtered);
   };
 
   return (
     <>
       <SearchArea>
-        <SearchBar input={searchInput} onChange={updateInput} />
+        <SearchBar input={searchInput} handleInput={updateInput} />
+        <CountryFilter countryList={Array.from(countries)} handleCountry={updateCountry} />
       </SearchArea>
 
       <StudentsGrid
@@ -115,5 +158,10 @@ export default Students;
 
 SearchBar.propTypes = {
   input: PropTypes.string,
-  onChange: PropTypes.func,
+  handleInput: PropTypes.func,
+};
+
+CountryFilter.propTypes = {
+  countryList: PropTypes.array,
+  handleCountry: PropTypes.func,
 };
