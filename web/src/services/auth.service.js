@@ -13,8 +13,8 @@ const signup = (username, password, email, first_name, last_name) => {
     })
     .then((response) => {
       localStorage.setItem("user_token", response.data.token);
-      // return response.data.token;
-      return { token: response.data.token, isAdmin: false };
+      localStorage.setItem("is_admin", response.data.is_admin);
+      return { token: response.data.token, is_admin: response.data.is_admin };
     })
     .catch(() => {
       return false;
@@ -29,8 +29,8 @@ const login = (username, password) => {
     })
     .then((response) => {
       localStorage.setItem("user_token", response.data.token);
-      // return response.data.token;
-      return { token: response.data.token, isAdmin: true };
+      localStorage.setItem("is_admin", response.data.is_admin);
+      return { token: response.data.token, is_admin: response.data.is_admin };
     })
     .catch(() => {
       return false;
@@ -42,26 +42,18 @@ const logout = () => {
   return false;
 };
 
-const getCurrentUser = async () => {
+const getCurrentUser = () => {
   const token = localStorage.getItem("user_token");
+  const is_admin = localStorage.getItem("is_admin") === "true";
+
   if (token) {
     return {
       user_token: token,
-      isAdmin: true,
+      is_admin: is_admin,
     };
-    // return await axios
-    //   .post(API_URL + "/auth/isAdmin/", {
-    //     token
-    //   })
-    //   .then((response) => {
-    //     return {
-    //       user_token: token,
-    //       isAdmin: response.data,
-    //     };
-    //   });
   }
 
-  return token;
+  return false;
 };
 
 const checkEmail = (email) => {

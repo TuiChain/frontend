@@ -4,15 +4,15 @@ import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { auth, type } = rest;
-  console.log(auth);
+
   return type && type == "admin" ? (
     <Route
       {...rest}
       render={(props) =>
-        auth && auth.isAdmin ? (
+        auth && auth.is_admin ? (
           <Component {...rest} {...props} />
         ) : (
-          <Redirect to="/" />
+          <Redirect to="/login" />
         )
       }
     />
@@ -20,7 +20,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        auth && !auth.isAdmin ? (
+        auth && !auth.is_admin ? (
           <Component {...rest} {...props} />
         ) : (
           <Redirect to="/login" />
