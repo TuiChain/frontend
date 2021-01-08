@@ -26,8 +26,8 @@ const App = (props) => {
   const { classes } = props;
   const [auth, setAuth] = useState(AuthService.getCurrentUser());
 
-  const handlerLogin = (token) => {
-    setAuth(token);
+  const handlerLogin = (user) => {
+    setAuth(user);
   };
 
   const handlerLogout = () => {
@@ -65,6 +65,7 @@ const App = (props) => {
               {/* ADMIN ROUTES */}
               <ProtectedRoute
                 auth={auth}
+                type="admin"
                 path="/admin/requests"
                 component={LoanRequests}
               />

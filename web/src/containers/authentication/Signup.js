@@ -64,16 +64,16 @@ const SignUp = (props) => {
       setStatus(status);
 
       if (is_email_valid && is_username_valid) {
-        const auth = await AuthService.signup(
+        const user = await AuthService.signup(
           username,
           password,
           email,
           first_name,
           last_name
         );
-        if (auth) {
+        if (user) {
           setSubmitting(false);
-          onSignUp(auth);
+          onSignUp(user);
         }
       } else {
         setSubmitting(false);

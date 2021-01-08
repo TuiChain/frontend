@@ -3,13 +3,28 @@ import PropTypes from "prop-types";
 import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { auth } = rest;
-
-  return (
+  const { auth, type } = rest;
+  console.log(auth);
+  return type && type == "admin" ? (
     <Route
       {...rest}
       render={(props) =>
-        auth ? <Component {...rest} {...props} /> : <Redirect to="/login" />
+        auth && auth.isAdmin ? (
+          <Component {...rest} {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  ) : (
+    <Route
+      {...rest}
+      render={(props) =>
+        auth && !auth.isAdmin ? (
+          <Component {...rest} {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
       }
     />
   );
