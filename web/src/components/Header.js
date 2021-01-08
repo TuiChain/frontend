@@ -55,7 +55,7 @@ const Header = (props) => {
                 <NavMenu onLogout={onLogout} />
               )
             ) : (
-              account_btns
+              auth !== null && account_btns
             )}
           </Grid>
         </Toolbar>

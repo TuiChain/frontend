@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRouter";
@@ -24,7 +24,14 @@ const styles = {
 
 const App = (props) => {
   const { classes } = props;
-  const [auth, setAuth] = useState(AuthService.getCurrentUser());
+
+  const [auth, setAuth] = useState(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      setAuth(await AuthService.getCurrentUser());
+    };
+    fetchUser();
+  }, []);
 
   const handlerLogin = (user) => {
     setAuth(user);

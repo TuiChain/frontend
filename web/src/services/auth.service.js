@@ -13,7 +13,6 @@ const signup = (username, password, email, first_name, last_name) => {
     })
     .then((response) => {
       localStorage.setItem("user_token", response.data.token);
-      localStorage.setItem("is_admin", response.data.is_admin);
       return { token: response.data.token, is_admin: response.data.is_admin };
     })
     .catch(() => {
@@ -29,7 +28,6 @@ const login = (username, password) => {
     })
     .then((response) => {
       localStorage.setItem("user_token", response.data.token);
-      localStorage.setItem("is_admin", response.data.is_admin);
       return { token: response.data.token, is_admin: response.data.is_admin };
     })
     .catch(() => {
@@ -42,18 +40,29 @@ const logout = () => {
   return false;
 };
 
-const getCurrentUser = () => {
+const getCurrentUser = async () => {
   const token = localStorage.getItem("user_token");
-  const is_admin = localStorage.getItem("is_admin") === "true";
+  const is_admin = token
+    ? await axios
+        .get(API_URL + "/auth/is_admin/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        .then((response) => {
+          return response.data.is_admin;
+        })
+        .catch(() => {
+          return false;
+        })
+    : false;
 
-  if (token) {
-    return {
-      user_token: token,
-      is_admin: is_admin,
-    };
-  }
-
-  return false;
+  return token
+    ? {
+        user_token: token,
+        is_admin: is_admin,
+      }
+    : false;
 };
 
 const checkEmail = (email) => {
