@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const instance = axios.create({
-  baseURL: "https://tuichain-backend.herokuapp.com/api/loanrequests",
+  baseURL: `${API_URL}/loanrequests`,
 });
 
 instance.interceptors.request.use(
