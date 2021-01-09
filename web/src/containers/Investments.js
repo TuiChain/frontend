@@ -34,14 +34,12 @@ const Investments = () => {
 
   useEffect(() => {
     async function getResponseFromAPI() {
-      return (await InvestmentsService.getPersonal())
+     const response = await InvestmentsService.getPersonal()
+     setInvestments(response)
+     setSelected(response[0])
     }
     
     getResponseFromAPI()
-      .then((response) => {
-        setInvestments(response)
-        setSelected(response[0])
-      })
   },[])
 
   const useStyles = makeStyles(theme => ({
