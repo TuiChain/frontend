@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://tuichain-backend.herokuapp.com/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const signup = (username, password, email, first_name, last_name) => {
   return axios
