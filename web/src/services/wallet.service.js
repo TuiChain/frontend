@@ -101,6 +101,7 @@ async function suggestToken(
     });
   } catch (error) {
     console.log(error);
+    return false;
   }
 }
 
