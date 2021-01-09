@@ -1,3 +1,9 @@
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: "https://tuichain-backend.herokuapp.com",
+});
+
 /**
  * Function that checks if metamask exists.
  *
@@ -54,20 +60,9 @@ function changeAccounts(setWallet) {
 
     const ethereum = checkConnection();
 
-    //var suggestion = false;
-
     ethereum.on("accountsChanged", function (accounts) {
-
-      /*
-      if(!suggestion) {
-        suggestDAI();
-        suggestion = true;
-      }*/
-
-      suggestDAI();
-
       setWallet(accounts[0]);
-
+      suggestDAI();
     });
 
   } catch (error) {
@@ -83,13 +78,16 @@ function changeAccounts(setWallet) {
  * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars
  * @param { Number } tokenDecimals The number of decimals in the token
  * @param { String } tokenImage A string url of the token logo
+ * 
+ * @returns Boolean which represents if a suggestion was taken or not.
  */
 async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
 
   const ethereum = checkConnection();
 
   try {
-    const wasAdded = await ethereum.request({
+
+    return await ethereum.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
@@ -102,25 +100,53 @@ async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage
       },
     });
   
-    if (wasAdded) {
-      console.log('Thanks for your interest!');
-    } else {
-      console.log('Your loss!');
-    }
   } catch (error) {
     console.log(error);
   }
 }
 
+/**
+ * Function that suggests adding DAI to an account
+ */
 function suggestDAI() {
-  // request to backend info with axios
 
-  suggestToken(
-    "0x6b175474e89094c44da98b954eedeac495271d0f",
-    "DAI",
-    18,
-    "./public/favicon.ico"
+  const tuichain_info = requestBlockchainInfo();
+
+  // in case some error occurs
+  if (tuichain_info == false) {
+    return;
+  }
+
+  if (tuichain_info.dai_contract_address != null) {
+    
+    suggestToken(
+      tuichain_info.dai_contract_address, 
+      "DAI", 
+      18, 
+      'https://i.ibb.co/FD8YxCb/dai.png'
     );
+
+  }
+
+}
+
+/**
+ * Function that makes a request to an API for blickchain information
+ * 
+ * @returns Tuichain Blockchain information
+ */
+function requestBlockchainInfo() {
+
+  return instance
+    .get("/api/tuichain/get_info/")
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+
 }
 
 export default {
@@ -128,5 +154,5 @@ export default {
   connectToWallet,
   changeAccounts,
   suggestDAI,
-  suggestToken
+  requestBlockchainInfo // to remove when used
 };
