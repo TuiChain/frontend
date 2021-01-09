@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 /**
@@ -28,7 +28,7 @@ function checkAccount() {
   try {
     const ethereum = checkConnection();
     return ethereum.selectedAddress;
-  } catch(error) {
+  } catch (error) {
     return 0;
   }
 }
@@ -57,49 +57,48 @@ async function connectToWallet() {
  */
 function changeAccounts(setWallet) {
   try {
-
     const ethereum = checkConnection();
 
     ethereum.on("accountsChanged", function (accounts) {
       setWallet(accounts[0]);
       suggestDAI();
     });
-
   } catch (error) {
     return;
   }
-
 }
 
 /**
  * Function that suggest adding a token to user's wallet
- * 
+ *
  * @param { String } tokenAddress The address that the token is at
  * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars
  * @param { Number } tokenDecimals The number of decimals in the token
  * @param { String } tokenImage A string url of the token logo
- * 
+ *
  * @returns Boolean which represents if a suggestion was taken or not.
  */
-async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage) {
-
+async function suggestToken(
+  tokenAddress,
+  tokenSymbol,
+  tokenDecimals,
+  tokenImage
+) {
   const ethereum = checkConnection();
 
   try {
-
     return await ethereum.request({
-      method: 'wallet_watchAsset',
+      method: "wallet_watchAsset",
       params: {
-        type: 'ERC20',
+        type: "ERC20",
         options: {
-          address: tokenAddress, 
-          symbol: tokenSymbol, 
-          decimals: tokenDecimals, 
-          image: tokenImage, 
+          address: tokenAddress,
+          symbol: tokenSymbol,
+          decimals: tokenDecimals,
+          image: tokenImage,
         },
       },
     });
-  
   } catch (error) {
     console.log(error);
   }
@@ -109,7 +108,6 @@ async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage
  * Function that suggests adding DAI to an account
  */
 async function suggestDAI() {
-
   const tuichain_info = await requestBlockchainInfo();
 
   // in case some error occurs
@@ -118,25 +116,21 @@ async function suggestDAI() {
   }
 
   if (tuichain_info.dai_contract_address != null) {
-    
     suggestToken(
-      tuichain_info.dai_contract_address, 
-      "DAI", 
-      18, 
-      'https://i.ibb.co/FD8YxCb/dai.png'
+      tuichain_info.dai_contract_address,
+      "DAI",
+      18,
+      "https://i.ibb.co/FD8YxCb/dai.png"
     );
-
   }
-
 }
 
 /**
  * Function that makes a request to an API for blickchain information
- * 
+ *
  * @returns Tuichain Blockchain information
  */
 async function requestBlockchainInfo() {
-
   return instance
     .get("/tuichain/get_info/")
     .then((response) => {
@@ -146,7 +140,6 @@ async function requestBlockchainInfo() {
       console.log(error);
       return false;
     });
-
 }
 
 export default {
@@ -154,5 +147,5 @@ export default {
   connectToWallet,
   changeAccounts,
   suggestDAI,
-  requestBlockchainInfo // to remove when used
+  requestBlockchainInfo, // to remove when used
 };
