@@ -147,5 +147,4 @@ export default {
   connectToWallet,
   changeAccounts,
   suggestDAI,
-  requestBlockchainInfo, // to remove when used
 };
