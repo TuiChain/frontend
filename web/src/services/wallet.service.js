@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://tuichain-backend.herokuapp.com",
+  baseURL: process.env.REACT_APP_API_URL
 });
 
 /**
@@ -108,9 +108,9 @@ async function suggestToken(tokenAddress, tokenSymbol, tokenDecimals, tokenImage
 /**
  * Function that suggests adding DAI to an account
  */
-function suggestDAI() {
+async function suggestDAI() {
 
-  const tuichain_info = requestBlockchainInfo();
+  const tuichain_info = await requestBlockchainInfo();
 
   // in case some error occurs
   if (tuichain_info == false) {
@@ -135,10 +135,10 @@ function suggestDAI() {
  * 
  * @returns Tuichain Blockchain information
  */
-function requestBlockchainInfo() {
+async function requestBlockchainInfo() {
 
   return instance
-    .get("/api/tuichain/get_info/")
+    .get("/tuichain/get_info/")
     .then((response) => {
       return response.data;
     })
