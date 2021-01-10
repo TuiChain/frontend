@@ -45,7 +45,6 @@ const getLoan = (id) => {
   return instance
     .get(`/get/${id}/`)
     .then((response) => {
-      console.log(response.data);
       return response.data.loan_request;
     })
     .catch((error) => {
@@ -97,6 +96,15 @@ const getStudentLoans = () => {
     .get(`/get_personal/`)
     .then((response) => {
       console.log("Personal loans: ", response.data.loanrequests);
+      for (let index = 0; index < 7; index++) {
+        response.data.loanrequests.push(
+          JSON.parse(JSON.stringify(response.data.loanrequests[0]))
+        );
+      }
+      for (let index = 0; index < response.data.loanrequests.length; index++) {
+        response.data.loanrequests[index].status = index;
+        response.data.loanrequests[index].amount = index;
+      }
       return response.data.loanrequests;
     })
     .catch((error) => {

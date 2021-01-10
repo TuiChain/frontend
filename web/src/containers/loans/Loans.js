@@ -31,7 +31,7 @@ function LoansList({ loans, loading }) {
 
   const handleRowClick = (rowParams) => {
     const id = rowParams.row.id;
-    history.push(`/loans/${id}`);
+    history.push(`/personal/loans/${id}`);
   };
 
   const columns = [
@@ -108,13 +108,8 @@ const Loans = () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchLoans() {
-      //const data = await LoanRequestService.getStudentLoans();
-      const data = [
-        { id: 1, state: 0 },
-        { id: 2, state: 1 },
-        { id: 3, state: 3 },
-      ];
-      const groups = groupBy(data, "state");
+      const data = await LoanRequestService.getStudentLoans();
+      const groups = groupBy(data, "status");
       setLoans(groups);
       setLoading(false);
     }
@@ -135,13 +130,13 @@ const Loans = () => {
             onChange={handleChange}
             aria-label="Vertical tabs example"
           >
+            <Tab label="Funding" /> {/* status=0 */}
+            <Tab label="Expired" /> {/* status=1 */}
+            <Tab label="Canceled" /> {/* status=2 */}
+            <Tab label="Active" /> {/* status=3 */}
+            <Tab label="Finalized" /> {/* status=4 */}
             <Tab label="Requested" />
-            <Tab label="Funding" />
-            <Tab label="Active" />
             <Tab label="Rejected" />
-            <Tab label="Canceled" />
-            <Tab label="Expired" />
-            <Tab label="Finalized" />
           </Tabs>
         </Grid>
         <Grid item xs={12} lg={10}>

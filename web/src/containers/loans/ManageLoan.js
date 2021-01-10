@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import LoanRequestService from "../../services/loanrequest.service";
 import { Euro, Create, School, Room, CloudUpload } from "@material-ui/icons";
+import { Redirect } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
   root: {
@@ -29,6 +30,43 @@ const CenteredTypography = styled(Typography)({
   padding: "0 20px 10px 20px",
 });
 
+const Panel = styled(Box)({
+  padding: "15px 0",
+});
+
+const Status = ({ statusID }) => {
+  const matchStatus = (id) => {
+    switch (id) {
+      case 0:
+        return ["Funding", "#FFE312"];
+      case 1:
+        return ["Expired", "#ED2E50"];
+      case 2:
+        return ["Canceled", "#ED2E50"];
+      case 3:
+        return ["Active", "#58C400"];
+      case 4:
+        return ["Finalized", "#293A41"];
+      case 5:
+        return ["Requested", "#109D96"];
+      case 6:
+        return ["Rejected", "#ED2E50"];
+      default:
+        return ["", "#109D96"];
+    }
+  };
+
+  const [status, color] = matchStatus(statusID);
+
+  return (
+    <Chip label={status} style={{ backgroundColor: color, color: "white" }} />
+  );
+};
+
+Status.propTypes = {
+  statusID: PropTypes.number,
+};
+
 const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
@@ -41,48 +79,62 @@ const ManageLoan = (props) => {
     fetchLoan();
   }, []);
 
+  const canCancel = (status) => {
+    return [0, 5].includes(status);
+  };
+
+  const canSubmitDocuments = (status) => {
+    return [3, 4].includes(status);
+  };
+
   console.log("loan", loan);
-  return (
+  return loan ? (
     <>
       <Box display="flex" alignItems="center">
-        <Typography variant="h3">Loan #{loan.id}</Typography>
-        <Chip label="Status" />
+        <Typography variant="h3">
+          <Box color="secondary.dark">Loan #{loan.id}</Box>
+        </Typography>
+        <Status statusID={loan.status} />
       </Box>
       <hr />
-      <Box>
-        <Typography variant="h5">Loan info</Typography>
+      <Panel>
+        <Typography variant="h5" color="secondary">
+          Loan info
+        </Typography>
         <Typography variant="body1" color="textSecondary" paragraph>
           Information about the state of your loan.
         </Typography>
         <Box display="flex" justifyContent="center">
-          <CenteredTypography variant="body1">
-            <Euro />
+          <CenteredTypography variant="body1" color="secondary">
+            <Euro color="secondary" />
             <span style={{ paddingLeft: 10 }}>
               {loan.current_amount}/{loan.amount}
             </span>
           </CenteredTypography>
-          <CenteredTypography variant="body1">
-            <School />
+          <CenteredTypography variant="body1" color="secondary">
+            <School color="secondary" />
             <span style={{ paddingLeft: 10 }}>{loan.school}</span>
           </CenteredTypography>
-          <CenteredTypography variant="body1">
+          <CenteredTypography variant="body1" color="secondary">
             <Create />
             <span style={{ paddingLeft: 10 }}>{loan.course}</span>
           </CenteredTypography>
-          <CenteredTypography variant="body1">
+          <CenteredTypography variant="body1" color="secondary">
             <Room />
-            <span style={{ paddingLeft: 10 }}>TODO</span>
+            <span style={{ paddingLeft: 10 }}>{loan.destination}</span>
           </CenteredTypography>
         </Box>
         <Box>
           <Typography variant="body1" paragraph>
-            {loan.description}
+            Description: {loan.description}
           </Typography>
         </Box>
-      </Box>
+      </Panel>
       <hr />
-      <Box>
-        <Typography variant="h5">Documents</Typography>
+      <Panel>
+        <Typography variant="h5" color="secondary">
+          Documents
+        </Typography>
         <Typography variant="body1" color="textSecondary" paragraph>
           Submit documents relative to your academic achievements, income, etc.
         </Typography>
@@ -91,20 +143,29 @@ const ManageLoan = (props) => {
           variant="contained"
           color="secondary"
           startIcon={<CloudUpload />}
+          disabled={!canSubmitDocuments(loan.status)}
         >
           Upload
         </Button>
-      </Box>
+      </Panel>
       <hr />
-      <Box>
-        <Typography variant="h5">Cancel</Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          To cancel your loan, press the button below. WARNING: you can&apos;t
-          go back!
+      <Panel>
+        <Typography variant="h5" color="secondary">
+          Cancel
         </Typography>
-        <ErrorButton variant="contained">Cancel</ErrorButton>
-      </Box>
+        <Typography variant="body1" color="textSecondary">
+          To cancel your loan, press the button below.
+        </Typography>
+        <Typography variant="body1" color="textSecondary" paragraph>
+          WARNING: you can&apos;t go back!
+        </Typography>
+        <ErrorButton variant="contained" disabled={!canCancel(loan.status)}>
+          Cancel
+        </ErrorButton>
+      </Panel>
     </>
+  ) : (
+    <Redirect to="/404" />
   );
 };
 
