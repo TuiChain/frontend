@@ -38,7 +38,7 @@ const Status = ({ statusID }) => {
   const matchStatus = (id) => {
     switch (id) {
       case 0:
-        return ["Funding", "#FFE312"];
+        return ["Funding", "#F5B300"];
       case 1:
         return ["Expired", "#ED2E50"];
       case 2:
@@ -87,7 +87,6 @@ const ManageLoan = (props) => {
     return [3, 4].includes(status);
   };
 
-  console.log("loan", loan);
   return loan ? (
     <>
       <Box display="flex" alignItems="center">
