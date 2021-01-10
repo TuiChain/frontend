@@ -116,7 +116,12 @@ async function suggestDAI() {
     return;
   }
 
-  if (tuichain_info.dai_contract_address != null) {
+  if (
+    tuichain_info.dai_contract_address != null &&
+    (tuichain_info.dai_contract_address !=
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F" ||
+      tuichain_info.chain_id != 1)
+  ) {
     suggestToken(
       tuichain_info.dai_contract_address,
       "DAI",
