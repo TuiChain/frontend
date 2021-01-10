@@ -1,10 +1,52 @@
 import React, { useState, useEffect } from "react";
 import getStudents from "../../services/students.service";
-import { Grid, Input, Typography, Select } from "@material-ui/core";
+import {
+  Grid,
+  Input,
+  Typography,
+  Select,
+  Checkbox,
+  FormControlLabel,
+} from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
+
+const normalizeFilter = (obj) => {
+  let allFlag = true;
+
+  for (const [key, value] of Object.entries(obj))
+    if(key !== 'All' && value)
+      allFlag = false
+
+  obj.All = allFlag
+
+  return obj;
+};
+
+const getSelected = (obj) => {
+  let selected = []
+
+  for (const [key, value] of Object.entries(obj))
+    value && selected.push(key)
+
+  console.log(selected)
+
+  return selected;
+};
+
+const updateCheckboxFilter = (selectedOption, filterStatus) => {
+    let filter = {};
+    filter = filterStatus
+    if(!(selectedOption in filterStatus))
+      filter[selectedOption] = true;
+    else
+      filter[selectedOption] = !filter[selectedOption];
+
+    filter = normalizeFilter(filter)
+    return filter;
+};
 
 const StudentsGrid = styled(Grid)({
   paddingLeft: "10%",
@@ -53,7 +95,6 @@ const CountryFilter = ({ countryList, handleCountry }) => {
         <option>All</option>
         {countryList.map((country) => (
           <option key={country}>{country}</option>
-
         ))}
         <option>Espanha</option>
       </Select>
@@ -61,9 +102,33 @@ const CountryFilter = ({ countryList, handleCountry }) => {
   );
 };
 
+const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
+  return (
+    <>
+      <Typography> {name} </Typography>
+      <>
+        {optionList.map((degree) => (
+          <FormControlLabel
+            key={degree}
+            control={
+              <Checkbox
+                name={degree}
+                onChange={(e) => handleOptionClick(e.target.name)}
+              />
+            }
+            label={degree}
+          />
+        ))}
+      </>
+    </>
+  );
+};
+
 const Students = () => {
   const [searchInput, setInput] = useState("");
   const [country, setCountry] = useState("All");
+  const [degreeFilter, setDegreeFilter] = useState({ All: true });
+  const [courseFilter, setCourseFilter] = useState({ All: true });
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
 
@@ -79,28 +144,64 @@ const Students = () => {
     countries.add(s.origin);
   });
 
+  let degrees = new Set();
+  students.map((s) => {
+    degrees.add(s.degree);
+  });
+
+  let courses = new Set();
+  students.map((s) => {
+    courses.add(s.course);
+  });
+
   const updateInput = (input) => {
     setInput(input);
-    filterStudents(input, country);
+    filterStudents(input, country, degreeFilter, courseFilter);
   };
 
   const updateCountry = (country) => {
     setCountry(country);
-    filterStudents(searchInput, country);
+    filterStudents(searchInput, country, degreeFilter, courseFilter);
   };
 
-  const filterStudents = (searchInput, country) => {
+  const updateDegreeFilter = (selectedDegree) => {
+    const updatedFilter = updateCheckboxFilter(selectedDegree, degreeFilter)
+    setDegreeFilter(updatedFilter);
+    filterStudents(searchInput, country, updatedFilter, courseFilter);
+  };
+
+  const updateCourseFilter = (selectedCourse) => {
+    const updatedFilter = updateCheckboxFilter(selectedCourse, courseFilter)
+    setCourseFilter(updatedFilter);
+    filterStudents(searchInput, country, degreeFilter, updatedFilter);
+  };
+
+  const filterStudents = (searchInput, country, degreeFilter, courseFilter) => {
     let filtered = students;
 
-    if(searchInput != ""){
+    if (searchInput != "") {
       filtered = students.filter((student) => {
         return student.name.toLowerCase().includes(searchInput.toLowerCase());
       });
     }
 
-    if(country != "All"){
+    if (country != "All") {
       filtered = filtered.filter((student) => {
         return student.origin == country;
+      });
+    }
+
+    if (!degreeFilter.All) {
+      const selectedDegrees = getSelected(degreeFilter)
+      filtered = filtered.filter((student) => {
+        return selectedDegrees.includes(student.degree);
+      });
+    }
+
+    if (!courseFilter.All) {
+      const selectedCourses = getSelected(courseFilter)
+      filtered = filtered.filter((student) => {
+        return selectedCourses.includes(student.course);
       });
     }
 
@@ -111,7 +212,20 @@ const Students = () => {
     <>
       <SearchArea>
         <SearchBar input={searchInput} handleInput={updateInput} />
-        <CountryFilter countryList={Array.from(countries)} handleCountry={updateCountry} />
+        <CountryFilter
+          countryList={Array.from(countries)}
+          handleCountry={updateCountry}
+        />
+        <CheckboxFilter
+          name={"Degree"}
+          optionList={Array.from(degrees)}
+          handleOptionClick={updateDegreeFilter}
+        />
+        <CheckboxFilter
+          name={"Course"}
+          optionList={Array.from(courses)}
+          handleOptionClick={updateCourseFilter}
+        />
       </SearchArea>
 
       <StudentsGrid
@@ -164,4 +278,10 @@ SearchBar.propTypes = {
 CountryFilter.propTypes = {
   countryList: PropTypes.array,
   handleCountry: PropTypes.func,
+};
+
+CheckboxFilter.propTypes = {
+  name: PropTypes.string,
+  optionList: PropTypes.array,
+  handleOptionClick: PropTypes.func.isRequired,
 };
