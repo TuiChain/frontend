@@ -72,13 +72,6 @@ const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
 
 
 const StudentsGrid = styled(Grid)({
-  paddingLeft: "10%",
-  paddingRight: "10%",
-
-  [theme.breakpoints.only("sm")]: {
-    paddingLeft: "30%",
-    paddingRight: "30%",
-  },
   [theme.breakpoints.only("xs")]: {
     paddingLeft: "15%",
     paddingRight: "15%",
@@ -86,8 +79,6 @@ const StudentsGrid = styled(Grid)({
 });
 
 const SearchArea = styled(Grid)({
-  paddingLeft: "10%",
-  paddingRight: "10%",
   paddingBottom: "4%",
   paddingTop: "2%",
 });
@@ -249,7 +240,7 @@ const Students = () => {
             tuition,
           }) => {
             return (
-              <Grid key={id} item xs={12} md={4} xl={3}>
+              <Grid key={id} item xs={12} sm={6} md={4} xl={3}>
                 <StudentCard
                   name={name}
                   photo={photo}
