@@ -3,33 +3,32 @@ import PropTypes from "prop-types";
 import { AppBar, Toolbar, Button, Grid } from "@material-ui/core";
 import NavMenu from "../components/NavMenu";
 import { Link as RouterLink } from "react-router-dom";
+import NavMenuAdmin from "./NavMenuAdmin";
 
 const Header = (props) => {
   const { auth, onLogout } = props;
 
-  const nav_items = auth ? (
-    <Grid item>
-      <NavMenu onLogout={onLogout} />
-    </Grid>
-  ) : (
-    <Grid item>
-      <Button
-        variant="contained"
-        color="secondary"
-        component={RouterLink}
-        to="/signup"
-      >
-        Sign Up
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        component={RouterLink}
-        to="/login"
-      >
-        Login
-      </Button>
-    </Grid>
+  const account_btns = (
+    <>
+      <Grid item>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/signup"
+        >
+          Sign Up
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/login"
+        >
+          Login
+        </Button>
+      </Grid>
+    </>
   );
 
   return (
@@ -49,7 +48,15 @@ const Header = (props) => {
             </Grid>
           </Grid>
           <Grid container justify="flex-end">
-            {nav_items}
+            {auth ? (
+              auth.is_admin ? (
+                <NavMenuAdmin onLogout={onLogout} />
+              ) : (
+                <NavMenu onLogout={onLogout} />
+              )
+            ) : (
+              auth !== null && account_btns
+            )}
           </Grid>
         </Toolbar>
       </AppBar>
@@ -58,7 +65,10 @@ const Header = (props) => {
 };
 
 Header.propTypes = {
-  auth: PropTypes.string,
+  auth: PropTypes.oneOfType([
+    PropTypes.object, // user token & type
+    PropTypes.bool, // no auth token (false)
+  ]),
   onLogout: PropTypes.func,
 };
 

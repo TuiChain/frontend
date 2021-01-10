@@ -48,6 +48,29 @@ const updateCheckboxFilter = (selectedOption, filterStatus) => {
     return filter;
 };
 
+const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
+  return (
+    <>
+      <Typography> {name} </Typography>
+      <>
+        {optionList.map((degree) => (
+          <FormControlLabel
+            key={degree}
+            control={
+              <Checkbox
+                name={degree}
+                onChange={(e) => handleOptionClick(e.target.name)}
+              />
+            }
+            label={degree}
+          />
+        ))}
+      </>
+    </>
+  );
+};
+
+
 const StudentsGrid = styled(Grid)({
   paddingLeft: "10%",
   paddingRight: "10%",
@@ -98,28 +121,6 @@ const CountryFilter = ({ countryList, handleCountry }) => {
         ))}
         <option>Espanha</option>
       </Select>
-    </>
-  );
-};
-
-const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
-  return (
-    <>
-      <Typography> {name} </Typography>
-      <>
-        {optionList.map((degree) => (
-          <FormControlLabel
-            key={degree}
-            control={
-              <Checkbox
-                name={degree}
-                onChange={(e) => handleOptionClick(e.target.name)}
-              />
-            }
-            label={degree}
-          />
-        ))}
-      </>
     </>
   );
 };

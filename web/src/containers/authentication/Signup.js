@@ -15,12 +15,6 @@ import * as Yup from "yup";
 import AuthService from "../../services/auth.service";
 
 const styles = {
-  margin: {
-    padding: "20px 0",
-  },
-  center: {
-    padding: "0 20%",
-  },
   fullWidth: {
     width: "100%",
   },
@@ -70,16 +64,16 @@ const SignUp = (props) => {
       setStatus(status);
 
       if (is_email_valid && is_username_valid) {
-        const auth = await AuthService.signup(
+        const user = await AuthService.signup(
           username,
           password,
           email,
           first_name,
           last_name
         );
-        if (auth) {
+        if (user) {
           setSubmitting(false);
-          onSignUp(auth);
+          onSignUp(user);
         }
       } else {
         setSubmitting(false);
@@ -100,13 +94,13 @@ const SignUp = (props) => {
   });
 
   return (
-    <div className={classes.center}>
+    <div>
       <Typography variant="h2" paragraph>
         Sign up
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} className={classes.margin}>
+          <Grid item xs={12} md={6}>
             <TextField
               error={formik.errors.first_name && formik.touched.first_name}
               label="First Name"
@@ -123,7 +117,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} md={6} className={classes.margin}>
+          <Grid item xs={12} md={6}>
             <TextField
               error={formik.errors.last_name && formik.touched.last_name}
               label="Last Name"
@@ -140,7 +134,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={
                 (formik.errors.email && formik.touched.email) ||
@@ -161,7 +155,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <TextField
               error={
                 (formik.errors.username && formik.touched.username) ||
@@ -182,7 +176,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} md={6} className={classes.margin}>
+          <Grid item xs={12} md={6}>
             <TextField
               error={formik.errors.password && formik.touched.password}
               label="Password"
@@ -200,7 +194,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} md={6} className={classes.margin}>
+          <Grid item xs={12} md={6}>
             <TextField
               error={formik.errors.password2 && formik.touched.password2}
               label="Confirm password"
@@ -218,7 +212,7 @@ const SignUp = (props) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} className={classes.margin}>
+          <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Checkbox
