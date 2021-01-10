@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import getStudents from "../../services/students.service";
 import {
+  Box,
   Grid,
   Input,
-  Typography,
   Select,
   Checkbox,
   FormControlLabel,
+  FormControl,
+  MenuItem,
+  Typography,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
@@ -17,41 +20,45 @@ const normalizeFilter = (obj) => {
   let allFlag = true;
 
   for (const [key, value] of Object.entries(obj))
-    if(key !== 'All' && value)
-      allFlag = false
+    if (key !== "All" && value) allFlag = false;
 
-  obj.All = allFlag
+  obj.All = allFlag;
 
   return obj;
 };
 
 const getSelected = (obj) => {
-  let selected = []
+  let selected = [];
 
-  for (const [key, value] of Object.entries(obj))
-    value && selected.push(key)
+  for (const [key, value] of Object.entries(obj)) value && selected.push(key);
 
-  console.log(selected)
+  console.log(selected);
 
   return selected;
 };
 
 const updateCheckboxFilter = (selectedOption, filterStatus) => {
-    let filter = {};
-    filter = filterStatus
-    if(!(selectedOption in filterStatus))
-      filter[selectedOption] = true;
-    else
-      filter[selectedOption] = !filter[selectedOption];
+  let filter = {};
+  filter = filterStatus;
+  if (!(selectedOption in filterStatus)) filter[selectedOption] = true;
+  else filter[selectedOption] = !filter[selectedOption];
 
-    filter = normalizeFilter(filter)
-    return filter;
+  filter = normalizeFilter(filter);
+  return filter;
+};
+
+const FilterTitle = ({ title }) => {
+  return (
+    <Box style={{ paddingBottom: "1rem" }} fontWeight="fontWeightBold">
+      {title}
+    </Box>
+  );
 };
 
 const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
   return (
     <>
-      <Typography> {name} </Typography>
+      <FilterTitle title={name} />
       <>
         {optionList.map((degree) => (
           <FormControlLabel
@@ -70,7 +77,6 @@ const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
   );
 };
 
-
 const StudentsGrid = styled(Grid)({
   [theme.breakpoints.only("xs")]: {
     paddingLeft: "15%",
@@ -79,8 +85,8 @@ const StudentsGrid = styled(Grid)({
 });
 
 const SearchArea = styled(Grid)({
-  paddingBottom: "4%",
-  paddingTop: "2%",
+  paddingBottom: "2rem",
+  paddingTop: "1rem",
 });
 
 const SearchBar = ({ input, handleInput }) => {
@@ -88,6 +94,7 @@ const SearchBar = ({ input, handleInput }) => {
     background: "#EFF0F6",
     padding: "0.7rem",
     borderRadius: 20,
+    marginBottom: "2rem",
   };
   return (
     <Input
@@ -101,17 +108,33 @@ const SearchBar = ({ input, handleInput }) => {
   );
 };
 
-const CountryFilter = ({ countryList, handleCountry }) => {
+const StyledSelect = styled(Select)({
+  background: "#EFF0F6",
+  borderRadius: 20,
+  minWidth: 200,
+});
+
+const CountryFilter = ({ value, countryList, handleCountry }) => {
   return (
     <>
-      <Typography> Country </Typography>
-      <Select native onChange={(e) => handleCountry(e.target.value)}>
-        <option>All</option>
-        {countryList.map((country) => (
-          <option key={country}>{country}</option>
-        ))}
-        <option>Espanha</option>
-      </Select>
+      <FilterTitle title="Country" />
+      <FormControl variant="outlined">
+        <StyledSelect
+          onChange={(e) => handleCountry(e.target.value)}
+          value={value}
+          displayEmpty
+          inputProps={{ "aria-label": "Without label" }}
+        >
+          <MenuItem value="All">
+            <em>All</em>
+          </MenuItem>
+          {countryList.map((country) => (
+            <MenuItem key={country} value={country}>
+              {country}
+            </MenuItem>
+          ))}
+        </StyledSelect>
+      </FormControl>
     </>
   );
 };
@@ -157,13 +180,13 @@ const Students = () => {
   };
 
   const updateDegreeFilter = (selectedDegree) => {
-    const updatedFilter = updateCheckboxFilter(selectedDegree, degreeFilter)
+    const updatedFilter = updateCheckboxFilter(selectedDegree, degreeFilter);
     setDegreeFilter(updatedFilter);
     filterStudents(searchInput, country, updatedFilter, courseFilter);
   };
 
   const updateCourseFilter = (selectedCourse) => {
-    const updatedFilter = updateCheckboxFilter(selectedCourse, courseFilter)
+    const updatedFilter = updateCheckboxFilter(selectedCourse, courseFilter);
     setCourseFilter(updatedFilter);
     filterStudents(searchInput, country, degreeFilter, updatedFilter);
   };
@@ -184,14 +207,14 @@ const Students = () => {
     }
 
     if (!degreeFilter.All) {
-      const selectedDegrees = getSelected(degreeFilter)
+      const selectedDegrees = getSelected(degreeFilter);
       filtered = filtered.filter((student) => {
         return selectedDegrees.includes(student.degree);
       });
     }
 
     if (!courseFilter.All) {
-      const selectedCourses = getSelected(courseFilter)
+      const selectedCourses = getSelected(courseFilter);
       filtered = filtered.filter((student) => {
         return selectedCourses.includes(student.course);
       });
@@ -202,9 +225,13 @@ const Students = () => {
 
   return (
     <>
+      <Typography variant="h2" paragraph>
+        Students
+      </Typography>
       <SearchArea>
         <SearchBar input={searchInput} handleInput={updateInput} />
         <CountryFilter
+          value={country}
           countryList={Array.from(countries)}
           handleCountry={updateCountry}
         />
@@ -268,6 +295,7 @@ SearchBar.propTypes = {
 };
 
 CountryFilter.propTypes = {
+  value: PropTypes.string.isRequired,
   countryList: PropTypes.array,
   handleCountry: PropTypes.func,
 };
@@ -276,4 +304,8 @@ CheckboxFilter.propTypes = {
   name: PropTypes.string,
   optionList: PropTypes.array,
   handleOptionClick: PropTypes.func.isRequired,
+};
+
+FilterTitle.propTypes = {
+  title: PropTypes.string.isRequired,
 };
