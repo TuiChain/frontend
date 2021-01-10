@@ -48,8 +48,8 @@ const getPendingLoanRequests = () => {
       return response.data.loanrequests;
     })
     .catch((error) => {
-      console.log(error.response);
-      return false;
+      console.error(error.response);
+      return [];
     });
 };
 
