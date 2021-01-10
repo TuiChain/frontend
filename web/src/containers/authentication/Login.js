@@ -31,12 +31,12 @@ const Login = (props) => {
       const { username, password } = values;
       setFieldValue("error", null);
 
-      const auth = await AuthService.login(username, password);
+      const user = await AuthService.login(username, password);
 
-      if (auth) {
+      if (user) {
         setSubmitting(false);
 
-        onLogin(auth);
+        onLogin(user);
       } else {
         setFieldValue(
           "error",
