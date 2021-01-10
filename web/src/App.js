@@ -42,8 +42,9 @@ const App = (props) => {
           <Header auth={auth} onLogout={handlerLogout} />
           <Switch>
             {/* full window component -> outside layout */}
-            <Route exact path="/" component={auth ? Home : Landing} />
+            {!auth && <Route exact path="/" component={Landing} />}
             <Layout>
+              {auth && <Route exact path="/" component={Home} />}
               <ProtectedRoute
                 auth={auth}
                 path="/students/:id"

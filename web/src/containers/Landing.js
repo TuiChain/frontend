@@ -257,14 +257,21 @@ const Landing = () => {
       >
         <Grid container>
           <Grid xs={12} md={7} item>
-            <Typography variant="h1">
-              <Box color="secondary.dark">TUICHAIN</Box>
-            </Typography>
-            <Typography variant="h5">
-              <Box color="secondary.contrastText">
-                lorem lorem lorem lorem lorem
-              </Box>
-            </Typography>
+            <Box
+              display="flex"
+              justifyContent="center"
+              flexDirection="column"
+              justifyItems="center"
+            >
+              <Typography variant="h1">
+                <Box color="secondary.dark">TUICHAIN</Box>
+              </Typography>
+              <Typography variant="h5">
+                <Box color="secondary.contrastText">
+                  lorem lorem lorem lorem lorem
+                </Box>
+              </Typography>
+            </Box>
           </Grid>
           <Hidden smDown>
             <Grid md={5} item>
