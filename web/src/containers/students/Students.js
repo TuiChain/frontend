@@ -18,7 +18,8 @@ import PropTypes from "prop-types";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 
-const backgroundColor = "#EFF0F6";
+const backgroundColor1 = "#EFF0F6";
+const backgroundColor2 = "#D7D8E7";
 
 const normalizeFilter = (obj) => {
   let allFlag = true;
@@ -61,7 +62,7 @@ const FilterTitle = ({ title }) => {
 
 const StyledCircleUnchecked = styled(CircleUnchecked)({
   borderRadius: 100,
-  background: backgroundColor,
+  background: backgroundColor2,
 });
 
 const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
@@ -70,7 +71,7 @@ const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
       <FilterTitle title={name} />
       <Grid style={{ width: "100%" }} container>
         {optionList.map((degree) => (
-          <Grid key={degree} item xs={parallel? 6:12}>
+          <Grid key={degree} item xs={parallel ? 6 : 12}>
             <FormControlLabel
               key={degree}
               control={
@@ -86,7 +87,7 @@ const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
             />
           </Grid>
         ))}
-        <Grid item xs={parallel? 6:12}>
+        <Grid item xs={parallel ? 6 : 12}>
           <FormControlLabel
             control={
               <Checkbox
@@ -100,7 +101,7 @@ const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
             label="teste"
           />
         </Grid>
-        <Grid item xs={parallel? 6:12}>
+        <Grid item xs={parallel ? 6 : 12}>
           <FormControlLabel
             control={
               <Checkbox
@@ -134,7 +135,7 @@ const SearchArea = styled(Grid)({
 
 const SearchBar = ({ input, handleInput }) => {
   const BarStyling = {
-    background: backgroundColor,
+    background: backgroundColor1,
     padding: "0.7rem",
     borderRadius: 20,
     marginBottom: "2rem",
@@ -152,7 +153,7 @@ const SearchBar = ({ input, handleInput }) => {
 };
 
 const StyledSelect = styled(Select)({
-  background: backgroundColor,
+  background: backgroundColor1,
   borderRadius: 20,
   minWidth: 200,
 });
@@ -184,6 +185,18 @@ const CountryFilter = ({ value, countryList, handleCountry }) => {
 
 const Separator = styled(Box)({
   border: "0.5px solid rgba(0,0,0,0.75)",
+});
+
+const Container = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: 200,
+  color: "#6D6E7B",
+});
+
+const SearchMessage = styled(Typography)({
+  flex: "0 0 200px",
 });
 
 const Students = () => {
@@ -303,42 +316,48 @@ const Students = () => {
         </Grid>
       </SearchArea>
       <Separator />
-      <StudentsGrid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        spacing={10}
-      >
-        {filteredStudents.map(
-          ({
-            id,
-            name,
-            photo,
-            likes,
-            degree,
-            origin,
-            course,
-            university,
-            tuition,
-          }) => {
-            return (
-              <Grid key={id} item xs={12} sm={6} md={4} xl={3}>
-                <StudentCard
-                  name={name}
-                  photo={photo}
-                  degree={degree}
-                  likes={likes}
-                  university={university}
-                  course={course}
-                  origin={origin}
-                  tuition={tuition}
-                />
-              </Grid>
-            );
-          }
-        )}
-      </StudentsGrid>
+      {filteredStudents.length > 1 ? (
+        <StudentsGrid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          spacing={10}
+        >
+          {filteredStudents.map(
+            ({
+              id,
+              name,
+              photo,
+              likes,
+              degree,
+              origin,
+              course,
+              university,
+              tuition,
+            }) => {
+              return (
+                <Grid key={id} item xs={12} sm={6} md={4} xl={3}>
+                  <StudentCard
+                    name={name}
+                    photo={photo}
+                    degree={degree}
+                    likes={likes}
+                    university={university}
+                    course={course}
+                    origin={origin}
+                    tuition={tuition}
+                  />
+                </Grid>
+              );
+            }
+          )}
+        </StudentsGrid>
+      ) : (
+        <Container>
+          <SearchMessage variant="h6">No results were found</SearchMessage>
+        </Container>
+      )}
     </>
   );
 };
@@ -360,7 +379,7 @@ CheckboxFilter.propTypes = {
   name: PropTypes.string,
   optionList: PropTypes.array,
   handleOptionClick: PropTypes.func.isRequired,
-  parallel: PropTypes.bool
+  parallel: PropTypes.bool,
 };
 
 FilterTitle.propTypes = {

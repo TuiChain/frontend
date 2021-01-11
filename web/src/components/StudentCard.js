@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid } from "@material-ui/core/";
+import { Card, Grid, Box } from "@material-ui/core/";
 import { CardActionArea, CardContent, CardMedia } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
@@ -23,10 +23,15 @@ const StyledCardActionArea = styled(CardActionArea)({
 });
 
 const StyledCard = styled(Card)({
+  backgroundColor: "#FCFCFC",
   borderRadius: 20,
   "&:hover": {
     boxShadow: "0px 10px 10px 0",
   },
+});
+
+const TextContainer = styled(Box)({
+  color: "#6D6E7B",
 });
 
 const StatusItem = ({ icon: Icon, text }) => {
@@ -36,7 +41,7 @@ const StatusItem = ({ icon: Icon, text }) => {
         <Icon />
       </Grid>
       <Grid item xs={9}>
-        {text}
+        <TextContainer fontWeight="fontWeightBold">{text}</TextContainer>
       </Grid>
     </Grid>
   );
@@ -125,8 +130,5 @@ StudentInfo.propTypes = {
 
 StatusItem.propTypes = {
   icon: PropTypes.object.isRequired,
-  text: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
