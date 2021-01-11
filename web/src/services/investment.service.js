@@ -1,7 +1,7 @@
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 const instance = axios.create({
-  baseURL: `${API_URL}/users`,
+  baseURL: `${API_URL}/investments`,
 });
 
 instance.interceptors.request.use(
@@ -15,18 +15,13 @@ instance.interceptors.request.use(
   }
 );
 
-const getUserInfo = (id) => {
-  return instance.get("/get/"+id+"/")
-    .then(response=>{
-        return(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
-    });
-};
+const newInvestment = (inv) => {
+  return instance.post("/new/",inv).then(function (response) {
+    console.log(response);
+  })
+}
 
 
 export default {
-  getUserInfo
+  newInvestment
 };

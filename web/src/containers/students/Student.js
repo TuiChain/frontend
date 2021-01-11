@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoanRequestService from "../../services/loanrequest.service";
 import UserService from "../../services/user.service";
-import { Home, Euro, Create, School, Room } from "@material-ui/icons";
+import InvestmentService from "../../services/investment.service";
+import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
   TextField,
@@ -29,6 +30,14 @@ function Student(props) {
     setUserInfo(Info.user);
     console.log(Info.user);
   }, []);
+  let clickHandler=()=>{
+    let inv={
+      amount:tokens,
+      request:props.match.params.id
+    };
+    console.log(inv);
+    InvestmentService.newInvestment(inv);
+  };
   const matches = useMediaQuery("(min-width:600px)");
   const Box2 = withStyles({
     root: {
@@ -49,7 +58,7 @@ function Student(props) {
       <Grid container spacing={2} className="container">
         <Grid className="left-cont" item xs={12} md={6}>
           <Box>
-            <img src={userInfo.photo} />
+            <img src={userInfo.profile_image} />
           </Box>
         </Grid>
         <Grid className="right-cont" item xs={12} md={6}>
@@ -63,25 +72,19 @@ function Student(props) {
               <Box className="par-init" display="flex">
                 <School />
                 <Typography variant="body1" display="inline">
-                  {user.degree}
+                {user.school}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
                 <Create />
                 <Typography variant="body1">{user.course}</Typography>
               </Box>
-              <Box className="par" display="flex" paddingLeft="5%">
-                <Room />
-                <Typography variant="body1" display="inline">
-                  {userInfo.country}
-                </Typography>
-              </Box>
             </Box2>
             <Box2 className="down">
-              <Box className="par-init" display="flex">
-                <Home />
+            <Box className="par" display="flex">
+                <Room />
                 <Typography variant="body1" display="inline">
-                  {user.school}
+                  {user.destination}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
@@ -106,25 +109,21 @@ function Student(props) {
               marginLeft="auto"
               marginRight="auto"
             >
-              <Box pt="10%">
+              <Box pt="10%" marginBottom="10%">
                 <Typography variant="h3">{"Tokens"}</Typography>
-              </Box>
-              <Box pb="5%" pt="5%">
-                <Typography variant="h4">{"Buy"}</Typography>
               </Box>
               <Box className="token">
                 <TextField
+                  type={"number"}
                   label="Tokens"
                   name="tokens"
                   variant="outlined"
                   onChange={(e) => {
-                    Number.isInteger(parseInt(e.target.value))
-                      ? setTokens(e.target.value)
-                      : setTokens(0);
-                    console.log(tokens);
+                  setTokens(e.target.value)
+                  console.log(tokens);
                   }}
                 />
-                <Button variant="contained" color="primary" type="submit">
+                <Button variant="contained" color="primary" type="submit" onClick={clickHandler}>
                   Buy
                 </Button>
               </Box>
