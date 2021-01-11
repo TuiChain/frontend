@@ -10,11 +10,13 @@ import {
   FormControl,
   MenuItem,
   Typography,
+  Button,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
+import TuneIcon from "@material-ui/icons/Tune";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 
@@ -200,6 +202,7 @@ const SearchMessage = styled(Typography)({
 });
 
 const Students = () => {
+  const [displayFilters, setDisplayFilters] = useState(false);
   const [searchInput, setInput] = useState("");
   const [country, setCountry] = useState("All");
   const [degreeFilter, setDegreeFilter] = useState({ All: true });
@@ -288,32 +291,49 @@ const Students = () => {
       <Typography variant="h2" paragraph>
         Students
       </Typography>
-      <SearchArea container>
-        <Grid item xs={12}>
+      <SearchArea container justify="space-between">
+        <Grid item xs={10}>
           <SearchBar input={searchInput} handleInput={updateInput} />
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <CountryFilter
-            value={country}
-            countryList={Array.from(countries)}
-            handleCountry={updateCountry}
-          />
+        <Grid item>
+          <Button
+            style={{minWidth: "150px", marginRight:0}}
+            startIcon={<TuneIcon />}
+            variant={displayFilters ? "outlined" : "contained"}
+            color="primary"
+            onClick={() => setDisplayFilters(!displayFilters)}
+          >
+            {displayFilters ? "Hide Filters" : "Show Filters"}
+          </Button>
         </Grid>
-        <Grid item xs={12} sm={3}>
-          <CheckboxFilter
-            name={"Degree"}
-            optionList={Array.from(degrees)}
-            handleOptionClick={updateDegreeFilter}
-          />
-        </Grid>
-        <Grid item xs={12} sm>
-          <CheckboxFilter
-            parallel
-            name={"Course"}
-            optionList={Array.from(courses)}
-            handleOptionClick={updateCourseFilter}
-          />
-        </Grid>
+        {displayFilters ? (
+          <>
+            <Grid item xs={12} sm={4}>
+              <CountryFilter
+                value={country}
+                countryList={Array.from(countries)}
+                handleCountry={updateCountry}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <CheckboxFilter
+                name={"Degree"}
+                optionList={Array.from(degrees)}
+                handleOptionClick={updateDegreeFilter}
+              />
+            </Grid>
+            <Grid item xs={12} sm>
+              <CheckboxFilter
+                parallel
+                name={"Course"}
+                optionList={Array.from(courses)}
+                handleOptionClick={updateCourseFilter}
+              />
+            </Grid>
+          </>
+        ) : (
+          <></>
+        )}
       </SearchArea>
       <Separator />
       {filteredStudents.length > 1 ? (
