@@ -47,10 +47,9 @@ const App = (props) => {
       <div className={classes.back}>
         <BrowserRouter>
           <Header auth={auth} onLogout={handlerLogout} />
-          <Switch>
-            {/* full window component -> outside layout */}
-            {!auth && <Route exact path="/" component={Landing} />}
-            <Layout>
+          <Layout auth={auth}>
+            <Switch>
+              {!auth && <Route exact path="/" component={Landing} />}
               {auth && <Route exact path="/" component={Home} />}
               <ProtectedRoute
                 auth={auth}
@@ -80,8 +79,8 @@ const App = (props) => {
                 component={LoanRequests}
               />
               <Route component={Error} />
-            </Layout>
-          </Switch>
+            </Switch>
+          </Layout>
           <Footer />
         </BrowserRouter>
       </div>
