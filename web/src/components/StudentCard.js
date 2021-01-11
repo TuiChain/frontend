@@ -24,8 +24,9 @@ const StyledCardActionArea = styled(CardActionArea)({
 
 const StyledCard = styled(Card)({
   backgroundColor: "#FCFCFC",
-  borderRadius: 20,
+  borderRadius: 16,
   "&:hover": {
+    backgroundColor: "transparent",
     boxShadow: "0px 10px 10px 0",
   },
 });

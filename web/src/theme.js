@@ -56,6 +56,29 @@ const theme = createMuiTheme({
         },
       },
     },
+    PrivateNotchedOutline: {
+      root:{
+        borderWidth: "0px",
+      },
+    },
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          backgroundColor: "transparent",
+        },
+      },
+    },
+    MuiCheckbox: {
+      root: {
+        color: "#D7D8E7",
+      },
+    },
+    MuiSvgIcon: {
+      root: {
+        width: "0.8em",
+        height: "0.8em",
+      },
+    },
   },
 });
 
