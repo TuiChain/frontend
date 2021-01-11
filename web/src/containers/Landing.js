@@ -63,7 +63,7 @@ const Feature = ({ icon, name, desc }) => {
   useIcons();
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" style={{ height: "100%", maxWidth: "300px" }}>
       <CardContent>
         <Icon className={icon} style={{ fontSize: 50 }} color="secondary" />
         <Typography variant="h4">
@@ -281,8 +281,13 @@ const Landing = () => {
                 <Box color="secondary.dark">TUICHAIN</Box>
               </Typography>
               <Typography variant="h5">
-                <Box color="secondary.contrastText">
-                  lorem lorem lorem lorem lorem
+                <Box
+                  color="secondary.contrastText"
+                  textAlign="center"
+                  style={{ padding: "0 14%" }}
+                >
+                  lorem lorem lorem lorem lorem asdf asd fasd fsasdfasdfasfdas
+                  fdsa asdfasdfasdfas df asdfasdfa sdf asdf
                 </Box>
               </Typography>
             </Box>
@@ -310,7 +315,7 @@ const Landing = () => {
 
       <Panel title="Some text" color="secondary.dark">
         <Box mx={10}>
-          <Grid container spacing={6} justify="center" alignContent="center">
+          <Grid container spacing={2} justify="center" alignContent="center">
             <Grid xs={12} sm={6} md={3} item>
               <Feature
                 icon="fa fa-plus-circle"
@@ -326,10 +331,18 @@ const Landing = () => {
               />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+              <Feature
+                icon="fa fa-plus-circle"
+                name="Crypto friendly"
+                desc="Invest your idle assets in supporting good cause"
+              />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature icon="fa fa-plus-circle" name="Ola" desc="teste" />
+              <Feature
+                icon="fa fa-plus-circle"
+                name="Crypto friendly"
+                desc="Invest your idle assets in supporting good cause"
+              />
             </Grid>
           </Grid>
         </Box>

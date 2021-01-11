@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRouter";
 import Header from "./components/Header";
-import Home from "./containers/Home";
+import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
 import Student from "./containers/students/Student";
@@ -50,7 +50,7 @@ const App = (props) => {
           <Layout auth={auth}>
             <Switch>
               {!auth && <Route exact path="/" component={Landing} />}
-              {auth && <Route exact path="/" component={Home} />}
+              {auth && <Route exact path="/" component={Dashboard} />}
               <ProtectedRoute
                 auth={auth}
                 path="/students/:id"
