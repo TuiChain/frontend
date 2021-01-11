@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Box, Button, Typography, withStyles } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const styles = {
   box: {
@@ -21,7 +22,7 @@ const Error = ({ classes }) => {
       <Typography variant="h5" color="textSecondary" paragraph>
         Something went wrong, page not found...
       </Typography>
-      <Button variant="contained" color="secondary" to="/">
+      <Button variant="contained" color="secondary" component={Link} to="/">
         Take me to home
       </Button>
     </Box>
