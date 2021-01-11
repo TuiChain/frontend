@@ -45,17 +45,17 @@ const Header = (props) => {
               Home
             </Button>
           </Grid>
-          <Grid container justify="flex-end">
-            {auth ? (
-              auth.is_admin ? (
-                <NavMenuAdmin onLogout={onLogout} />
-              ) : (
-                <NavMenu onLogout={onLogout} />
-              )
+        </Grid>
+        <Grid container justify="flex-end">
+          {auth ? (
+            auth.is_admin ? (
+              <NavMenuAdmin onLogout={onLogout} />
             ) : (
-              auth !== null && account_btns
-            )}
-          </Grid>
+              <NavMenu onLogout={onLogout} />
+            )
+          ) : (
+            auth !== null && account_btns
+          )}
         </Grid>
       </Toolbar>
     </AppBar>

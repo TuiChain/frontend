@@ -19,6 +19,7 @@ import {
 import Carousel from "react-material-ui-carousel";
 import { loadCSS } from "fg-loadcss";
 import world from "../assets/images/world.jpg";
+import logo from "../assets/images/logo-white.png";
 import { ReactComponent as Quote } from "../assets/icons/left-quote.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +29,19 @@ const useStyles = makeStyles((theme) => ({
   secondary: {
     backgroundColor: theme.palette.secondary.main,
     height: "10vh",
+  },
+  img: {
+    marginRight: "-40%",
+    "@media screen and (min-width: 960px)": {
+      width: "600px",
+    },
+    "@media screen and (min-width: 1280px)": {
+      width: "700px",
+    },
+    "@media screen and (min-width: 1500px)": {
+      width: "750px",
+      marginRight: "-30%",
+    },
   },
 }));
 
@@ -248,20 +262,20 @@ const Landing = () => {
   const classes = useStyles();
 
   return (
-    <>
+    <Box style={{ overflowX: "hidden" }}>
       <Box
         bgcolor="primary.main"
         className={classes.main}
         display="flex"
         alignItems="center"
       >
-        <Grid container>
+        <Grid container alignItems="center">
           <Grid xs={12} md={7} item>
             <Box
               display="flex"
-              justifyContent="center"
               flexDirection="column"
-              justifyItems="center"
+              justifyContent="center"
+              alignItems="center"
             >
               <Typography variant="h1">
                 <Box color="secondary.dark">TUICHAIN</Box>
@@ -276,7 +290,18 @@ const Landing = () => {
           <Hidden smDown>
             <Grid md={5} item>
               <Typography variant="h1">
-                <Box color="secondary.dark">IMAGEM</Box>
+                <Box
+                  color="secondary.dark"
+                  display="flex"
+                  justifyContent="flex-end"
+                  style={{}}
+                >
+                  <img
+                    src={logo}
+                    className={classes.img}
+                    // style={{ width: "70%", marginRight: "-20%" }}
+                  />
+                </Box>
               </Typography>
             </Grid>
           </Hidden>
@@ -338,7 +363,7 @@ const Landing = () => {
           <Testimonial key={2} testimonial="Teste" name="teste" job="teste" />
         </Carousel>
       </Panel>
-    </>
+    </Box>
   );
 };
 
