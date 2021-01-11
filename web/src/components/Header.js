@@ -48,6 +48,14 @@ const Header = (props) => {
             </Grid>
           </Grid>
           <Grid container justify="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              component={RouterLink}
+              to="/students"
+            >
+              Students
+            </Button>
             {auth ? (
               auth.is_admin ? (
                 <NavMenuAdmin onLogout={onLogout} />
