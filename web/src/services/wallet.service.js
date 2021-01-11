@@ -1,3 +1,9 @@
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 /**
  * Function that checks if metamask exists.
  *
@@ -22,7 +28,7 @@ function checkAccount() {
   try {
     const ethereum = checkConnection();
     return ethereum.selectedAddress;
-  } catch(error) {
+  } catch (error) {
     return 0;
   }
 }
@@ -47,24 +53,104 @@ async function connectToWallet() {
 /**
  * Function that listens account changing
  *
- * @param setWallet Function to change the connected wallet account
+ * @param { Function } setWallet Function to change the connected wallet account state
  */
 function changeAccounts(setWallet) {
   try {
-
     const ethereum = checkConnection();
 
     ethereum.on("accountsChanged", function (accounts) {
       setWallet(accounts[0]);
+      suggestDAI();
     });
-
   } catch (error) {
     return;
   }
+}
+
+/**
+ * Function that suggest adding a token to user's wallet
+ *
+ * @param { String } tokenAddress The address that the token is at
+ * @param { String } tokenSymbol A ticker symbol or shorthand, up to 5 chars
+ * @param { Number } tokenDecimals The number of decimals in the token
+ * @param { String } tokenImage A string url of the token logo
+ *
+ * @returns Boolean which represents if a suggestion was taken or not.
+ */
+async function suggestToken(
+  tokenAddress,
+  tokenSymbol,
+  tokenDecimals,
+  tokenImage
+) {
+  const ethereum = checkConnection();
+
+  try {
+    return await ethereum.request({
+      method: "wallet_watchAsset",
+      params: {
+        type: "ERC20",
+        options: {
+          address: tokenAddress,
+          symbol: tokenSymbol,
+          decimals: tokenDecimals,
+          image: tokenImage,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+/**
+ * Function that suggests adding DAI to an account
+ */
+async function suggestDAI() {
+  const tuichain_info = await requestBlockchainInfo();
+
+  // in case some error occurs
+  if (tuichain_info == false) {
+    return;
+  }
+
+  if (
+    tuichain_info.dai_contract_address != null &&
+    (tuichain_info.dai_contract_address !=
+      "0x6B175474E89094C44Da98b954EedeAC495271d0F" ||
+      tuichain_info.chain_id != 1)
+  ) {
+    suggestToken(
+      tuichain_info.dai_contract_address,
+      "DAI",
+      18,
+      "https://i.ibb.co/FD8YxCb/dai.png"
+    );
+  }
+}
+
+/**
+ * Function that makes a request to an API for blickchain information
+ *
+ * @returns Tuichain Blockchain information
+ */
+async function requestBlockchainInfo() {
+  return instance
+    .get("/tuichain/get_info/")
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
 }
 
 export default {
   checkAccount,
   connectToWallet,
   changeAccounts,
+  suggestDAI,
 };
