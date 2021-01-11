@@ -15,6 +15,10 @@ import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
+import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+
+const backgroundColor = "#EFF0F6";
 
 const normalizeFilter = (obj) => {
   let allFlag = true;
@@ -55,29 +59,68 @@ const FilterTitle = ({ title }) => {
   );
 };
 
-const CheckboxFilter = ({ name, optionList, handleOptionClick }) => {
+const StyledCircleUnchecked = styled(CircleUnchecked)({
+  borderRadius: 100,
+  background: backgroundColor,
+});
+
+const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
   return (
     <>
       <FilterTitle title={name} />
-      <>
+      <Grid style={{ width: "100%" }} container>
         {optionList.map((degree) => (
+          <Grid key={degree} item xs={parallel? 6:12}>
+            <FormControlLabel
+              key={degree}
+              control={
+                <Checkbox
+                  icon={<StyledCircleUnchecked />}
+                  checkedIcon={<CircleCheckedFilled />}
+                  color="primary"
+                  name={degree}
+                  onChange={(e) => handleOptionClick(e.target.name)}
+                />
+              }
+              label={degree}
+            />
+          </Grid>
+        ))}
+        <Grid item xs={parallel? 6:12}>
           <FormControlLabel
-            key={degree}
             control={
               <Checkbox
-                name={degree}
+                icon={<StyledCircleUnchecked />}
+                checkedIcon={<CircleCheckedFilled />}
+                color="primary"
+                name="teste"
                 onChange={(e) => handleOptionClick(e.target.name)}
               />
             }
-            label={degree}
+            label="teste"
           />
-        ))}
-      </>
+        </Grid>
+        <Grid item xs={parallel? 6:12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                icon={<StyledCircleUnchecked />}
+                checkedIcon={<CircleCheckedFilled />}
+                color="primary"
+                name="teste2"
+                onChange={(e) => handleOptionClick(e.target.name)}
+              />
+            }
+            label="teste2"
+          />
+        </Grid>
+      </Grid>
     </>
   );
 };
 
 const StudentsGrid = styled(Grid)({
+  paddingTop: "5rem",
   [theme.breakpoints.only("xs")]: {
     paddingLeft: "15%",
     paddingRight: "15%",
@@ -91,7 +134,7 @@ const SearchArea = styled(Grid)({
 
 const SearchBar = ({ input, handleInput }) => {
   const BarStyling = {
-    background: "#EFF0F6",
+    background: backgroundColor,
     padding: "0.7rem",
     borderRadius: 20,
     marginBottom: "2rem",
@@ -109,7 +152,7 @@ const SearchBar = ({ input, handleInput }) => {
 };
 
 const StyledSelect = styled(Select)({
-  background: "#EFF0F6",
+  background: backgroundColor,
   borderRadius: 20,
   minWidth: 200,
 });
@@ -138,6 +181,10 @@ const CountryFilter = ({ value, countryList, handleCountry }) => {
     </>
   );
 };
+
+const Separator = styled(Box)({
+  border: "0.5px solid rgba(0,0,0,0.75)",
+});
 
 const Students = () => {
   const [searchInput, setInput] = useState("");
@@ -228,25 +275,34 @@ const Students = () => {
       <Typography variant="h2" paragraph>
         Students
       </Typography>
-      <SearchArea>
-        <SearchBar input={searchInput} handleInput={updateInput} />
-        <CountryFilter
-          value={country}
-          countryList={Array.from(countries)}
-          handleCountry={updateCountry}
-        />
-        <CheckboxFilter
-          name={"Degree"}
-          optionList={Array.from(degrees)}
-          handleOptionClick={updateDegreeFilter}
-        />
-        <CheckboxFilter
-          name={"Course"}
-          optionList={Array.from(courses)}
-          handleOptionClick={updateCourseFilter}
-        />
+      <SearchArea container>
+        <Grid item xs={12}>
+          <SearchBar input={searchInput} handleInput={updateInput} />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <CountryFilter
+            value={country}
+            countryList={Array.from(countries)}
+            handleCountry={updateCountry}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <CheckboxFilter
+            name={"Degree"}
+            optionList={Array.from(degrees)}
+            handleOptionClick={updateDegreeFilter}
+          />
+        </Grid>
+        <Grid item xs={12} sm>
+          <CheckboxFilter
+            parallel
+            name={"Course"}
+            optionList={Array.from(courses)}
+            handleOptionClick={updateCourseFilter}
+          />
+        </Grid>
       </SearchArea>
-
+      <Separator />
       <StudentsGrid
         container
         direction="row"
@@ -304,6 +360,7 @@ CheckboxFilter.propTypes = {
   name: PropTypes.string,
   optionList: PropTypes.array,
   handleOptionClick: PropTypes.func.isRequired,
+  parallel: PropTypes.bool
 };
 
 FilterTitle.propTypes = {
