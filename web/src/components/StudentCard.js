@@ -18,7 +18,7 @@ const StyledCardActionArea = styled(CardActionArea)({
   minWidth: "250px",
   transition: "0.2s",
   "&:hover": {
-    transform: "scale(1.1)",
+    transform: "scale(1.03)",
   },
 });
 
@@ -27,7 +27,7 @@ const StyledCard = styled(Card)({
   borderRadius: 16,
   "&:hover": {
     backgroundColor: "transparent",
-    boxShadow: "0px 10px 10px 0",
+    boxShadow: "0px 5px 5px 0px",
   },
 });
 

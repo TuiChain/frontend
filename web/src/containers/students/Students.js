@@ -320,7 +320,7 @@ const Students = () => {
         <StudentsGrid
           container
           direction="row"
-          justify="center"
+          justify="left"
           alignItems="center"
           spacing={10}
         >
