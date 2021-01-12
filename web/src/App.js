@@ -25,11 +25,12 @@ const styles = {
 
 const App = (props) => {
   const { classes } = props;
-
+  const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState(null);
   useEffect(() => {
     const fetchUser = async () => {
       setAuth(await AuthService.getCurrentUser());
+      setLoading(false);
     };
     fetchUser();
   }, []);
@@ -44,46 +45,52 @@ const App = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.back}>
-        <BrowserRouter>
-          <Header auth={auth} onLogout={handlerLogout} />
-          <Layout auth={auth}>
-            <Switch>
-              {!auth && <Route exact path="/" component={Landing} />}
-              {auth && <Route exact path="/" component={Dashboard} />}
-              <ProtectedRoute
-                auth={auth}
-                path="/students/:id"
-                component={Student}
-              />
-              <ProtectedRoute
-                auth={auth}
-                path="/request"
-                component={LoanRequest}
-              />
-              <Route path="/login">
-                {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
-              </Route>
-              <Route path="/signup">
-                {auth ? (
-                  <Redirect to="/" />
-                ) : (
-                  <Signup onSignUp={handlerLogin} />
-                )}
-              </Route>
-              {/* ADMIN ROUTES */}
-              <ProtectedRoute
-                auth={auth}
-                type="admin"
-                path="/admin/requests"
-                component={LoanRequests}
-              />
-              <Route component={Error} />
-            </Switch>
-          </Layout>
-          <Footer />
-        </BrowserRouter>
-      </div>
+      {!loading && (
+        <div className={classes.back}>
+          <BrowserRouter>
+            <Header auth={auth} onLogout={handlerLogout} />
+            <Layout auth={auth}>
+              <Switch>
+                {!auth && <Route exact path="/" component={Landing} />}
+                {auth && <Route exact path="/" component={Dashboard} />}
+                <ProtectedRoute
+                  auth={auth}
+                  path="/students/:id"
+                  component={Student}
+                />
+                <ProtectedRoute
+                  auth={auth}
+                  path="/request"
+                  component={LoanRequest}
+                />
+                <Route path="/login">
+                  {auth ? (
+                    <Redirect to="/" />
+                  ) : (
+                    <Login onLogin={handlerLogin} />
+                  )}
+                </Route>
+                <Route path="/signup">
+                  {auth ? (
+                    <Redirect to="/" />
+                  ) : (
+                    <Signup onSignUp={handlerLogin} />
+                  )}
+                </Route>
+                {/* ADMIN ROUTES */}
+                <ProtectedRoute
+                  auth={auth}
+                  type="admin"
+                  path="/admin/requests"
+                  component={LoanRequests}
+                />
+                <Route component={Error} />
+              </Switch>
+            </Layout>
+            <Footer />
+          </BrowserRouter>
+        </div>
+      )}
     </ThemeProvider>
   );
 };

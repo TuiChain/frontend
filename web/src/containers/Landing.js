@@ -299,7 +299,6 @@ const Landing = () => {
                   color="secondary.dark"
                   display="flex"
                   justifyContent="flex-end"
-                  style={{}}
                 >
                   <img
                     src={logo}
@@ -333,15 +332,15 @@ const Landing = () => {
             <Grid xs={12} sm={6} md={3} item>
               <Feature
                 icon="fa fa-plus-circle"
-                name="Crypto friendly"
-                desc="Invest your idle assets in supporting good cause"
+                name="Unlimited Funding"
+                desc="There is no cap to the amount of money you can ask for, even if your dream course is very expensive!"
               />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
               <Feature
                 icon="fa fa-plus-circle"
-                name="Crypto friendly"
-                desc="Invest your idle assets in supporting good cause"
+                name="Help Others"
+                desc="After paying your ISA, you can help others achieve their dream job with a few benefits!"
               />
             </Grid>
           </Grid>
