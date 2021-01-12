@@ -148,9 +148,32 @@ async function requestBlockchainInfo() {
     });
 }
 
+/**
+ * Function that prepares a transaction for the user to accept in metamask
+ * 
+ * @param {Object} transactionsParameters Array of transactions parameters
+ */
+async function sendTransactions(transactionsParameters) {
+
+  const ethereum = checkConnection();
+
+  try {
+
+    await ethereum.request({
+      method: 'eth_sendTransaction',
+      params: transactionsParameters,
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+  
+}
+
 export default {
   checkAccount,
   connectToWallet,
   changeAccounts,
   suggestDAI,
+  sendTransactions,
 };

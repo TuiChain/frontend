@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoanRequestService from "../../services/loanrequest.service";
 import UserService from "../../services/user.service";
-import InvestmentService from "../../services/investment.service";
+import LoansService from "../../services/loans.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
@@ -30,14 +30,6 @@ function Student(props) {
     setUserInfo(Info.user);
     console.log(Info.user);
   }, []);
-  let clickHandler=()=>{
-    let inv={
-      amount:tokens,
-      request:props.match.params.id
-    };
-    console.log(inv);
-    InvestmentService.newInvestment(inv);
-  };
   const matches = useMediaQuery("(min-width:600px)");
   const Box2 = withStyles({
     root: {
@@ -72,7 +64,7 @@ function Student(props) {
               <Box className="par-init" display="flex">
                 <School />
                 <Typography variant="body1" display="inline">
-                {user.school}
+                  {user.school}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
@@ -81,7 +73,7 @@ function Student(props) {
               </Box>
             </Box2>
             <Box2 className="down">
-            <Box className="par" display="flex">
+              <Box className="par" display="flex">
                 <Room />
                 <Typography variant="body1" display="inline">
                   {user.destination}
@@ -118,12 +110,19 @@ function Student(props) {
                   label="Tokens"
                   name="tokens"
                   variant="outlined"
-                  onChange={(e) => {
-                  setTokens(e.target.value)
-                  console.log(tokens);
+                  onChange={(e) => {                       
+                    e.target.value = !Number.isInteger(e.target.value)
+                      ? Math.floor(e.target.value)
+                      : e.target.value;
+                    setTokens(e.target.value);
                   }}
                 />
-                <Button variant="contained" color="primary" type="submit" onClick={clickHandler}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  onClick={() => LoansService.provide_funds(props.match.params.id, tokens)}
+                >
                   Buy
                 </Button>
               </Box>
@@ -145,6 +144,5 @@ Student.propTypes = {
     }),
   }),
 };
-
 
 export default Student;
