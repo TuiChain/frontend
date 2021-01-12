@@ -34,23 +34,41 @@ const normalizeFilter = (obj) => {
   return obj;
 };
 
+const resetFilter = (obj) => {
+  let filter = {};
+  filter["All"] = true;
+
+  Object.entries(obj).map((entry) => {
+    if (entry[0] !== "All") filter[entry[0]] = false;
+  });
+
+  return filter;
+};
+
 const getSelected = (obj) => {
   let selected = [];
 
   for (const [key, value] of Object.entries(obj)) value && selected.push(key);
 
-  console.log(selected);
-
   return selected;
 };
 
 const updateCheckboxFilter = (selectedOption, filterStatus) => {
-  let filter = {};
-  filter = filterStatus;
-  if (!(selectedOption in filterStatus)) filter[selectedOption] = true;
-  else filter[selectedOption] = !filter[selectedOption];
+  let filter = filterStatus;
+
+  filter[selectedOption] = !filter[selectedOption];
 
   filter = normalizeFilter(filter);
+  return filter;
+};
+
+const buildStatusObject = (options, filterStatus) => {
+  let filter = filterStatus;
+
+  options.map((o) => {
+    filter[o] = false;
+  });
+
   return filter;
 };
 
@@ -67,56 +85,32 @@ const StyledCircleUnchecked = styled(CircleUnchecked)({
   background: backgroundColor2,
 });
 
-const CheckboxFilter = ({ name, optionList, handleOptionClick, parallel }) => {
+const CheckboxFilter = ({ name, status, handleOptionClick, parallel }) => {
   return (
     <>
       <FilterTitle title={name} />
       <Grid style={{ width: "100%" }} container>
-        {optionList.map((degree) => (
-          <Grid key={degree} item xs={parallel ? 6 : 12}>
-            <FormControlLabel
-              key={degree}
-              control={
-                <Checkbox
-                  icon={<StyledCircleUnchecked />}
-                  checkedIcon={<CircleCheckedFilled />}
-                  color="primary"
-                  name={degree}
-                  onChange={(e) => handleOptionClick(e.target.name)}
+        {Object.entries(status).map(
+          (option) =>
+            option[0] !== "All" && (
+              <Grid key={option[0]} item xs={parallel ? 6 : 12}>
+                <FormControlLabel
+                  key={option[0]}
+                  control={
+                    <Checkbox
+                      checked={option[1]}
+                      icon={<StyledCircleUnchecked />}
+                      checkedIcon={<CircleCheckedFilled />}
+                      color="primary"
+                      name={option[0]}
+                      onChange={(e) => handleOptionClick(e.target.name)}
+                    />
+                  }
+                  label={option}
                 />
-              }
-              label={degree}
-            />
-          </Grid>
-        ))}
-        <Grid item xs={parallel ? 6 : 12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                icon={<StyledCircleUnchecked />}
-                checkedIcon={<CircleCheckedFilled />}
-                color="primary"
-                name="teste"
-                onChange={(e) => handleOptionClick(e.target.name)}
-              />
-            }
-            label="teste"
-          />
-        </Grid>
-        <Grid item xs={parallel ? 6 : 12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                icon={<StyledCircleUnchecked />}
-                checkedIcon={<CircleCheckedFilled />}
-                color="primary"
-                name="teste2"
-                onChange={(e) => handleOptionClick(e.target.name)}
-              />
-            }
-            label="teste2"
-          />
-        </Grid>
+              </Grid>
+            )
+        )}
       </Grid>
     </>
   );
@@ -130,10 +124,10 @@ const StudentsGrid = styled(Grid)({
   },
 });
 
-const SearchArea = styled(Grid)({
-  paddingBottom: "2rem",
+const SearchArea = styled(Grid)(({ opened }) => ({
+  paddingBottom: opened ? "0.3rem" : "2rem",
   paddingTop: "1rem",
-});
+}));
 
 const SearchBar = ({ input, handleInput }) => {
   const BarStyling = {
@@ -169,7 +163,6 @@ const CountryFilter = ({ value, countryList, handleCountry }) => {
           onChange={(e) => handleCountry(e.target.value)}
           value={value}
           displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
         >
           <MenuItem value="All">
             <em>All</em>
@@ -205,6 +198,7 @@ const Students = () => {
   const [displayFilters, setDisplayFilters] = useState(false);
   const [searchInput, setInput] = useState("");
   const [country, setCountry] = useState("All");
+  const [countryList, setCountryList] = useState([]);
   const [degreeFilter, setDegreeFilter] = useState({ All: true });
   const [courseFilter, setCourseFilter] = useState({ All: true });
   const [students, setStudents] = useState([]);
@@ -212,25 +206,33 @@ const Students = () => {
 
   useEffect(() => {
     getStudents().then((studentList) => {
+      let countries = new Set();
+      let degrees = new Set();
+      let courses = new Set();
+
+      studentList.map((s) => {
+        countries.add(s.origin);
+        degrees.add(s.degree);
+        courses.add(s.course);
+      });
+
+      const degreeFilterStatus = buildStatusObject(
+        Array.from(degrees),
+        degreeFilter
+      );
+
+      const courseFilterStatus = buildStatusObject(
+        Array.from(courses),
+        courseFilter
+      );
+
+      setCountryList(Array.from(countries));
+      setDegreeFilter(degreeFilterStatus);
+      setCourseFilter(courseFilterStatus);
       setStudents(studentList);
       setFilteredStudents(studentList);
     });
   }, []);
-
-  let countries = new Set();
-  students.map((s) => {
-    countries.add(s.origin);
-  });
-
-  let degrees = new Set();
-  students.map((s) => {
-    degrees.add(s.degree);
-  });
-
-  let courses = new Set();
-  students.map((s) => {
-    courses.add(s.course);
-  });
 
   const updateInput = (input) => {
     setInput(input);
@@ -254,6 +256,17 @@ const Students = () => {
     filterStudents(searchInput, country, degreeFilter, updatedFilter);
   };
 
+  const resetFilters = () => {
+    const newDegreeFilter = resetFilter(degreeFilter);
+    const newCourseFilter = resetFilter(courseFilter);
+
+    setCountry("All");
+    setDegreeFilter(newDegreeFilter);
+    setCourseFilter(newCourseFilter);
+
+    filterStudents(searchInput, "All", newDegreeFilter, newCourseFilter);
+  };
+
   const filterStudents = (searchInput, country, degreeFilter, courseFilter) => {
     let filtered = students;
 
@@ -271,6 +284,7 @@ const Students = () => {
 
     if (!degreeFilter.All) {
       const selectedDegrees = getSelected(degreeFilter);
+      console.log("Selected Degrees", selectedDegrees);
       filtered = filtered.filter((student) => {
         return selectedDegrees.includes(student.degree);
       });
@@ -278,6 +292,7 @@ const Students = () => {
 
     if (!courseFilter.All) {
       const selectedCourses = getSelected(courseFilter);
+
       filtered = filtered.filter((student) => {
         return selectedCourses.includes(student.course);
       });
@@ -291,13 +306,13 @@ const Students = () => {
       <Typography variant="h2" paragraph>
         Students
       </Typography>
-      <SearchArea container justify="space-between">
+      <SearchArea opened={displayFilters} container justify="space-between">
         <Grid item xs={10}>
           <SearchBar input={searchInput} handleInput={updateInput} />
         </Grid>
         <Grid item>
           <Button
-            style={{minWidth: "150px", marginRight:0}}
+            style={{ minWidth: "150px", marginRight: 0 }}
             startIcon={<TuneIcon />}
             variant={displayFilters ? "outlined" : "contained"}
             color="primary"
@@ -311,14 +326,14 @@ const Students = () => {
             <Grid item xs={12} sm={4}>
               <CountryFilter
                 value={country}
-                countryList={Array.from(countries)}
+                countryList={countryList}
                 handleCountry={updateCountry}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <CheckboxFilter
                 name={"Degree"}
-                optionList={Array.from(degrees)}
+                status={degreeFilter}
                 handleOptionClick={updateDegreeFilter}
               />
             </Grid>
@@ -326,9 +341,27 @@ const Students = () => {
               <CheckboxFilter
                 parallel
                 name={"Course"}
-                optionList={Array.from(courses)}
+                status={courseFilter}
                 handleOptionClick={updateCourseFilter}
               />
+            </Grid>
+            <Grid
+              container
+              item
+              xs={12}
+              alignItems="flex-end"
+              justify="flex-end"
+            >
+              <Grid item>
+                <Button
+                  style={{ minWidth: "150px", marginRight: 0, marginBottom: 0 }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => resetFilters()}
+                >
+                  Clear Filters
+                </Button>
+              </Grid>
             </Grid>
           </>
         ) : (
@@ -336,11 +369,10 @@ const Students = () => {
         )}
       </SearchArea>
       <Separator />
-      {filteredStudents.length > 1 ? (
+      {filteredStudents.length >= 1 ? (
         <StudentsGrid
           container
           direction="row"
-          justify="left"
           alignItems="center"
           spacing={10}
         >
@@ -397,7 +429,7 @@ CountryFilter.propTypes = {
 
 CheckboxFilter.propTypes = {
   name: PropTypes.string,
-  optionList: PropTypes.array,
+  status: PropTypes.object,
   handleOptionClick: PropTypes.func.isRequired,
   parallel: PropTypes.bool,
 };
