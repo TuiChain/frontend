@@ -126,11 +126,11 @@ const StudentsGrid = styled(Grid)({
 
 const SearchArea = styled(Grid)(({ opened }) => ({
   paddingBottom: opened ? "0.3rem" : "2rem",
-  paddingTop: "1rem",
 }));
 
 const SearchBar = ({ input, handleInput }) => {
   const BarStyling = {
+    flex: 1,
     background: backgroundColor1,
     padding: "0.7rem",
     borderRadius: 20,
@@ -177,6 +177,19 @@ const CountryFilter = ({ value, countryList, handleCountry }) => {
     </>
   );
 };
+
+const SearchBox = styled(Box)({
+  paddingTop: "1rem",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "flex-start",
+  width: "100%",
+});
+
+const FilterButton = styled(Button)({
+  flex: "0 0 155px",
+  marginRight: 0,
+});
 
 const Separator = styled(Box)({
   border: "0.5px solid rgba(0,0,0,0.75)",
@@ -306,22 +319,22 @@ const Students = () => {
       <Typography variant="h2" paragraph>
         Students
       </Typography>
+      <SearchBox>
+        <SearchBar
+          input={searchInput}
+          handleInput={updateInput}
+        />
+        <FilterButton
+          startIcon={<TuneIcon />}
+          variant={displayFilters ? "outlined" : "contained"}
+          color="primary"
+          onClick={() => setDisplayFilters(!displayFilters)}
+        >
+          {displayFilters ? "Hide Filters" : "Show Filters"}
+        </FilterButton>
+      </SearchBox>
       <SearchArea opened={displayFilters} container justify="space-between">
-        <Grid item xs={10}>
-          <SearchBar input={searchInput} handleInput={updateInput} />
-        </Grid>
-        <Grid item>
-          <Button
-            style={{ minWidth: "150px", marginRight: 0 }}
-            startIcon={<TuneIcon />}
-            variant={displayFilters ? "outlined" : "contained"}
-            color="primary"
-            onClick={() => setDisplayFilters(!displayFilters)}
-          >
-            {displayFilters ? "Hide Filters" : "Show Filters"}
-          </Button>
-        </Grid>
-        {displayFilters ? (
+        {displayFilters && (
           <>
             <Grid item xs={12} sm={4}>
               <CountryFilter
@@ -364,8 +377,6 @@ const Students = () => {
               </Grid>
             </Grid>
           </>
-        ) : (
-          <></>
         )}
       </SearchArea>
       <Separator />
