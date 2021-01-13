@@ -1,4 +1,5 @@
 import axios from "axios";
+import Constants from "../constants";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -126,7 +127,7 @@ async function suggestDAI() {
       tuichain_info.dai_contract_address,
       "DAI",
       18,
-      "https://i.ibb.co/FD8YxCb/dai.png"
+      Constants.dai_svg
     );
   }
 }
