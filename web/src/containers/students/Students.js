@@ -11,6 +11,7 @@ import {
   MenuItem,
   Typography,
   Button,
+  withWidth,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import StudentCard from "../../components/StudentCard";
@@ -72,29 +73,52 @@ const buildStatusObject = (options, filterStatus) => {
   return filter;
 };
 
-const FilterTitle = ({ title }) => {
+const FilterTitle = ({ title, mobile }) => {
+  const BoxStyling = {
+    paddingBottom: mobile ? "0.5rem" : "1rem",
+  };
   return (
-    <Box style={{ paddingBottom: "1rem" }} fontWeight="fontWeightBold">
+    <Box style={BoxStyling} fontWeight="fontWeightBold">
       {title}
     </Box>
   );
 };
+
+const FilterBox = styled(Box)(({ mobile }) => ({
+  textAlign: mobile && "center",
+  padding: mobile ? "1rem 15% 1rem 15%" : "0 0 0 0",
+}));
 
 const StyledCircleUnchecked = styled(CircleUnchecked)({
   borderRadius: 100,
   background: backgroundColor2,
 });
 
-const CheckboxFilter = ({ name, status, handleOptionClick, parallel }) => {
+const CheckboxFilter = ({
+  name,
+  status,
+  handleOptionClick,
+  parallel,
+  mobile,
+}) => {
   return (
-    <>
-      <FilterTitle title={name} />
-      <Grid style={{ width: "100%" }} container>
+    <FilterBox mobile={mobile}>
+      <FilterTitle title={name} mobile={mobile} />
+      {mobile && <Separator color={backgroundColor2} />}
+      <Grid style={{paddingTop: mobile && "1rem"}} container>
         {Object.entries(status).map(
-          (option) =>
+          (option, index) =>
             option[0] !== "All" && (
-              <Grid key={option[0]} item xs={parallel ? 6 : 12}>
+              <Grid
+                style={{
+                  textAlign: mobile && index % 2 === 0 ? "right" : "left",
+                }}
+                key={option[0]}
+                item
+                xs={parallel ? 6 : 12}
+              >
                 <FormControlLabel
+                  labelPlacement={mobile && index % 2 === 0 ? "start" : "end"}
                   key={option[0]}
                   control={
                     <Checkbox
@@ -112,7 +136,7 @@ const CheckboxFilter = ({ name, status, handleOptionClick, parallel }) => {
             )
         )}
       </Grid>
-    </>
+    </FilterBox>
   );
 };
 
@@ -128,13 +152,13 @@ const SearchArea = styled(Grid)(({ opened }) => ({
   paddingBottom: opened ? "0.3rem" : "2rem",
 }));
 
-const SearchBar = ({ input, handleInput }) => {
+const SearchBar = ({ input, handleInput, mobile }) => {
   const BarStyling = {
     flex: 1,
     background: backgroundColor1,
     padding: "0.7rem",
     borderRadius: 20,
-    marginBottom: "2rem",
+    marginBottom: mobile ? "0" : "2rem",
   };
   return (
     <Input
@@ -154,11 +178,12 @@ const StyledSelect = styled(Select)({
   minWidth: 200,
 });
 
-const CountryFilter = ({ value, countryList, handleCountry }) => {
+const CountryFilter = ({ value, countryList, handleCountry, mobile }) => {
   return (
-    <>
-      <FilterTitle title="Country" />
-      <FormControl variant="outlined">
+    <FilterBox mobile={mobile}>
+      <FilterTitle title="Country" mobile={mobile} />
+      {mobile && <Separator color={backgroundColor2} />}
+      <FormControl style={{paddingTop: mobile && "1rem"}} variant="outlined">
         <StyledSelect
           onChange={(e) => handleCountry(e.target.value)}
           value={value}
@@ -174,26 +199,32 @@ const CountryFilter = ({ value, countryList, handleCountry }) => {
           ))}
         </StyledSelect>
       </FormControl>
-    </>
+    </FilterBox>
   );
 };
 
-const SearchBox = styled(Box)({
+const SearchBox = styled(Box)(({ mobile }) => ({
   paddingTop: "1rem",
   display: "flex",
-  flexDirection: "row",
-  alignItems: "flex-start",
+  flexDirection: mobile ? "column" : "row",
+  alignItems: mobile ? "center" : "flex-start",
   width: "100%",
-});
+}));
 
-const FilterButton = styled(Button)({
-  flex: "0 0 155px",
+const ResetButton = styled(Button)({
+  width: "155px",
   marginRight: 0,
+  marginBottom: 0,
 });
 
-const Separator = styled(Box)({
-  border: "0.5px solid rgba(0,0,0,0.75)",
-});
+const FilterButton = styled(Button)(({ mobile }) => ({
+  flex: mobile ? "0 0 0" : "0 0 155px",
+  marginRight: 0,
+}));
+
+const Separator = styled(Box)(({ color }) => ({
+  border: color ? `0.5px solid ${color}` : "0.5px solid rgba(0,0,0,0.75)",
+}));
 
 const Container = styled(Box)({
   display: "flex",
@@ -207,7 +238,7 @@ const SearchMessage = styled(Typography)({
   flex: "0 0 200px",
 });
 
-const Students = () => {
+const Students = (props) => {
   const [displayFilters, setDisplayFilters] = useState(false);
   const [searchInput, setInput] = useState("");
   const [country, setCountry] = useState("All");
@@ -216,6 +247,8 @@ const Students = () => {
   const [courseFilter, setCourseFilter] = useState({ All: true });
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
+
+  const mobile = props.width === "xs";
 
   useEffect(() => {
     getStudents().then((studentList) => {
@@ -319,12 +352,14 @@ const Students = () => {
       <Typography variant="h2" paragraph>
         Students
       </Typography>
-      <SearchBox>
+      <SearchBox mobile={mobile}>
         <SearchBar
+          mobile={mobile}
           input={searchInput}
           handleInput={updateInput}
         />
         <FilterButton
+          mobile={mobile}
           startIcon={<TuneIcon />}
           variant={displayFilters ? "outlined" : "contained"}
           color="primary"
@@ -338,6 +373,7 @@ const Students = () => {
           <>
             <Grid item xs={12} sm={4}>
               <CountryFilter
+                mobile={mobile}
                 value={country}
                 countryList={countryList}
                 handleCountry={updateCountry}
@@ -345,6 +381,8 @@ const Students = () => {
             </Grid>
             <Grid item xs={12} sm={3}>
               <CheckboxFilter
+                mobile={mobile}
+                parallel={mobile}
                 name={"Degree"}
                 status={degreeFilter}
                 handleOptionClick={updateDegreeFilter}
@@ -352,6 +390,7 @@ const Students = () => {
             </Grid>
             <Grid item xs={12} sm>
               <CheckboxFilter
+                mobile={mobile}
                 parallel
                 name={"Course"}
                 status={courseFilter}
@@ -363,17 +402,16 @@ const Students = () => {
               item
               xs={12}
               alignItems="flex-end"
-              justify="flex-end"
+              justify={mobile ? "center" : "flex-end"}
             >
               <Grid item>
-                <Button
-                  style={{ minWidth: "150px", marginRight: 0, marginBottom: 0 }}
+                <ResetButton
                   variant="outlined"
                   color="primary"
                   onClick={() => resetFilters()}
                 >
                   Clear Filters
-                </Button>
+                </ResetButton>
               </Grid>
             </Grid>
           </>
@@ -425,17 +463,23 @@ const Students = () => {
   );
 };
 
-export default Students;
+export default withWidth()(Students);
+
+Students.propTypes = {
+  width: PropTypes.string,
+};
 
 SearchBar.propTypes = {
   input: PropTypes.string,
   handleInput: PropTypes.func,
+  mobile: PropTypes.bool,
 };
 
 CountryFilter.propTypes = {
   value: PropTypes.string.isRequired,
   countryList: PropTypes.array,
   handleCountry: PropTypes.func,
+  mobile: PropTypes.bool,
 };
 
 CheckboxFilter.propTypes = {
@@ -443,8 +487,10 @@ CheckboxFilter.propTypes = {
   status: PropTypes.object,
   handleOptionClick: PropTypes.func.isRequired,
   parallel: PropTypes.bool,
+  mobile: PropTypes.bool,
 };
 
 FilterTitle.propTypes = {
+  mobile: PropTypes.bool,
   title: PropTypes.string.isRequired,
 };
