@@ -11,11 +11,10 @@ import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
 const NavMenu = (props) => {
-  const { onLogout } = props;
+  const { onLogout, wallet, setWallet } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
 
-  const [wallet, setWallet] = useState(WalletService.checkAccount);
   WalletService.changeAccounts(setWallet);
 
   const handleClick = (event) => {
