@@ -16,6 +16,8 @@ import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
+import Investments from "./containers/Investments";
+import KycButton from "./containers/KycButton";
 
 const styles = {
   back: {
@@ -67,6 +69,13 @@ const App = (props) => {
                 path="/request"
                 component={LoanRequest}
                 wallet={wallet}
+              />
+              <Route
+                auth={auth}
+                path="/kyc"
+                render={() => (
+                  <KycButton />
+                )}
               />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
