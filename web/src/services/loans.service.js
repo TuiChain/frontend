@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const instance = axios.create({
-  baseURL: `${API_URL}/loanrequests`,
+  baseURL: `${API_URL}/loans`,
 });
 
 instance.interceptors.request.use(
@@ -17,12 +17,13 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (
+const createLoan = (
   school,
   course,
   amount,
   description,
-  destination
+  destination,
+  recipient_address
 ) => {
   return instance
     .post("/new/", {
@@ -31,6 +32,7 @@ const createLoanRequest = (
       amount,
       description,
       destination,
+      recipient_address,
     })
     .then(() => {
       return true;
@@ -80,7 +82,7 @@ const closeLoanRequest = (id) => {
 };
 
 export default {
-  createLoanRequest,
+  createLoan,
   getPendingLoanRequests,
   validateLoanRequest,
   closeLoanRequest,

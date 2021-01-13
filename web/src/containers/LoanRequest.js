@@ -14,7 +14,8 @@ import {
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import LoanRequestService from "../services/loanrequest.service";
+import LoansService from "../services/loans.service";
+import WalletService from "../services/wallet.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 
@@ -35,17 +36,19 @@ const LoanRequest = (props) => {
       amount: 0,
       desc: "",
       destination: "",
+      recipient_address: "",
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { school, course, amount, desc, destination } = values;
-      console.log(school, course, amount, desc, destination);
-      const valid = await LoanRequestService.createLoanRequest(
+      const { school, course, amount, desc, destination, recipient_address } = values;
+      console.log(school, course, amount, desc, destination, recipient_address);
+      const valid = await LoansService.createLoan(
         school,
         course,
         amount,
         desc,
-        destination
+        destination,
+        recipient_address
       );
 
       if (valid) {
@@ -69,6 +72,7 @@ const LoanRequest = (props) => {
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
       destination: Yup.string().required("Destination is required"),
+      recipient_address: Yup.string().required("An Account Address is required"),
     }),
   });
 
@@ -179,6 +183,26 @@ const LoanRequest = (props) => {
               fullWidth
               multiline
               rows={4}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              error={formik.errors.recipient_address && formik.touched.recipient_address}
+              label={WalletService.checkAccount() == 0 
+                ? "Account Address" 
+                : "Selected Account Address: " + WalletService.checkAccount()}
+              name="recipient_address"
+              value={formik.values.recipient_address}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              helperText={
+                formik.errors.recipient_address &&
+                formik.touched.recipient_address &&
+                formik.errors.recipient_address
+              }
+              variant="outlined"
+              fullWidth
             />
           </Grid>
 
