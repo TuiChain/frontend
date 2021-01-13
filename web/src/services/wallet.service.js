@@ -114,11 +114,6 @@ async function suggestToken(
  * Function that suggests adding DAI to an account
  */
 async function suggestDAI(ethereum, tuichain_info) {
-  // in case some error occurs
-  if (tuichain_info == false) {
-    return;
-  }
-
   if (
     tuichain_info != false &&
     tuichain_info.dai_contract_address != null &&
