@@ -65,10 +65,9 @@ async function changeAccounts(setWallet) {
       suggestDAI(ethereum, tuichain_info);
     });
 
-    ethereum.on('chainChanged', () => {
+    ethereum.on("chainChanged", () => {
       suggestDAI(ethereum, tuichain_info);
     });
-
   } catch (error) {
     return;
   }
@@ -115,7 +114,6 @@ async function suggestToken(
  * Function that suggests adding DAI to an account
  */
 async function suggestDAI(ethereum, tuichain_info) {
-
   // in case some error occurs
   if (tuichain_info == false) {
     return;
@@ -124,11 +122,9 @@ async function suggestDAI(ethereum, tuichain_info) {
   if (
     tuichain_info != false &&
     tuichain_info.dai_contract_address != null &&
-    (
-      tuichain_info.dai_contract_address !=
+    (tuichain_info.dai_contract_address !=
       "0x6B175474E89094C44Da98b954EedeAC495271d0F" ||
-      tuichain_info.chain_id != 1
-    ) &&
+      tuichain_info.chain_id != 1) &&
     tuichain_info.chain_id == ethereum.chainId
   ) {
     suggestToken(
