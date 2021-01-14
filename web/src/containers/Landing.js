@@ -64,12 +64,25 @@ const Feature = ({ icon, name, desc }) => {
 
   return (
     <Card variant="outlined" style={{ height: "100%", maxWidth: "300px" }}>
-      <CardContent>
-        <Icon className={icon} style={{ fontSize: 50 }} color="secondary" />
-        <Typography variant="h4">
-          <Box color="secondary.dark">{name}</Box>
-        </Typography>
-        <Typography color="textSecondary">{desc}</Typography>
+      <CardContent style={{ height: "100%" }}>
+        <Box display="flex" justifyContent="center">
+          <Icon className={icon} style={{ fontSize: 50 }} color="secondary" />
+        </Box>
+        <Box
+          color="secondary.dark"
+          pt={2}
+          display="flex"
+          justifyContent="center"
+        >
+          <Typography align="center" variant="h4">
+            {name}
+          </Typography>
+        </Box>
+        <Box pt={2} display="flex" justifyContent="center" alignItems="center">
+          <Typography align="center" color="textSecondary">
+            {desc}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   );
@@ -102,9 +115,9 @@ const Testimonial = ({ testimonial, name, job }) => {
           >
             <Quote />
           </SvgIcon>
-          <Typography variant="h5">
-            <Box color="secondary.dark">{testimonial}</Box>
-          </Typography>
+          <Box color="secondary.dark">
+            <Typography variant="h5">{testimonial}</Typography>
+          </Box>
         </CardContent>
         <CardHeader
           className={classes.cardHeader}
@@ -138,25 +151,15 @@ function getSteps(user) {
 function getStepContent(stepIndex, user) {
   const steps = {
     student: [
-      "Create an account",
-      "Make a request",
-      "Wait to be funded",
-      "Pay back",
+      "Create an account to fund your studies and achieve your dreams!",
+      "Make a request so other people can help you get the financing you need!",
+      "Wait to be funded because not everyone can finance your request and other students can be in the same situation as you!",
+      "Pay back the money you received through planned payments only when you have the financial means to do so!",
     ],
     investor: ["ola2", "asd", "asdasd"],
   };
 
   return steps[user][stepIndex];
-  // switch (stepIndex) {
-  //   case 0:
-  //     return "Select campaign settings...";
-  //   case 1:
-  //     return "What is an ad group anyways?";
-  //   case 2:
-  //     return "This is the bit I really care about!";
-  //   default:
-  //     return "Unknown stepIndex";
-  // }
 }
 
 const Tutorial = () => {
@@ -164,6 +167,7 @@ const Tutorial = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [user, setUser] = useState(null);
   const steps = getSteps(user);
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -192,17 +196,30 @@ const Tutorial = () => {
       </Stepper>
       <Box display="flex" justifyContent="center">
         {activeStep === steps.length ? (
-          <Box>
+          <Box pt={3}>
             <Typography>
               You&apos;re now ready to start using our application. Good luck!
             </Typography>
-            <Button onClick={handleReset}>Reset</Button>
+            <Box display="flex" justifyContent="center" pt={3}>
+              <Button
+                color="secondary"
+                variant="outlined"
+                onClick={handleReset}
+              >
+                Reset
+              </Button>
+            </Box>
           </Box>
         ) : (
-          <Box>
+          <Box pt={3}>
             <Typography>{getStepContent(activeStep, user)}</Typography>
-            <Box>
-              <Button disabled={activeStep === 0} onClick={handleBack}>
+            <Box display="flex" justifyContent="center" pt={3}>
+              <Button
+                color="secondary"
+                variant="outlined"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+              >
                 Back
               </Button>
               <Button variant="contained" color="primary" onClick={handleNext}>
@@ -317,7 +334,7 @@ const Landing = () => {
           <Grid container spacing={2} justify="center" alignContent="center">
             <Grid xs={12} sm={6} md={3} item>
               <Feature
-                icon="fa fa-plus-circle"
+                icon="fas fa-handshake"
                 name="Get an ISA"
                 desc="Study first. Pay later. No tuition until you are hired."
               />

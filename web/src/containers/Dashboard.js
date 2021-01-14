@@ -40,6 +40,11 @@ const Dashboard = () => {
       setActiveRequest({ id: 1, course: "ola", school: "Adeus" });
       setInvestments([
         {
+          // id
+          // id investidor
+          // id loan request
+          // amount
+          // data,
           id: 1,
           course: "ola",
           school: "Adeus",
@@ -99,26 +104,24 @@ const Dashboard = () => {
                   Active Loan
                 </Typography>
 
-                <Typography variant="body2" component="p">
-                  {active_request ? (
-                    <ListItem button key={active_request.id}>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={active_request.school}
-                          src="/static/images/avatar/1.jpg"
-                        />
-                      </ListItemAvatar>
+                {active_request ? (
+                  <ListItem button key={active_request.id}>
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={active_request.school}
+                        src="/static/images/avatar/1.jpg"
+                      />
+                    </ListItemAvatar>
 
-                      <ListItemText primary={active_request.course} />
+                    <ListItemText primary={active_request.course} />
 
-                      <ListItemIcon>
-                        <Chip label="OLA" />
-                      </ListItemIcon>
-                    </ListItem>
-                  ) : (
-                    <>No active request...</>
-                  )}
-                </Typography>
+                    <ListItemIcon>
+                      <Chip label="OLA" />
+                    </ListItemIcon>
+                  </ListItem>
+                ) : (
+                  <>No active request...</>
+                )}
               </CardContent>
               <CardActions className={classes.actions}>
                 {!active_request && (
@@ -175,7 +178,7 @@ const Dashboard = () => {
                 </CardContent>
                 <CardActions className={classes.actions}>
                   <Button variant="outlined" color="secondary">
-                    {investments ? "Discover more" : "Start investing"}
+                    {investments ? "Show all" : "Start investing"}
                   </Button>
                 </CardActions>
               </Card>
