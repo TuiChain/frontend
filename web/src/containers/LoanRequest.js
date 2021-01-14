@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   TextField,
@@ -14,7 +14,7 @@ import {
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import LoanRequestService from "../services/loanrequest.service";
+import LoansService from "../services/loans.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 
@@ -25,8 +25,10 @@ const styles = {
 };
 
 const LoanRequest = (props) => {
-  const { classes } = props;
+  const { classes, wallet } = props;
   const history = useHistory();
+
+  const [recipient_touched, setRecipientTouched] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -35,17 +37,26 @@ const LoanRequest = (props) => {
       amount: 0,
       desc: "",
       destination: "",
+      recipient_address: "",
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { school, course, amount, desc, destination } = values;
-      console.log(school, course, amount, desc, destination);
-      const valid = await LoanRequestService.createLoanRequest(
+      const {
         school,
         course,
         amount,
         desc,
-        destination
+        destination,
+        recipient_address,
+      } = values;
+      console.log(school, course, amount, desc, destination, recipient_address);
+      const valid = await LoansService.createLoan(
+        school,
+        course,
+        amount,
+        desc,
+        destination,
+        recipient_address
       );
 
       if (valid) {
@@ -69,6 +80,9 @@ const LoanRequest = (props) => {
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
       destination: Yup.string().required("Destination is required"),
+      recipient_address: Yup.string().required(
+        "An Account Address is required"
+      ),
     }),
   });
 
@@ -182,6 +196,34 @@ const LoanRequest = (props) => {
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <TextField
+              error={
+                formik.errors.recipient_address &&
+                formik.touched.recipient_address
+              }
+              label={
+                wallet == null
+                  ? "Account Address"
+                  : recipient_touched == true
+                  ? "Account Address"
+                  : "Selected Account Address: " + wallet
+              }
+              name="recipient_address"
+              value={formik.values.recipient_address}
+              onChange={formik.handleChange}
+              onBlur={() => setRecipientTouched(false)}
+              onFocus={() => setRecipientTouched(true)}
+              helperText={
+                formik.errors.recipient_address &&
+                formik.touched.recipient_address &&
+                formik.errors.recipient_address
+              }
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+
           {formik.values.error}
 
           <Grid container justify="flex-end">
@@ -211,6 +253,7 @@ const LoanRequest = (props) => {
 
 LoanRequest.propTypes = {
   classes: PropTypes.object,
+  wallet: PropTypes.string,
 };
 
 export default withStyles(styles)(LoanRequest);

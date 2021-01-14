@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
-import LoanRequestService from "../../services/loanrequest.service";
+import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import InvestmentService from "../../services/investment.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
@@ -21,7 +21,7 @@ function Student(props) {
   let [percentage, setPercentage] = useState(0);
   let [tokens, setTokens] = useState(0);
   useEffect(async () => {
-    const temp = await LoanRequestService.getLoanRequest(props.match.params.id);
+    const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
     setPercentage((temp.current_amount / temp.amount) * 100);
