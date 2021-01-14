@@ -16,7 +16,6 @@ import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
-import Investments from "./containers/Investments";
 import KycButton from "./containers/KycButton";
 
 const styles = {
