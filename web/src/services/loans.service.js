@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const instance = axios.create({
-  baseURL: `${API_URL}/loanrequests`,
+  baseURL: `${API_URL}/loans`,
 });
 
 instance.interceptors.request.use(
@@ -17,20 +17,25 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (
+const createLoan = (
   school,
   course,
   amount,
   description,
-  destination
+  destination,
+  recipient_address
 ) => {
   return instance
     .post("/new/", {
       school,
       course,
-      amount,
+      requested_value_atto_dai: (
+        BigInt(amount) *
+        BigInt(10) ** BigInt(18)
+      ).toString(),
       description,
       destination,
+      recipient_address,
     })
     .then(() => {
       return true;
@@ -41,11 +46,12 @@ const createLoanRequest = (
     });
 };
 
-const getPendingLoanRequests = () => {
+const getPendingLoans = () => {
   return instance
     .get("/get_all/") // todo
     .then((response) => {
-      return response.data.loanrequests;
+      console.log(response.data);
+      return response.data.loans;
     })
     .catch((error) => {
       console.error(error.response);
@@ -53,9 +59,13 @@ const getPendingLoanRequests = () => {
     });
 };
 
-const validateLoanRequest = (id) => {
+const validateLoan = (id) => {
   return instance
-    .put(`/validate/${id}/`)
+    .put(`/validate/${id}/`, {
+      days_to_expiration: 100,
+      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString(),
+      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString()
+    })
     .then((response) => {
       console.log("Validated: ", response.data.message);
       return true;
@@ -66,9 +76,9 @@ const validateLoanRequest = (id) => {
     });
 };
 
-const closeLoanRequest = (id) => {
+const rejectLoan = (id) => {
   return instance
-    .put(`/close/${id}/`)
+    .put(`/reject/${id}/`)
     .then((response) => {
       console.log("Closed: ", response.data.message);
       return true;
@@ -79,7 +89,7 @@ const closeLoanRequest = (id) => {
     });
 };
 
-const getLoanRequest = (id) => {
+const getLoan = (id) => {
   return instance.get("/get/"+id+"/")
     .then(response=>{
       return(response.data.loan_request);
@@ -91,9 +101,9 @@ const getLoanRequest = (id) => {
 };
 
 export default {
-  createLoanRequest,
-  getPendingLoanRequests,
-  validateLoanRequest,
-  closeLoanRequest,
-  getLoanRequest,
+  createLoan,
+  getPendingLoans,
+  validateLoan,
+  rejectLoan,
+  getLoan,
 };

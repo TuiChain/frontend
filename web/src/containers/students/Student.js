@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
-import LoanRequestService from "../../services/loanrequest.service";
+import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
-import LoansTransactionsService from "../../services/loans.transactions.service";
+import InvestmentService from "../../services/investment.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
@@ -21,7 +21,7 @@ function Student(props) {
   let [percentage, setPercentage] = useState(0);
   let [tokens, setTokens] = useState(0);
   useEffect(async () => {
-    const temp = await LoanRequestService.getLoanRequest(props.match.params.id);
+    const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
     setPercentage((temp.current_amount / temp.amount) * 100);
@@ -30,6 +30,14 @@ function Student(props) {
     setUserInfo(Info.user);
     console.log(Info.user);
   }, []);
+  let clickHandler=()=>{
+    let inv={
+      amount:tokens,
+      request:props.match.params.id
+    };
+    console.log(inv);
+    InvestmentService.newInvestment(inv);
+  };
   const matches = useMediaQuery("(min-width:600px)");
   const Box2 = withStyles({
     root: {
@@ -64,7 +72,7 @@ function Student(props) {
               <Box className="par-init" display="flex">
                 <School />
                 <Typography variant="body1" display="inline">
-                  {user.school}
+                {user.school}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
@@ -73,7 +81,7 @@ function Student(props) {
               </Box>
             </Box2>
             <Box2 className="down">
-              <Box className="par" display="flex">
+            <Box className="par" display="flex">
                 <Room />
                 <Typography variant="body1" display="inline">
                   {user.destination}
@@ -144,5 +152,6 @@ Student.propTypes = {
     }),
   }),
 };
+
 
 export default Student;

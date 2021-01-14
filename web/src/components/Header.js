@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import NavMenuAdmin from "./NavMenuAdmin";
 
 const Header = (props) => {
-  const { auth, onLogout } = props;
+  const { auth, onLogout, wallet, setWallet } = props;
 
   const account_btns = (
     <>
@@ -52,7 +52,11 @@ const Header = (props) => {
               auth.is_admin ? (
                 <NavMenuAdmin onLogout={onLogout} />
               ) : (
-                <NavMenu onLogout={onLogout} />
+                <NavMenu
+                  onLogout={onLogout}
+                  wallet={wallet}
+                  setWallet={setWallet}
+                />
               )
             ) : (
               auth !== null && account_btns
@@ -70,6 +74,8 @@ Header.propTypes = {
     PropTypes.bool, // no auth token (false)
   ]),
   onLogout: PropTypes.func,
+  wallet: PropTypes.string,
+  setWallet: PropTypes.func,
 };
 
 export default Header;
