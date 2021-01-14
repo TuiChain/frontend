@@ -71,10 +71,9 @@ const validateLoan = (id) => {
     });
 };
 
-const closeLoan = (id) => {
-  // i think this endpoint is no longer available
+const rejectLoan = (id) => {
   return instance
-    .put(`/close/${id}/`)
+    .put(`/reject/${id}/`)
     .then((response) => {
       console.log("Closed: ", response.data.message);
       return true;
@@ -89,5 +88,5 @@ export default {
   createLoan,
   getPendingLoans,
   validateLoan,
-  closeLoan,
+  rejectLoan,
 };

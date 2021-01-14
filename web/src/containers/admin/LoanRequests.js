@@ -168,7 +168,7 @@ const LoanRequests = (props) => {
 
   const rejectRequest = async (id) => {
     console.log("ID REJECTED:", id);
-    const valid = await LoansService.closeLoan(id);
+    const valid = await LoansService.rejectLoan(id);
 
     if (valid) {
       const filtered_requests = requests.filter((e) => e.id != id);
