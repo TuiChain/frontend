@@ -4,7 +4,7 @@ import WalletService from "./wallet.service";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const instance = axios.create({
-  baseURL: `${API_URL}/loans`,
+  baseURL: `${API_URL}/loans/transactions`,
 });
 
 instance.interceptors.request.use(
@@ -23,11 +23,11 @@ async function provide_funds(loan_identifier, tokens) {
 
   let post = {
     value_atto_dai: (BigInt(tokens) * (BigInt(10) ** BigInt(18))).toString(),
-    loan_identifier: loan_identifier,
+    loan_id: loan_identifier,
   };
 
   return instance
-    .post("/transactions/provide_funds/", post)
+    .post("/provide_funds/", post)
     .then((response) => {
       console.log(response);
       WalletService.sendTransactions(response.data.transactions);

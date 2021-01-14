@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoanRequestService from "../../services/loanrequest.service";
 import UserService from "../../services/user.service";
-import LoansService from "../../services/loans.service";
+import LoansTransactionsService from "../../services/loans.transactions.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
@@ -121,7 +121,7 @@ function Student(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  onClick={() => LoansService.provide_funds(props.match.params.id, tokens)}
+                  onClick={() => LoansTransactionsService.provide_funds(props.match.params.id, tokens)}
                 >
                   Buy
                 </Button>
