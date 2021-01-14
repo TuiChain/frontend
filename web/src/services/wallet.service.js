@@ -160,12 +160,14 @@ async function sendTransactions(transactionsParameters) {
 
   try {
 
-    transactionsParameters.forEach(element => {
-      ethereum.request({
+    let element;
+    for (element of transactionsParameters) {
+      const params = Object.assign({from: checkAccount()}, element);
+      await ethereum.request({
         method: 'eth_sendTransaction',
-        params: [element],
+        params: [params],
       });
-    });
+    }
 
   } catch (error) {
     console.log(error);

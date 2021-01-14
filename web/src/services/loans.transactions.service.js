@@ -29,20 +29,7 @@ async function provide_funds(loan_identifier, tokens) {
   return instance
     .post("/provide_funds/", post)
     .then((response) => {
-      const account = WalletService.checkAccount();
-      let transactionParameters = [];
-
-      response.data.transactions.forEach(element => {
-        const params = {
-          to: element.to, 
-          data: element.data,
-          from: account
-        };
-        transactionParameters.push(params);
-      });
-
-      console.log('provide_funds: ', transactionParameters);
-      WalletService.sendTransactions(transactionParameters);
+      WalletService.sendTransactions(response.data.transactions);
     })
     .catch((error) => {
       console.log(error);
