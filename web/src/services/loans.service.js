@@ -50,7 +50,8 @@ const getPendingLoans = () => {
   return instance
     .get("/get_all/") // todo
     .then((response) => {
-      return response.data.loanrequests;
+      console.log(response.data);
+      return response.data.loans;
     })
     .catch((error) => {
       console.error(error.response);
@@ -60,7 +61,11 @@ const getPendingLoans = () => {
 
 const validateLoan = (id) => {
   return instance
-    .put(`/validate/${id}/`)
+    .put(`/validate/${id}/`, {
+      days_to_expiration: 100,
+      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString(),
+      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString()
+    })
     .then((response) => {
       console.log("Validated: ", response.data.message);
       return true;
