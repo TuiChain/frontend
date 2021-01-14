@@ -63,8 +63,8 @@ const validateLoan = (id) => {
   return instance
     .put(`/validate/${id}/`, {
       days_to_expiration: 100,
-      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString(),
-      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(7))).toString()
+      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString(),
+      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString()
     })
     .then((response) => {
       console.log("Validated: ", response.data.message);
