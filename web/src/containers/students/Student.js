@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
-import LoansTransactionsService from "../../services/loans.transactions.service";
+import LoansTransactionsService from "../../services/loans-transactions.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
