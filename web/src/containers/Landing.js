@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Icon,
   Hidden,
   CardHeader,
   Stepper,
@@ -17,10 +16,13 @@ import {
   SvgIcon,
 } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
-import { loadCSS } from "fg-loadcss";
 import world from "../assets/images/world.jpg";
 import logo from "../assets/images/logo-white.png";
 import { ReactComponent as Quote } from "../assets/icons/left-quote.svg";
+import { ReactComponent as PeopleCarry } from "../assets/icons/people-carry-solid.svg";
+import { ReactComponent as Handshake } from "../assets/icons/handshake-solid.svg";
+import { ReactComponent as Ethereum } from "../assets/icons/ethereum-brands.svg";
+import { ReactComponent as Infinity } from "../assets/icons/infinity-solid.svg";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -43,30 +45,26 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "-30%",
     },
   },
+  features: {
+    "@media screen and (min-width: 600px)": {
+      margin: "0 5%",
+    },
+  },
 }));
 
-// Load FontAwesome icons - todo
-const useIcons = () => {
-  useEffect(() => {
-    const node = loadCSS(
-      "https://use.fontawesome.com/releases/v5.12.0/css/all.css",
-      document.querySelector("#font-awesome-css")
-    );
-
-    return () => {
-      node.parentNode.removeChild(node);
-    };
-  }, []);
-};
-
-const Feature = ({ icon, name, desc }) => {
-  useIcons();
-
+const Feature = ({ icon, name, desc, viewBox }) => {
   return (
     <Card variant="outlined" style={{ height: "100%", maxWidth: "300px" }}>
-      <CardContent style={{ height: "100%" }}>
+      <CardContent
+        style={{ height: "100%", display: "flex", flexDirection: "column" }}
+      >
         <Box display="flex" justifyContent="center">
-          <Icon className={icon} style={{ fontSize: 50 }} color="secondary" />
+          <SvgIcon
+            component={icon}
+            style={{ fontSize: 100 }}
+            color="secondary"
+            viewBox={viewBox}
+          />
         </Box>
         <Box
           color="secondary.dark"
@@ -78,7 +76,7 @@ const Feature = ({ icon, name, desc }) => {
             {name}
           </Typography>
         </Box>
-        <Box pt={2} display="flex" justifyContent="center" alignItems="center">
+        <Box pt={2}>
           <Typography align="center" color="textSecondary">
             {desc}
           </Typography>
@@ -89,14 +87,15 @@ const Feature = ({ icon, name, desc }) => {
 };
 
 Feature.propTypes = {
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
+  viewBox: PropTypes.string.isRequired,
 };
 
 const useTestimonialsStyles = makeStyles((theme) => ({
   cardHeader: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
   },
 }));
 
@@ -108,13 +107,15 @@ const Testimonial = ({ testimonial, name, job }) => {
     <Box maxWidth={600} margin="0 auto">
       <Card variant="outlined">
         <CardContent>
-          <SvgIcon
-            color="secondary"
-            style={{ fontSize: 50 }}
-            viewBox="0 0 95.3 95.3"
-          >
-            <Quote />
-          </SvgIcon>
+          <Box display="flex" justifyContent="flex-end" pr={4}>
+            <SvgIcon
+              color="secondary"
+              style={{ fontSize: 50 }}
+              viewBox="0 0 95.3 95.3"
+            >
+              <Quote />
+            </SvgIcon>
+          </Box>
           <Box color="secondary.dark">
             <Typography variant="h5">{testimonial}</Typography>
           </Box>
@@ -197,7 +198,7 @@ const Tutorial = () => {
       <Box display="flex" justifyContent="center">
         {activeStep === steps.length ? (
           <Box pt={3}>
-            <Typography>
+            <Typography align="center">
               You&apos;re now ready to start using our application. Good luck!
             </Typography>
             <Box display="flex" justifyContent="center" pt={3}>
@@ -212,7 +213,9 @@ const Tutorial = () => {
           </Box>
         ) : (
           <Box pt={3}>
-            <Typography>{getStepContent(activeStep, user)}</Typography>
+            <Typography align="center">
+              {getStepContent(activeStep, user)}
+            </Typography>
             <Box display="flex" justifyContent="center" pt={3}>
               <Button
                 color="secondary"
@@ -330,32 +333,36 @@ const Landing = () => {
       </Box>
 
       <Panel title="Some text" color="secondary.dark">
-        <Box mx={10}>
+        <Box className={classes.features}>
           <Grid container spacing={2} justify="center" alignContent="center">
             <Grid xs={12} sm={6} md={3} item>
               <Feature
-                icon="fas fa-handshake"
+                viewBox="0 0 640 512"
+                icon={Handshake}
                 name="Get an ISA"
                 desc="Study first. Pay later. No tuition until you are hired."
               />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
               <Feature
-                icon="fa fa-plus-circle"
+                viewBox="0 0 320 512"
+                icon={Ethereum}
                 name="Crypto friendly"
                 desc="Invest your idle assets in supporting good cause"
               />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
               <Feature
-                icon="fa fa-plus-circle"
+                viewBox="0 0 640 512"
+                icon={Infinity}
                 name="Unlimited Funding"
                 desc="There is no cap to the amount of money you can ask for, even if your dream course is very expensive!"
               />
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
               <Feature
-                icon="fa fa-plus-circle"
+                viewBox="0 0 640 512"
+                icon={PeopleCarry}
                 name="Help Others"
                 desc="After paying your ISA, you can help others achieve their dream job with a few benefits!"
               />
@@ -389,7 +396,12 @@ const Landing = () => {
       >
         <Carousel animation="slide">
           <Testimonial key={1} testimonial="Teste" name="teste" job="teste" />
-          <Testimonial key={2} testimonial="Teste" name="teste" job="teste" />
+          <Testimonial
+            key={2}
+            testimonial="Teste 2"
+            name="Joni Silva"
+            job="teste 2"
+          />
         </Carousel>
       </Panel>
     </Box>
