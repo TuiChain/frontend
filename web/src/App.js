@@ -48,7 +48,12 @@ const App = (props) => {
     <ThemeProvider theme={theme}>
       <div className={classes.back}>
         <BrowserRouter>
-          <Header auth={auth} onLogout={handlerLogout} wallet={wallet} setWallet={setWallet} />
+          <Header
+            auth={auth}
+            onLogout={handlerLogout}
+            wallet={wallet}
+            setWallet={setWallet}
+          />
           <Layout>
             <Switch>
               <Route exact path="/" component={Home} />

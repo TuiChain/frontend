@@ -41,7 +41,14 @@ const LoanRequest = (props) => {
       error: null,
     },
     onSubmit: async (values, { setSubmitting, setFieldValue }) => {
-      const { school, course, amount, desc, destination, recipient_address } = values;
+      const {
+        school,
+        course,
+        amount,
+        desc,
+        destination,
+        recipient_address,
+      } = values;
       console.log(school, course, amount, desc, destination, recipient_address);
       const valid = await LoansService.createLoan(
         school,
@@ -73,7 +80,9 @@ const LoanRequest = (props) => {
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
       destination: Yup.string().required("Destination is required"),
-      recipient_address: Yup.string().required("An Account Address is required"),
+      recipient_address: Yup.string().required(
+        "An Account Address is required"
+      ),
     }),
   });
 
@@ -189,8 +198,17 @@ const LoanRequest = (props) => {
 
           <Grid item xs={12}>
             <TextField
-              error={formik.errors.recipient_address && formik.touched.recipient_address}
-              label={wallet == null ? "Account Address" : (recipient_touched == true ? "Account Address" : "Selected Account Address: " + wallet)}
+              error={
+                formik.errors.recipient_address &&
+                formik.touched.recipient_address
+              }
+              label={
+                wallet == null
+                  ? "Account Address"
+                  : recipient_touched == true
+                  ? "Account Address"
+                  : "Selected Account Address: " + wallet
+              }
               name="recipient_address"
               value={formik.values.recipient_address}
               onChange={formik.handleChange}

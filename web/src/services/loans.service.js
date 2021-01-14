@@ -29,7 +29,10 @@ const createLoan = (
     .post("/new/", {
       school,
       course,
-      requested_value_atto_dai: (BigInt(amount) * (BigInt(10) ** BigInt(18))).toString(),
+      requested_value_atto_dai: (
+        BigInt(amount) *
+        BigInt(10) ** BigInt(18)
+      ).toString(),
       description,
       destination,
       recipient_address,

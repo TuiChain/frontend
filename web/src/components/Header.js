@@ -52,7 +52,11 @@ const Header = (props) => {
               auth.is_admin ? (
                 <NavMenuAdmin onLogout={onLogout} />
               ) : (
-                <NavMenu onLogout={onLogout} wallet={wallet} setWallet={setWallet} />
+                <NavMenu
+                  onLogout={onLogout}
+                  wallet={wallet}
+                  setWallet={setWallet}
+                />
               )
             ) : (
               auth !== null && account_btns
