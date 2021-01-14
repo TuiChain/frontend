@@ -105,7 +105,7 @@ const CheckboxFilter = ({
     <FilterBox mobile={mobile}>
       <FilterTitle title={name} mobile={mobile} />
       {mobile && <Separator color={backgroundColor2} />}
-      <Grid style={{paddingTop: mobile && "1rem"}} container>
+      <Grid style={{ paddingTop: mobile && "1rem" }} container>
         {Object.entries(status).map(
           (option, index) =>
             option[0] !== "All" && (
@@ -148,6 +148,23 @@ const StudentsGrid = styled(Grid)({
   },
 });
 
+const StudentsGridItem = ({ studentCard, width, key }) => {
+  const slim = width > 600 && width < 700;
+  return (
+    <Grid
+      style={{paddingLeft: slim && "6rem", paddingRight: slim && "6rem"}}
+      key={key}
+      item
+      xs={12}
+      sm={width < 700 ? 12 : 6}
+      md={width < 1060 ? 6 : 4}
+      xl={3}
+    >
+      {studentCard}
+    </Grid>
+  );
+};
+
 const SearchArea = styled(Grid)(({ opened }) => ({
   paddingBottom: opened ? "0.3rem" : "2rem",
 }));
@@ -183,7 +200,7 @@ const CountryFilter = ({ value, countryList, handleCountry, mobile }) => {
     <FilterBox mobile={mobile}>
       <FilterTitle title="Country" mobile={mobile} />
       {mobile && <Separator color={backgroundColor2} />}
-      <FormControl style={{paddingTop: mobile && "1rem"}} variant="outlined">
+      <FormControl style={{ paddingTop: mobile && "1rem" }} variant="outlined">
         <StyledSelect
           onChange={(e) => handleCountry(e.target.value)}
           value={value}
@@ -247,8 +264,13 @@ const Students = (props) => {
   const [courseFilter, setCourseFilter] = useState({ All: true });
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
+  const [width, setWidth] = useState(window.innerWidth);
 
-  const mobile = props.width === "xs";
+  const mobile = props.width === "xs" || props.width === "sm";
+
+  window.addEventListener("resize", () => {
+    setWidth(window.innerWidth);
+  });
 
   useEffect(() => {
     getStudents().then((studentList) => {
@@ -371,7 +393,7 @@ const Students = (props) => {
       <SearchArea opened={displayFilters} container justify="space-between">
         {displayFilters && (
           <>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} md={4}>
               <CountryFilter
                 mobile={mobile}
                 value={country}
@@ -379,7 +401,7 @@ const Students = (props) => {
                 handleCountry={updateCountry}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} md={3}>
               <CheckboxFilter
                 mobile={mobile}
                 parallel={mobile}
@@ -388,7 +410,7 @@ const Students = (props) => {
                 handleOptionClick={updateDegreeFilter}
               />
             </Grid>
-            <Grid item xs={12} sm>
+            <Grid item xs={12} md>
               <CheckboxFilter
                 mobile={mobile}
                 parallel
@@ -438,18 +460,22 @@ const Students = (props) => {
               tuition,
             }) => {
               return (
-                <Grid key={id} item xs={12} sm={6} md={4} xl={3}>
-                  <StudentCard
-                    name={name}
-                    photo={photo}
-                    degree={degree}
-                    likes={likes}
-                    university={university}
-                    course={course}
-                    origin={origin}
-                    tuition={tuition}
-                  />
-                </Grid>
+                <StudentsGridItem
+                  key={id}
+                  width={width}
+                  studentCard={
+                    <StudentCard
+                      name={name}
+                      photo={photo}
+                      degree={degree}
+                      likes={likes}
+                      university={university}
+                      course={course}
+                      origin={origin}
+                      tuition={tuition}
+                    />
+                  }
+                />
               );
             }
           )}
@@ -467,6 +493,12 @@ export default withWidth()(Students);
 
 Students.propTypes = {
   width: PropTypes.string,
+};
+
+StudentsGridItem.propTypes = {
+  studentCard: PropTypes.object,
+  width: PropTypes.number,
+  key: PropTypes.string,
 };
 
 SearchBar.propTypes = {
