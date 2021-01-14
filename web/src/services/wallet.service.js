@@ -160,9 +160,11 @@ async function sendTransactions(transactionsParameters) {
 
   try {
 
-    await ethereum.request({
-      method: 'eth_sendTransaction',
-      params: transactionsParameters,
+    transactionsParameters.forEach(element => {
+      ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [element],
+      });
     });
 
   } catch (error) {

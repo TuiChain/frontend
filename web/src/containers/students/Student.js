@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
-import InvestmentService from "../../services/investment.service";
+import LoansTransactionsService from "../../services/loans.transactions.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
 import {
   Typography,
@@ -30,14 +30,6 @@ function Student(props) {
     setUserInfo(Info.user);
     console.log(Info.user);
   }, []);
-  let clickHandler=()=>{
-    let inv={
-      amount:tokens,
-      request:props.match.params.id
-    };
-    console.log(inv);
-    InvestmentService.newInvestment(inv);
-  };
   const matches = useMediaQuery("(min-width:600px)");
   const Box2 = withStyles({
     root: {
