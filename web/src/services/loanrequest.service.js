@@ -79,9 +79,21 @@ const closeLoanRequest = (id) => {
     });
 };
 
+const getLoanRequest = (id) => {
+  return instance.get("/get/"+id+"/")
+    .then(response=>{
+      return(response.data.loan_request);
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
 export default {
   createLoanRequest,
   getPendingLoanRequests,
   validateLoanRequest,
   closeLoanRequest,
+  getLoanRequest,
 };
