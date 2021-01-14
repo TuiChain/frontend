@@ -72,6 +72,7 @@ const validateLoan = (id) => {
 };
 
 const closeLoan = (id) => {
+  // i think this endpoint is no longer available
   return instance
     .put(`/close/${id}/`)
     .then((response) => {
