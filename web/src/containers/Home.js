@@ -33,16 +33,6 @@ const Home = () => {
       >
         Login
       </Button>
-<<<<<<< HEAD
-=======
-      <Button
-        variant="contained"
-        color="secondary"
-        component={Link}
-        to="/investments"
-      >
-        Investments
-      </Button>
       <Button
         variant="contained"
         color="secondary"
@@ -51,7 +41,6 @@ const Home = () => {
       >
         KYC
       </Button>
->>>>>>> 9c4131c (Stripe id verification button)
     </div>
   );
 };
