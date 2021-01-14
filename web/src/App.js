@@ -61,6 +61,7 @@ const App = (props) => {
                 auth={auth}
                 path="/request"
                 component={LoanRequest}
+                wallet={wallet}
               />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}

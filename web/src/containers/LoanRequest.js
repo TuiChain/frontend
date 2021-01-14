@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   TextField,
@@ -15,7 +15,6 @@ import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import LoansService from "../services/loans.service";
-import WalletService from "../services/wallet.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 
@@ -26,8 +25,10 @@ const styles = {
 };
 
 const LoanRequest = (props) => {
-  const { classes } = props;
+  const { classes, wallet } = props;
   const history = useHistory();
+
+  const [recipient_touched, setRecipientTouched] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -189,13 +190,12 @@ const LoanRequest = (props) => {
           <Grid item xs={12}>
             <TextField
               error={formik.errors.recipient_address && formik.touched.recipient_address}
-              label={WalletService.checkAccount() == 0 
-                ? "Account Address" 
-                : "Selected Account Address: " + WalletService.checkAccount()}
+              label={wallet == null ? "Account Address" : (recipient_touched == true ? "Account Address" : "Selected Account Address: " + wallet)}
               name="recipient_address"
               value={formik.values.recipient_address}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              onBlur={() => setRecipientTouched(false)}
+              onFocus={() => setRecipientTouched(true)}
               helperText={
                 formik.errors.recipient_address &&
                 formik.touched.recipient_address &&
@@ -235,6 +235,7 @@ const LoanRequest = (props) => {
 
 LoanRequest.propTypes = {
   classes: PropTypes.object,
+  wallet: PropTypes.string,
 };
 
 export default withStyles(styles)(LoanRequest);

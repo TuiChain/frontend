@@ -29,7 +29,7 @@ const createLoan = (
     .post("/new/", {
       school,
       course,
-      amount,
+      requested_value_atto_dai: (BigInt(amount) * (BigInt(10) ** BigInt(18))).toString(),
       description,
       destination,
       recipient_address,
@@ -43,7 +43,7 @@ const createLoan = (
     });
 };
 
-const getPendingLoanRequests = () => {
+const getPendingLoans = () => {
   return instance
     .get("/get_all/") // todo
     .then((response) => {
@@ -55,7 +55,7 @@ const getPendingLoanRequests = () => {
     });
 };
 
-const validateLoanRequest = (id) => {
+const validateLoan = (id) => {
   return instance
     .put(`/validate/${id}/`)
     .then((response) => {
@@ -68,7 +68,7 @@ const validateLoanRequest = (id) => {
     });
 };
 
-const closeLoanRequest = (id) => {
+const closeLoan = (id) => {
   return instance
     .put(`/close/${id}/`)
     .then((response) => {
@@ -83,7 +83,7 @@ const closeLoanRequest = (id) => {
 
 export default {
   createLoan,
-  getPendingLoanRequests,
-  validateLoanRequest,
-  closeLoanRequest,
+  getPendingLoans,
+  validateLoan,
+  closeLoan,
 };
