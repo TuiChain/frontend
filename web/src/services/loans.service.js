@@ -84,9 +84,21 @@ const rejectLoan = (id) => {
     });
 };
 
+const getLoan = (id) => {
+  return instance.get("/get/"+id+"/")
+    .then(response=>{
+      return(response.data.loan_request);
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
 export default {
   createLoan,
   getPendingLoans,
   validateLoan,
   rejectLoan,
+  getLoan,
 };
