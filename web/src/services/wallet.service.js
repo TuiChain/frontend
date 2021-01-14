@@ -1,4 +1,5 @@
 import axios from "axios";
+import Constants from "../constants";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -55,13 +56,18 @@ async function connectToWallet() {
  *
  * @param { Function } setWallet Function to change the connected wallet account state
  */
-function changeAccounts(setWallet) {
+async function changeAccounts(setWallet) {
   try {
     const ethereum = checkConnection();
+    const tuichain_info = await requestBlockchainInfo();
 
-    ethereum.on("accountsChanged", function (accounts) {
+    ethereum.on("accountsChanged", (accounts) => {
       setWallet(accounts[0]);
-      suggestDAI();
+      suggestDAI(ethereum, tuichain_info);
+    });
+
+    ethereum.on("chainChanged", () => {
+      suggestDAI(ethereum, tuichain_info);
     });
   } catch (error) {
     return;
@@ -108,25 +114,20 @@ async function suggestToken(
 /**
  * Function that suggests adding DAI to an account
  */
-async function suggestDAI() {
-  const tuichain_info = await requestBlockchainInfo();
-
-  // in case some error occurs
-  if (tuichain_info == false) {
-    return;
-  }
-
+async function suggestDAI(ethereum, tuichain_info) {
   if (
+    tuichain_info != false &&
     tuichain_info.dai_contract_address != null &&
     (tuichain_info.dai_contract_address !=
       "0x6B175474E89094C44Da98b954EedeAC495271d0F" ||
-      tuichain_info.chain_id != 1)
+      tuichain_info.chain_id != 1) &&
+    tuichain_info.chain_id == ethereum.chainId
   ) {
     suggestToken(
       tuichain_info.dai_contract_address,
       "DAI",
       18,
-      "https://i.ibb.co/FD8YxCb/dai.png"
+      Constants.dai_svg
     );
   }
 }
