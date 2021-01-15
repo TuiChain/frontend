@@ -64,7 +64,7 @@ function Student(props) {
               <Box className="par-init" display="flex">
                 <School />
                 <Typography variant="body1" display="inline">
-                {user.school}
+                  {user.school}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
@@ -73,7 +73,7 @@ function Student(props) {
               </Box>
             </Box2>
             <Box2 className="down">
-            <Box className="par" display="flex">
+              <Box className="par" display="flex">
                 <Room />
                 <Typography variant="body1" display="inline">
                   {user.destination}
@@ -110,7 +110,7 @@ function Student(props) {
                   label="Tokens"
                   name="tokens"
                   variant="outlined"
-                  onChange={(e) => {                       
+                  onChange={(e) => {
                     e.target.value = !Number.isInteger(e.target.value)
                       ? Math.floor(e.target.value)
                       : e.target.value;
@@ -121,7 +121,12 @@ function Student(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  onClick={() => LoansTransactionsService.provide_funds(props.match.params.id, tokens)}
+                  onClick={() =>
+                    LoansTransactionsService.provide_funds(
+                      props.match.params.id,
+                      tokens
+                    )
+                  }
                 >
                   Buy
                 </Button>
@@ -144,6 +149,5 @@ Student.propTypes = {
     }),
   }),
 };
-
 
 export default Student;

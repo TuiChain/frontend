@@ -19,7 +19,7 @@ const ProgressBar = ({ completed, visible }) => {
       width: `${completed}%`,
       backgroundColor: "#3AAFA9",
       borderRadius: "inherit",
-      textAlign: "center"
+      textAlign: "center",
     },
   })(Box);
 
@@ -27,24 +27,27 @@ const ProgressBar = ({ completed, visible }) => {
     root: {
       color: "#FFFFFF",
       display: visible === false ? "none" : "inline",
-      textAlign:"center"
+      textAlign: "center",
     },
   })(Typography);
 
   return (
     <Box3>
       <Box2>
-      <Box marginLeft="5px">      
-      <WhiteTextTypography
-          color="inherit"
-          variant="button"
-        >{`${completed}%`}</WhiteTextTypography></Box>
+        <Box marginLeft="5px">
+          <WhiteTextTypography
+            color="inherit"
+            variant="button"
+          >{`${completed}%`}</WhiteTextTypography>
+        </Box>
       </Box2>
     </Box3>
   );
 };
+
 ProgressBar.propTypes = {
   completed: PropTypes.number,
   visible: PropTypes.string,
 };
+
 export default ProgressBar;

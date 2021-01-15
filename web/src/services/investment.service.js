@@ -16,12 +16,11 @@ instance.interceptors.request.use(
 );
 
 const newInvestment = (inv) => {
-  return instance.post("/new/",inv).then(function (response) {
+  return instance.post("/new/", inv).then(function (response) {
     console.log(response);
-  })
-}
-
+  });
+};
 
 export default {
-  newInvestment
+  newInvestment,
 };

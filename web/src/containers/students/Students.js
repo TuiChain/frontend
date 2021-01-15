@@ -152,7 +152,7 @@ const StudentsGridItem = ({ studentCard, width, key }) => {
   const slim = width > 600 && width < 700;
   return (
     <Grid
-      style={{paddingLeft: slim && "6rem", paddingRight: slim && "6rem"}}
+      style={{ paddingLeft: slim && "6rem", paddingRight: slim && "6rem" }}
       key={key}
       item
       xs={12}

@@ -16,9 +16,10 @@ instance.interceptors.request.use(
 );
 
 const getUserInfo = (id) => {
-  return instance.get("/get/"+id+"/")
-    .then(response=>{
-        return(response.data);
+  return instance
+    .get("/get/" + id + "/")
+    .then((response) => {
+      return response.data;
     })
     .catch((error) => {
       console.log(error);
@@ -26,7 +27,6 @@ const getUserInfo = (id) => {
     });
 };
 
-
 export default {
-  getUserInfo
+  getUserInfo,
 };

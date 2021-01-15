@@ -57,7 +57,7 @@ const theme = createMuiTheme({
       },
     },
     PrivateNotchedOutline: {
-      root:{
+      root: {
         borderWidth: "0px",
       },
     },

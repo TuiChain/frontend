@@ -19,10 +19,8 @@ instance.interceptors.request.use(
 );
 
 async function provide_funds(loan_identifier, tokens) {
-
-
   let post = {
-    value_atto_dai: (BigInt(tokens) * (BigInt(10) ** BigInt(18))).toString(),
+    value_atto_dai: (BigInt(tokens) * BigInt(10) ** BigInt(18)).toString(),
     loan_id: loan_identifier,
   };
 
@@ -34,9 +32,8 @@ async function provide_funds(loan_identifier, tokens) {
     .catch((error) => {
       console.log(error);
     });
-  
 }
 
 export default {
-  provide_funds
+  provide_funds,
 };
