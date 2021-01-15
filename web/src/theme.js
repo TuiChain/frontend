@@ -56,11 +56,6 @@ const theme = createMuiTheme({
         },
       },
     },
-    PrivateNotchedOutline: {
-      root: {
-        borderWidth: "0px",
-      },
-    },
     MuiSelect: {
       select: {
         "&:focus": {

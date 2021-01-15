@@ -193,6 +193,9 @@ const StyledSelect = styled(Select)({
   background: backgroundColor1,
   borderRadius: 20,
   minWidth: 200,
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderWidth: "0px",
+  },
 });
 
 const CountryFilter = ({ value, countryList, handleCountry, mobile }) => {
