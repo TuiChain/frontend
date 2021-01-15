@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import { styled } from "@material-ui/core/styles";
 import { useWideCardMediaStyles } from "@mui-treasury/styles/cardMedia/wide";
+import Progress from "../components/Progress";
 import {
   Home,
   Euro,
@@ -102,6 +103,9 @@ const StudentCard = ({
           />
         </CardContent>
       </StyledCard>
+      <Box style={{width: "100%"}}>
+        <Progress completed={10} slim />
+      </Box>
     </StyledCardActionArea>
   );
 };
