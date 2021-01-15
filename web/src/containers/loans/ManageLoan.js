@@ -9,7 +9,7 @@ import {
   withStyles,
   styled,
 } from "@material-ui/core";
-import LoanRequestService from "../../services/loanrequest.service";
+import LoansService from "../../services/loans.service";
 import { Euro, Create, School, Room, CloudUpload } from "@material-ui/icons";
 import { Redirect } from "react-router";
 
@@ -73,7 +73,7 @@ const ManageLoan = (props) => {
 
   useEffect(() => {
     async function fetchLoan() {
-      const data = await LoanRequestService.getLoan(loanID);
+      const data = await LoansService.getLoan(loanID);
       setLoan(data);
     }
     fetchLoan();

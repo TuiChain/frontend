@@ -14,7 +14,7 @@ import {
   withWidth,
 } from "@material-ui/core";
 import { DataGrid, GridOverlay } from "@material-ui/data-grid";
-import LoanRequestService from "../../services/loanrequest.service";
+import LoansService from "../../services/loans.service";
 
 const NoRowOverlay = () => {
   return (
@@ -104,12 +104,32 @@ const Loans = () => {
     }, {});
   };
 
+  const translateTab = (tab) => {
+    switch (tab) {
+      case 0:
+        return "Funding";
+      case 1:
+        return "Expired";
+      case 2:
+        return "Canceled";
+      case 3:
+        return "Active";
+      case 4:
+        return "Finalized";
+      case 5:
+        return "Requested";
+      case 6:
+        return "Rejected";
+    }
+  };
+
   // Student Loans
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchLoans() {
-      const data = await LoanRequestService.getStudentLoans();
-      const groups = groupBy(data, "status");
+      const data = await LoansService.getStudentLoans();
+      const groups = groupBy(data, "state");
+      console.log("Groups", groups);
       setLoans(groups);
       setLoading(false);
     }
@@ -140,7 +160,7 @@ const Loans = () => {
           </Tabs>
         </Grid>
         <Grid item xs={12} lg={10}>
-          <LoansList loans={loans[tab]} loading={loading} />
+          <LoansList loans={loans[translateTab(tab)]} loading={loading} />
         </Grid>
       </Grid>
     </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRouter";
@@ -13,6 +13,7 @@ import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
 import AuthService from "./services/auth.service";
+import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import ManageLoan from "./containers/loans/ManageLoan";
@@ -26,21 +27,35 @@ const styles = {
 
 const App = (props) => {
   const { classes } = props;
-  const [auth, setAuth] = useState(AuthService.getCurrentUser());
 
-  const handlerLogin = (token) => {
-    setAuth(token);
+  const [auth, setAuth] = useState(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      setAuth(await AuthService.getCurrentUser());
+    };
+    fetchUser();
+  }, []);
+
+  const handlerLogin = (user) => {
+    setAuth(user);
   };
 
   const handlerLogout = () => {
     setAuth(AuthService.logout());
   };
 
+  const [wallet, setWallet] = useState(WalletService.checkAccount);
+
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.back}>
         <BrowserRouter>
-          <Header auth={auth} onLogout={handlerLogout} />
+          <Header
+            auth={auth}
+            onLogout={handlerLogout}
+            wallet={wallet}
+            setWallet={setWallet}
+          />
           <Layout>
             <Switch>
               <Route exact path="/" component={Home} />
@@ -63,6 +78,7 @@ const App = (props) => {
                 auth={auth}
                 path="/request"
                 component={LoanRequest}
+                wallet={wallet}
               />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
@@ -77,6 +93,7 @@ const App = (props) => {
               {/* ADMIN ROUTES */}
               <ProtectedRoute
                 auth={auth}
+                type="admin"
                 path="/admin/requests"
                 component={LoanRequests}
               />
