@@ -3,19 +3,25 @@ import { Card, Grid, Box } from "@material-ui/core/";
 import { CardActionArea, CardContent, CardMedia } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import { styled } from "@material-ui/core/styles";
+import { styled, withStyles } from "@material-ui/core/styles";
 import { useWideCardMediaStyles } from "@mui-treasury/styles/cardMedia/wide";
 import Progress from "../components/Progress";
 import DAI from "../components/DAI";
 import { Home, FavoriteBorder, Create, School, Room } from "@material-ui/icons";
 
-const StyledCardActionArea = styled(CardActionArea)({
-  minWidth: "250px",
-  transition: "0.2s",
-  "&:hover": {
-    transform: "scale(1.03)",
+const StyledCardActionArea = withStyles({
+  root: {
+    minWidth: "250px",
+    transition: "0.2s",
+    "&:hover": {
+      transform: "scale(1.03)",
+    },
+    "&:hover $focusHighlight": {
+      opacity: 0,
+    },
   },
-});
+  focusHighlight: {},
+})(CardActionArea);
 
 const StyledCard = styled(Card)({
   backgroundColor: "#FCFCFC",
