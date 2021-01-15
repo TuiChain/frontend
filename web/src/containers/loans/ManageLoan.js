@@ -10,7 +10,8 @@ import {
   styled,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
-import { Euro, Create, School, Room, CloudUpload } from "@material-ui/icons";
+import { Create, School, Room, CloudUpload } from "@material-ui/icons";
+import DAI from "../../components/DAI";
 import { Redirect } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
@@ -34,37 +35,37 @@ const Panel = styled(Box)({
   padding: "15px 0",
 });
 
-const Status = ({ statusID }) => {
-  const matchStatus = (id) => {
-    switch (id) {
-      case 0:
-        return ["Funding", "#F5B300"];
-      case 1:
-        return ["Expired", "#ED2E50"];
-      case 2:
-        return ["Canceled", "#ED2E50"];
-      case 3:
-        return ["Active", "#58C400"];
-      case 4:
-        return ["Finalized", "#293A41"];
-      case 5:
-        return ["Requested", "#109D96"];
-      case 6:
-        return ["Rejected", "#ED2E50"];
+const Status = ({ state }) => {
+  const matchState = (state) => {
+    switch (state) {
+      case "Funding":
+        return "#F5B300";
+      case "Expired":
+        return "#ED2E50";
+      case "Canceled":
+        return "#ED2E50";
+      case "Active":
+        return "#58C400";
+      case "Finalized":
+        return "#293A41";
+      case "Requested":
+        return "#109D96";
+      case "Rejected":
+        return "#ED2E50";
       default:
-        return ["", "#109D96"];
+        return "#109D96";
     }
   };
 
-  const [status, color] = matchStatus(statusID);
+  const color = matchState(state);
 
   return (
-    <Chip label={status} style={{ backgroundColor: color, color: "white" }} />
+    <Chip label={state} style={{ backgroundColor: color, color: "white" }} />
   );
 };
 
 Status.propTypes = {
-  statusID: PropTypes.number,
+  state: PropTypes.string,
 };
 
 const ManageLoan = (props) => {
@@ -93,7 +94,7 @@ const ManageLoan = (props) => {
         <Typography variant="h3">
           <Box color="secondary.dark">Loan #{loan.id}</Box>
         </Typography>
-        <Status statusID={loan.status} />
+        <Status state={loan.state} />
       </Box>
       <hr />
       <Panel>
@@ -105,8 +106,8 @@ const ManageLoan = (props) => {
         </Typography>
         <Box display="flex" justifyContent="center">
           <CenteredTypography variant="body1" color="secondary">
-            <Euro color="secondary" />
-            <span style={{ paddingLeft: 10 }}>
+            <DAI />
+            <span style={{ paddingLeft: 20 }}>
               {loan.current_amount}/{loan.amount}
             </span>
           </CenteredTypography>
