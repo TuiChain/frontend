@@ -13,6 +13,7 @@ import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
 import AuthService from "./services/auth.service";
+import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
@@ -43,12 +44,19 @@ const App = (props) => {
     setAuth(AuthService.logout());
   };
 
+  const [wallet, setWallet] = useState(WalletService.checkAccount);
+
   return (
     <ThemeProvider theme={theme}>
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Header auth={auth} onLogout={handlerLogout} />
+            <Header
+              auth={auth}
+              onLogout={handlerLogout}
+              wallet={wallet}
+              setWallet={setWallet}
+            />
             <Layout auth={auth}>
               <Switch>
                 {!auth && <Route exact path="/" component={Landing} />}
@@ -62,6 +70,7 @@ const App = (props) => {
                   auth={auth}
                   path="/request"
                   component={LoanRequest}
+                  wallet={wallet}
                 />
                 <Route path="/login">
                   {auth ? (
