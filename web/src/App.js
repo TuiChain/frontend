@@ -69,13 +69,7 @@ const App = (props) => {
                 component={LoanRequest}
                 wallet={wallet}
               />
-              <Route
-                auth={auth}
-                path="/kyc"
-                render={() => (
-                  <KycButton />
-                )}
-              />
+              <Route auth={auth} path="/kyc" render={() => <KycButton />} />
               <Route path="/login">
                 {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
               </Route>

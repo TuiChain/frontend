@@ -1,15 +1,15 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
 import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TransitionsModal(props) {
   const classes = useStyles();
-  
+
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -34,16 +34,13 @@ export default function TransitionsModal(props) {
         timeout: 500,
       }}
     >
-      <Fade in={props.open}>
-        {props.children}
-      </Fade>
+      <Fade in={props.open}>{props.children}</Fade>
     </Modal>
   );
 }
-
 
 TransitionsModal.propTypes = {
   open: PropTypes.bool.isRequired,
   children: PropTypes.element.isRequired,
   handleClose: PropTypes.func.isRequired,
-}
+};

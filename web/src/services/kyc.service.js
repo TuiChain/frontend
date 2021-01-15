@@ -20,7 +20,7 @@ instance.interceptors.request.use(
 const startIdentityVerification = () => {
   return instance
     .get("/external/create_verification_intent/")
-    .then(function(result) {
+    .then(function (result) {
       return result;
     })
     .catch((error) => {
@@ -32,7 +32,7 @@ const startIdentityVerification = () => {
 const getVerificationResult = (verification_intent_id) => {
   return instance
     .get(`/external/get_verification_intent/${verification_intent_id}`)
-    .then(function(result) {
+    .then(function (result) {
       return result;
     })
     .catch((error) => {
@@ -43,5 +43,5 @@ const getVerificationResult = (verification_intent_id) => {
 
 export default {
   startIdentityVerification,
-  getVerificationResult
+  getVerificationResult,
 };
