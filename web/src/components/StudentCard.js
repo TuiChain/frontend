@@ -6,14 +6,8 @@ import PropTypes from "prop-types";
 import { styled } from "@material-ui/core/styles";
 import { useWideCardMediaStyles } from "@mui-treasury/styles/cardMedia/wide";
 import Progress from "../components/Progress";
-import {
-  Home,
-  Euro,
-  FavoriteBorder,
-  Create,
-  School,
-  Room,
-} from "@material-ui/icons";
+import DAI from "../components/DAI";
+import { Home, FavoriteBorder, Create, School, Room } from "@material-ui/icons";
 
 const StyledCardActionArea = styled(CardActionArea)({
   minWidth: "250px",
@@ -36,11 +30,11 @@ const TextContainer = styled(Box)({
   color: "#6D6E7B",
 });
 
-const StatusItem = ({ icon: Icon, text }) => {
+const StatusItem = ({ icon, text }) => {
   return (
     <Grid container item alignItems="center" xs={6}>
       <Grid item xs={3}>
-        <Icon />
+        {icon}
       </Grid>
       <Grid item xs={9}>
         <TextContainer fontWeight="fontWeightBold">{text}</TextContainer>
@@ -65,12 +59,12 @@ const StudentInfo = ({
           {name}
         </Typography>
       </Grid>
-      <StatusItem icon={FavoriteBorder} text={likes} />
-      <StatusItem icon={School} text={degree} />
-      <StatusItem icon={Create} text={course} />
-      <StatusItem icon={Room} text={origin} />
-      <StatusItem icon={Home} text={university} />
-      <StatusItem icon={Euro} text={tuition} />
+      <StatusItem icon={<FavoriteBorder />} text={likes} />
+      <StatusItem icon={<School />} text={degree} />
+      <StatusItem icon={<Create />} text={course} />
+      <StatusItem icon={<Room />} text={origin} />
+      <StatusItem icon={<Home />} text={university} />
+      <StatusItem icon={<DAI size={22} />} text={tuition} />
     </Grid>
   );
 };
@@ -103,7 +97,7 @@ const StudentCard = ({
           />
         </CardContent>
       </StyledCard>
-      <Box style={{width: "100%"}}>
+      <Box style={{ width: "100%" }}>
         <Progress completed={10} slim />
       </Box>
     </StyledCardActionArea>

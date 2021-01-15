@@ -8,7 +8,7 @@ const ProgressBar = ({ completed, visible, slim }) => {
     root: {
       height: slim ? 12 : 25,
       width: slim ? "90%" : "100%",
-      backgroundColor: slim ? "#D7D8E7" : "#e0e0de",
+      backgroundColor: slim ? "#EFF0F6" : "#e0e0de",
       borderRadius: 50,
       marginTop: slim && "-6px!important",
       margin: slim && "auto",
