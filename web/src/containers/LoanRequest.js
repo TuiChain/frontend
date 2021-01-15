@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import LoansService from "../services/loans.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
-
+import DAI from "../components/DAI";
 const styles = {
   fullWidth: {
     width: "100%",
@@ -171,7 +171,11 @@ const LoanRequest = (props) => {
               }
               type="number"
               InputProps={{
-                endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <DAI />
+                  </InputAdornment>
+                ),
               }}
               variant="outlined"
               fullWidth

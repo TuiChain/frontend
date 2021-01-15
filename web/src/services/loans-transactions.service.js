@@ -18,14 +18,75 @@ instance.interceptors.request.use(
   }
 );
 
-async function provide_funds(loan_identifier, tokens) {
+/**
+ * Function that allows user to provide funds to a loan.
+ *
+ * @param { String } loan_identifier The id's loan identifier
+ * @param { Number } tokens The number of tokens that user want to invest
+ */
+async function provideFunds(loan_identifier, tokens) {
   let post = {
     value_atto_dai: (BigInt(tokens) * BigInt(10) ** BigInt(18)).toString(),
     loan_id: loan_identifier,
   };
 
+  await walletTransaction("/provide_funds/", post);
+}
+
+/**
+ * Function that allows user to withdraw funds previously provided to a loan.
+ *
+ * @param { String } loan_identifier The id's loan identifier
+ * @param { Number } tokens The number of tokens that user want to withdraw
+ */
+async function withdrawFunds(loan_identifier, tokens) {
+  let post = {
+    value_atto_dai: (BigInt(tokens) * BigInt(10) ** BigInt(18)).toString(),
+    loan_id: loan_identifier,
+  };
+
+  await walletTransaction("/withdraw_funds/", post);
+}
+
+/**
+ * Function that allows user to make a payment to the loan.
+ *
+ * @param { String } loan_identifier The id's loan identifier
+ * @param { Number } tokens The number of tokens that user want to payback
+ */
+async function makePayment(loan_identifier, tokens) {
+  let post = {
+    value_atto_dai: (BigInt(tokens) * BigInt(10) ** BigInt(18)).toString(),
+    loan_id: loan_identifier,
+  };
+
+  await walletTransaction("/make_payment/", post);
+}
+
+/**
+ * Function that allows user to redeem tokens previously obtained by funding the loan.
+ *
+ * @param { String } loan_identifier The id's loan identifier
+ * @param { Number } tokens The number of tokens that user want to redeem
+ */
+async function redeemTokens(loan_identifier, tokens) {
+  let post = {
+    amount_tokens: tokens,
+    loan_id: loan_identifier,
+  };
+
+  await walletTransaction("/redeem_tokens/", post);
+}
+
+/**
+ * Generic function to execute transactions in the wallet
+ *
+ * @param { String } api_route API route to consume
+ * @param {*} post_params Parameters needed for post
+ */
+async function walletTransaction(api_route, post_params) {
   return instance
-    .post("/provide_funds/", post)
+    .post(api_route, post_params)
     .then((response) => {
       WalletService.sendTransactions(response.data.transactions);
     })
@@ -35,5 +96,8 @@ async function provide_funds(loan_identifier, tokens) {
 }
 
 export default {
-  provide_funds,
+  provideFunds,
+  withdrawFunds,
+  makePayment,
+  redeemTokens,
 };
