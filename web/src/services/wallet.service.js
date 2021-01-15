@@ -151,26 +151,25 @@ async function requestBlockchainInfo() {
 
 /**
  * Function that prepares a transaction for the user to accept in metamask
- * 
+ *
  * @param {Object} transactionsParameters Array of transactions parameters
  */
 async function sendTransactions(transactionsParameters) {
-
   const ethereum = checkConnection();
 
   try {
     for (const element of transactionsParameters) {
-      const params = Object.assign({from: checkAccount()}, element);
-      await ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [params],
-      })
-      .catch((e) => console.log(e));
+      const params = Object.assign({ from: checkAccount() }, element);
+      await ethereum
+        .request({
+          method: "eth_sendTransaction",
+          params: [params],
+        })
+        .catch((e) => console.log(e));
     }
   } catch (error) {
     console.log(error);
   }
-  
 }
 
 export default {
