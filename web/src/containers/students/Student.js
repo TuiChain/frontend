@@ -4,7 +4,8 @@ import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
-import { Euro, Create, School, Room } from "@material-ui/icons";
+import { Create, School, Room } from "@material-ui/icons";
+import DAI from "../../components/DAI";
 import {
   Typography,
   TextField,
@@ -64,7 +65,7 @@ function Student(props) {
               <Box className="par-init" display="flex">
                 <School />
                 <Typography variant="body1" display="inline">
-                {user.school}
+                  {user.school}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
@@ -73,14 +74,14 @@ function Student(props) {
               </Box>
             </Box2>
             <Box2 className="down">
-            <Box className="par" display="flex">
+              <Box className="par" display="flex">
                 <Room />
                 <Typography variant="body1" display="inline">
                   {user.destination}
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
-                <Euro />
+                <DAI />
                 <Typography variant="body1" display="inline">
                   {user.amount}
                 </Typography>
@@ -110,7 +111,7 @@ function Student(props) {
                   label="Tokens"
                   name="tokens"
                   variant="outlined"
-                  onChange={(e) => {                       
+                  onChange={(e) => {
                     e.target.value = !Number.isInteger(e.target.value)
                       ? Math.floor(e.target.value)
                       : e.target.value;
@@ -121,7 +122,12 @@ function Student(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  onClick={() => LoansTransactionsService.provide_funds(props.match.params.id, tokens)}
+                  onClick={() =>
+                    LoansTransactionsService.provide_funds(
+                      props.match.params.id,
+                      tokens
+                    )
+                  }
                 >
                   Buy
                 </Button>
@@ -144,6 +150,5 @@ Student.propTypes = {
     }),
   }),
 };
-
 
 export default Student;
