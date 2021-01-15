@@ -32,7 +32,6 @@ const KycButton = props => {
       isVerified(intentId)
     }
 
-
   }, [])
 
   useEffect(() => {

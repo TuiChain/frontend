@@ -24,7 +24,6 @@ const startIdentityVerification = () => {
       return result;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
       console.log(error);
       return false;
     });
@@ -37,7 +36,6 @@ const getVerificationResult = (verification_intent_id) => {
       return result;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
       console.log(error);
       return false;
     });
