@@ -63,8 +63,14 @@ const validateLoan = (id) => {
   return instance
     .put(`/validate/${id}/`, {
       days_to_expiration: 100,
-      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString(),
-      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString()
+      funding_fee_atto_dai_per_dai: (
+        BigInt(10) *
+        BigInt(10) ** BigInt(16)
+      ).toString(),
+      payment_fee_atto_dai_per_dai: (
+        BigInt(10) *
+        BigInt(10) ** BigInt(16)
+      ).toString(),
     })
     .then((response) => {
       console.log("Validated: ", response.data.message);
@@ -90,9 +96,10 @@ const rejectLoan = (id) => {
 };
 
 const getLoan = (id) => {
-  return instance.get("/get/"+id+"/")
-    .then(response=>{
-      return(response.data.loan_request);
+  return instance
+    .get("/get/" + id + "/")
+    .then((response) => {
+      return response.data.loan_request;
     })
     .catch((error) => {
       console.log(error);
