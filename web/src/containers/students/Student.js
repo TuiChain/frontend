@@ -17,15 +17,12 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
-const isEmpty = (obj) => {
-  return Object.keys(obj).length === 0;
-};
-
 function Student(props) {
-  let [user, setUser] = useState({});
-  let [userInfo, setUserInfo] = useState({});
-  let [percentage, setPercentage] = useState(0);
-  let [tokens, setTokens] = useState(0);
+  const [user, setUser] = useState({});
+  const [userInfo, setUserInfo] = useState({});
+  const [percentage, setPercentage] = useState(0);
+  const [tokens, setTokens] = useState(0);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
@@ -36,6 +33,7 @@ function Student(props) {
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
+    setFetching(false)
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
@@ -58,7 +56,7 @@ function Student(props) {
 
   return (
     <>
-      {isEmpty(user) || isEmpty(userInfo) ? (
+      {fetching ? (
         <Box style={{ height: "calc(100vh - 128px)" }}>
           <LoadingPageAnimation />
         </Box>
