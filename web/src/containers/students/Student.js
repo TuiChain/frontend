@@ -4,6 +4,7 @@ import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
+import TokenImageService from "../../services/token-image.service";
 import { Create, School, Room } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import {
@@ -122,12 +123,13 @@ function Student(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  onClick={() =>
+                  onClick={() => {
                     LoansTransactionsService.provideFunds(
                       props.match.params.id,
                       tokens
-                    )
-                  }
+                    );
+                    console.log(TokenImageService.generateTokenImage("0x77879Eb4aA119A9a190DD6cA32DE1Ca0BF66A535"));
+                  }}
                 >
                   Buy
                 </Button>
