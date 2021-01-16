@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
-import InvestmentService from "../../services/investment.service";
-import { Euro, Create, School, Room } from "@material-ui/icons";
+import LoansTransactionsService from "../../services/loans-transactions.service";
+import { Create, School, Room } from "@material-ui/icons";
+import DAI from "../../components/DAI";
 import {
   Typography,
   TextField,
@@ -30,14 +31,6 @@ function Student(props) {
     setUserInfo(Info.user);
     console.log(Info.user);
   }, []);
-  let clickHandler = () => {
-    let inv = {
-      amount: tokens,
-      request: props.match.params.id,
-    };
-    console.log(inv);
-    InvestmentService.newInvestment(inv);
-  };
   const matches = useMediaQuery("(min-width:600px)");
   const Box2 = withStyles({
     root: {
@@ -88,7 +81,7 @@ function Student(props) {
                 </Typography>
               </Box>
               <Box className="par" display="flex" paddingLeft="5%">
-                <Euro />
+                <DAI />
                 <Typography variant="body1" display="inline">
                   {user.amount}
                 </Typography>
@@ -119,15 +112,31 @@ function Student(props) {
                   name="tokens"
                   variant="outlined"
                   onChange={(e) => {
+<<<<<<< HEAD
                     setTokens(e.target.value);
                     console.log(tokens);
+=======
+                    e.target.value = !Number.isInteger(e.target.value)
+                      ? Math.floor(e.target.value)
+                      : e.target.value;
+                    setTokens(e.target.value);
+>>>>>>> origin/main
                   }}
                 />
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
+<<<<<<< HEAD
                   onClick={clickHandler}
+=======
+                  onClick={() =>
+                    LoansTransactionsService.provideFunds(
+                      props.match.params.id,
+                      tokens
+                    )
+                  }
+>>>>>>> origin/main
                 >
                   Buy
                 </Button>
