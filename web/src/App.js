@@ -59,8 +59,17 @@ const App = (props) => {
             />
             <Layout auth={auth}>
               <Switch>
-                {!auth && <Route exact path="/" component={Landing} />}
-                {auth && <Route exact path="/" component={Dashboard} />}
+                <Route exact path="/">
+                  {auth ? (
+                    auth.is_admin ? (
+                      <Redirect to="/admin/requests" />
+                    ) : (
+                      <Dashboard />
+                    )
+                  ) : (
+                    <Landing />
+                  )}
+                </Route>
                 <ProtectedRoute
                   auth={auth}
                   path="/students/:id"

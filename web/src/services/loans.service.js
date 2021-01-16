@@ -63,8 +63,14 @@ const validateLoan = (id) => {
   return instance
     .put(`/validate/${id}/`, {
       days_to_expiration: 100,
-      funding_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString(),
-      payment_fee_atto_dai_per_dai: (BigInt(10) * (BigInt(10) ** BigInt(16))).toString()
+      funding_fee_atto_dai_per_dai: (
+        BigInt(10) *
+        BigInt(10) ** BigInt(16)
+      ).toString(),
+      payment_fee_atto_dai_per_dai: (
+        BigInt(10) *
+        BigInt(10) ** BigInt(16)
+      ).toString(),
     })
     .then((response) => {
       console.log("Validated: ", response.data.message);
@@ -90,14 +96,63 @@ const rejectLoan = (id) => {
 };
 
 const getLoan = (id) => {
-  return instance.get("/get/"+id+"/")
-    .then(response=>{
-      return(response.data.loan_request);
+  return instance
+    .get("/get/" + id + "/")
+    .then((response) => {
+      return response.data.loan_request;
     })
     .catch((error) => {
       console.log(error);
       return false;
     });
+};
+
+const getActiveLoan = () => {
+  return {
+    id: 4,
+    student: 2,
+    request_date: "12/12/21",
+    school: "Universidade do minho",
+    course: "Mestrado Engenharia Informática",
+    destination: "Portugal",
+    requested_value_atto_dai: "80000000000000000000",
+    description: "ESTE É O MEU SONHO :)",
+    state: "Pending",
+    recipient_address: "idk",
+    identifier: "idk",
+  };
+};
+
+// TODO
+const getLoans = () => {
+  return [
+    {
+      id: 4,
+      student: 2,
+      request_date: "12/12/21",
+      school: "Universidade do minho",
+      course: "Mestrado Engenharia Informática",
+      destination: "Portugal",
+      requested_value_atto_dai: "80000000000000000000",
+      description: "ESTE É O MEU SONHO :)",
+      state: "Pending",
+      recipient_address: "idk",
+      identifier: "idk",
+    },
+    {
+      id: 5,
+      student: 2,
+      request_date: "12/12/21",
+      school: "Universidade do minho",
+      course: "Mestrado Engenharia Informática",
+      destination: "Portugal",
+      requested_value_atto_dai: "80000000000000000000",
+      description: "ESTE É O MEU SONHO :)",
+      state: "Pending",
+      recipient_address: "idk",
+      identifier: "idk",
+    },
+  ];
 };
 
 export default {
@@ -106,4 +161,6 @@ export default {
   validateLoan,
   rejectLoan,
   getLoan,
+  getActiveLoan,
+  getLoans,
 };

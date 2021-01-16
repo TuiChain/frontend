@@ -16,12 +16,56 @@ instance.interceptors.request.use(
 );
 
 const newInvestment = (inv) => {
-  return instance.post("/new/",inv).then(function (response) {
+  return instance.post("/new/", inv).then(function (response) {
     console.log(response);
-  })
-}
+  });
+};
 
+// TODO
+const getInvestments = () => {
+  return [
+    {
+      id: 1,
+      investor: 1,
+      request: {
+        id: 4,
+        student: 2,
+        request_date: "12/12/21",
+        school: "Universidade do minho",
+        course: "Mestrado Engenharia Informática",
+        destination: "Portugal",
+        requested_value_atto_dai: "80000000000000000000",
+        description: "ESTE É O MEU SONHO :)",
+        state: "Pending",
+        recipient_address: "idk",
+        identifier: "idk",
+      },
+      amount: 200,
+      investment_date: "12/12/21",
+    },
+    {
+      id: 2,
+      investor: 1,
+      request: {
+        id: 5,
+        student: 2,
+        request_date: "12/12/21",
+        school: "Universidade",
+        course: "Vida",
+        destination: "Portugal",
+        requested_value_atto_dai: "80000000000000000000",
+        description: "ESTE É O MEU SONHO :)",
+        state: "Pending",
+        recipient_address: "idk",
+        identifier: "idk",
+      },
+      amount: 200,
+      investment_date: "12/12/21",
+    },
+  ];
+};
 
 export default {
-  newInvestment
+  newInvestment,
+  getInvestments,
 };

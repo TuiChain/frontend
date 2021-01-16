@@ -16,7 +16,7 @@ import {
   SvgIcon,
 } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
-import world from "../assets/images/world.jpg";
+import world from "../assets/images/world.png";
 import logo from "../assets/images/logo-white.png";
 import { ReactComponent as Quote } from "../assets/icons/left-quote.svg";
 import { ReactComponent as PeopleCarry } from "../assets/icons/people-carry-solid.svg";
@@ -52,17 +52,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const useFeatureStyles = makeStyles(() => ({
+  card: {
+    height: "100%",
+    maxWidth: "300px",
+    transition: "0.3s",
+    "&:hover": {
+      transition: "0.3s",
+      transform: "scale(1.2)",
+    },
+  },
+  content: { height: "100%", display: "flex", flexDirection: "column" },
+}));
+
 const Feature = ({ icon, name, desc, viewBox }) => {
+  const classes = useFeatureStyles();
+  const [hover, setHover] = useState(false);
   return (
-    <Card variant="outlined" style={{ height: "100%", maxWidth: "300px" }}>
-      <CardContent
-        style={{ height: "100%", display: "flex", flexDirection: "column" }}
-      >
+    <Card
+      variant="outlined"
+      className={classes.card}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <CardContent className={classes.content}>
         <Box display="flex" justifyContent="center">
           <SvgIcon
             component={icon}
             style={{ fontSize: 100 }}
-            color="secondary"
+            color={hover ? "primary" : "secondary"}
             viewBox={viewBox}
           />
         </Box>
@@ -253,29 +271,48 @@ const Tutorial = () => {
   );
 };
 
-const Panel = ({ background, title, subtitle, color, children }) => {
+const Panel = ({ title, subtitle, theme, children, hasPadding }) => {
+  let background = "";
+  let color = "secondary.dark";
+  let subcolor = "#999";
+
+  if (theme === "dark") {
+    console.log("here");
+    background = "secondary.main";
+    color = "secondary.contrastText";
+  }
+
   return (
-    <Box bgcolor={background} p={10}>
+    <Box bgcolor={background} py={10} px={hasPadding ? 10 : 0}>
       <Typography variant="h2" align="center">
-        <Box color={color}>{title}</Box>
+        <Box color={color} px={hasPadding ? 0 : 10}>
+          {title}
+        </Box>
       </Typography>
-      <Typography variant="h5" color="textSecondary" align="center">
-        <Box mb={5}>{subtitle}</Box>
-      </Typography>
+      <Box mb={5} color={subcolor}>
+        <Typography variant="h5" align="center">
+          {subtitle}
+        </Typography>
+      </Box>
       {children}
     </Box>
   );
 };
 
+Panel.defaultProps = {
+  hasPadding: true,
+  theme: "light",
+};
+
 Panel.propTypes = {
-  background: PropTypes.string,
   title: PropTypes.string.isRequired,
-  color: PropTypes.string,
   subtitle: PropTypes.string,
+  theme: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  hasPadding: PropTypes.bool,
 };
 
 const Landing = () => {
@@ -332,40 +369,64 @@ const Landing = () => {
         </Grid>
       </Box>
 
-      <Panel title="Some text" color="secondary.dark">
+      <Panel title="Our Platform" color="secondary.dark">
         <Box className={classes.features}>
           <Grid container spacing={2} justify="center" alignContent="center">
             <Grid xs={12} sm={6} md={3} item>
-              <Feature
-                viewBox="0 0 640 512"
-                icon={Handshake}
-                name="Get an ISA"
-                desc="Study first. Pay later. No tuition until you are hired."
-              />
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{ height: "100%" }}
+              >
+                <Feature
+                  viewBox="0 0 640 512"
+                  icon={Handshake}
+                  name="Get an ISA"
+                  desc="Study first. Pay later. No tuition until you are hired."
+                />
+              </Box>
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature
-                viewBox="0 0 320 512"
-                icon={Ethereum}
-                name="Crypto friendly"
-                desc="Invest your idle assets in supporting good cause"
-              />
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{ height: "100%" }}
+              >
+                <Feature
+                  viewBox="0 0 320 512"
+                  icon={Ethereum}
+                  name="Crypto friendly"
+                  desc="Invest your idle assets in supporting good cause"
+                />
+              </Box>
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature
-                viewBox="0 0 640 512"
-                icon={Infinity}
-                name="Unlimited Funding"
-                desc="There is no cap to the amount of money you can ask for, even if your dream course is very expensive!"
-              />
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{ height: "100%" }}
+              >
+                <Feature
+                  viewBox="0 0 640 512"
+                  icon={Infinity}
+                  name="Unlimited Funding"
+                  desc="There is no cap to the amount of money you can ask for, even if your dream course is very expensive!"
+                />
+              </Box>
             </Grid>
             <Grid xs={12} sm={6} md={3} item>
-              <Feature
-                viewBox="0 0 640 512"
-                icon={PeopleCarry}
-                name="Help Others"
-                desc="After paying your ISA, you can help others achieve their dream job with a few benefits!"
-              />
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{ height: "100%" }}
+              >
+                <Feature
+                  viewBox="0 0 640 512"
+                  icon={PeopleCarry}
+                  name="Help Others"
+                  desc="After paying your ISA, you can help others achieve their dream job with a few benefits!"
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -375,9 +436,12 @@ const Landing = () => {
         background="secondary.main"
         title="Bring Education to the World"
         subtitle="Connecting and helping people all over the world"
-        color="secondary.contrastText"
+        theme="dark"
+        hasPadding={false}
       >
-        <img src={world} alt="Logo" />
+        <Box display="flex" justifyContent="center">
+          <img src={world} alt="Logo" style={{ maxWidth: "100%" }} />
+        </Box>
       </Panel>
 
       <Panel
@@ -391,8 +455,7 @@ const Landing = () => {
       <Panel
         title="Our Testimonials"
         subtitle="What our users think about us"
-        color="secondary.contrastText"
-        background="secondary.main"
+        theme="dark"
       >
         <Carousel animation="slide">
           <Testimonial key={1} testimonial="Teste" name="teste" job="teste" />
@@ -401,6 +464,12 @@ const Landing = () => {
             testimonial="Teste 2"
             name="Joni Silva"
             job="teste 2"
+          />
+          <Testimonial
+            key={3}
+            testimonial="Teste 23421341241243"
+            name="teste1234"
+            job="teste1241234"
           />
         </Carousel>
       </Panel>
