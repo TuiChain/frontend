@@ -123,7 +123,7 @@ function Student(props) {
                   color="primary"
                   type="submit"
                   onClick={() =>
-                    LoansTransactionsService.provide_funds(
+                    LoansTransactionsService.provideFunds(
                       props.match.params.id,
                       tokens
                     )
