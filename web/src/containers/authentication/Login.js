@@ -12,20 +12,20 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import AuthService from "../../services/auth.service";
 
-const styles = theme => ({
+const styles = (theme) => ({
   fullWidth: {
     width: "100%",
   },
   form: {
-    [theme.breakpoints.only('md')]: {
+    [theme.breakpoints.only("md")]: {
       paddingLeft: "10%",
       paddingRight: "10%",
     },
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up("lg")]: {
       paddingLeft: "15%",
       paddingRight: "15%",
     },
-  }
+  },
 });
 
 const Login = (props) => {
