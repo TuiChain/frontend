@@ -18,11 +18,22 @@ import LoansService from "../services/loans.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 import DAI from "../components/DAI";
-const styles = {
+
+const styles = (theme) => ({
   fullWidth: {
     width: "100%",
   },
-};
+  form: {
+    [theme.breakpoints.only("md")]: {
+      paddingLeft: "10%",
+      paddingRight: "10%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      paddingLeft: "15%",
+      paddingRight: "15%",
+    },
+  },
+});
 
 const LoanRequest = (props) => {
   const { classes, wallet } = props;
@@ -92,7 +103,7 @@ const LoanRequest = (props) => {
         Loan Request
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
-        <Grid container spacing={2}>
+        <Grid className={classes.form} container spacing={2}>
           {/* TODO: form validation */}
           <Grid item xs={12}>
             <FormControl variant="outlined" fullWidth name="destination">

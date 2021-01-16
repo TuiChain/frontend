@@ -14,24 +14,25 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import AuthService from "../../services/auth.service";
 
-const styles = {
+const styles = (theme) => ({
   fullWidth: {
     width: "100%",
-  },
-  menuPaper: {
-    maxHeight: 200,
-  },
-  menuBackground: {
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "#ebebeb",
-    },
   },
   contained: {
     marginLeft: "14px",
     marginRight: "14px",
   },
-};
+  form: {
+    [theme.breakpoints.only("md")]: {
+      paddingLeft: "10%",
+      paddingRight: "10%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      paddingLeft: "15%",
+      paddingRight: "15%",
+    },
+  },
+});
 
 const SignUp = (props) => {
   const { classes, onSignUp } = props;
@@ -99,7 +100,7 @@ const SignUp = (props) => {
         Sign up
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
-        <Grid container spacing={2}>
+        <Grid className={classes.form} container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextField
               error={formik.errors.first_name && formik.touched.first_name}
