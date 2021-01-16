@@ -16,7 +16,9 @@ instance.interceptors.request.use(
 );
 
 const newInvestment = (inv) => {
-  return instance.post("/new/", inv).then(function () {
+  return instance
+    .post("/new/", inv)
+    .then(function () {
       return true;
     })
     .catch((error) => {

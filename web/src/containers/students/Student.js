@@ -112,31 +112,22 @@ function Student(props) {
                   name="tokens"
                   variant="outlined"
                   onChange={(e) => {
-<<<<<<< HEAD
-                    setTokens(e.target.value);
-                    console.log(tokens);
-=======
                     e.target.value = !Number.isInteger(e.target.value)
                       ? Math.floor(e.target.value)
                       : e.target.value;
                     setTokens(e.target.value);
->>>>>>> origin/main
                   }}
                 />
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
-<<<<<<< HEAD
-                  onClick={clickHandler}
-=======
                   onClick={() =>
                     LoansTransactionsService.provideFunds(
                       props.match.params.id,
                       tokens
                     )
                   }
->>>>>>> origin/main
                 >
                   Buy
                 </Button>
