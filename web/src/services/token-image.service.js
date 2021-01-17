@@ -9,8 +9,8 @@ import Constants from "../constants";
  * @returns SVG string which represents the image
  */
 function generateTokenImage(tokenAddress) {
-  let svgDiameter = 100;
-  let capSize = 80;
+  let svgDiameter = 1194;
+  let capSize = 814;
 
   let capBase64 = Constants.logo_png;
   let identicon = jazzicon(svgDiameter, tokenAddress);

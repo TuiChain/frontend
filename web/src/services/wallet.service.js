@@ -142,7 +142,7 @@ async function suggestDAI(ethereum, tuichain_info) {
  * @param { String } student_token String which represents the student token address
  * @param { String } symbol String which represents the symbol of student token
  */
-async function suggestStudentToken(student_token, symbol) {
+async function suggestStudentToken(student_token) {
   try {
     const ethereum = checkConnection();
     const tuichain_info = await requestBlockchainInfo();
@@ -150,7 +150,7 @@ async function suggestStudentToken(student_token, symbol) {
     if (tuichain_info != false && tuichain_info.chain_id == ethereum.chainId) {
       const base64 = TokenImageService.generateTokenImage(student_token);
 
-      suggestToken(student_token, symbol, 0, base64);
+      suggestToken(student_token, "TUI", 0, base64);
     }
   } catch (error) {
     console.log(error);
