@@ -12,6 +12,7 @@ import {
 import LoansService from "../../services/loans.service";
 import { Create, School, Room, CloudUpload } from "@material-ui/icons";
 import DAI from "../../components/DAI";
+import ProgressBar from "../../components/Progress";
 import { Redirect } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
@@ -71,11 +72,13 @@ Status.propTypes = {
 const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchLoan() {
       const data = await LoansService.getLoan(loanID);
       setLoan(data);
+      setLoading(false);
     }
     fetchLoan();
   }, []);
@@ -89,81 +92,90 @@ const ManageLoan = (props) => {
   };
 
   return loan ? (
-    <>
-      <Box display="flex" alignItems="center">
-        <Typography variant="h3">
-          <Box color="secondary.dark">Loan #{loan.id}</Box>
-        </Typography>
-        <Status state={loan.state} />
-      </Box>
-      <hr />
-      <Panel>
-        <Typography variant="h5" color="secondary">
-          Loan info
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Information about the state of your loan.
-        </Typography>
-        <Box display="flex" justifyContent="center">
-          <CenteredTypography variant="body1" color="secondary">
-            <DAI />
-            <span style={{ paddingLeft: 20 }}>
-              {loan.current_amount}/{loan.amount}
-            </span>
-          </CenteredTypography>
-          <CenteredTypography variant="body1" color="secondary">
-            <School color="secondary" />
-            <span style={{ paddingLeft: 10 }}>{loan.school}</span>
-          </CenteredTypography>
-          <CenteredTypography variant="body1" color="secondary">
-            <Create />
-            <span style={{ paddingLeft: 10 }}>{loan.course}</span>
-          </CenteredTypography>
-          <CenteredTypography variant="body1" color="secondary">
-            <Room />
-            <span style={{ paddingLeft: 10 }}>{loan.destination}</span>
-          </CenteredTypography>
-        </Box>
-        <Box>
-          <Typography variant="body1" paragraph>
-            Description: {loan.description}
+    !isLoading && (
+      <>
+        <Box display="flex" alignItems="center">
+          <Typography variant="h3">
+            <Box color="secondary.dark">Loan #{loan.id}</Box>
           </Typography>
+          <Status state={loan.state} />
         </Box>
-      </Panel>
-      <hr />
-      <Panel>
-        <Typography variant="h5" color="secondary">
-          Documents
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Submit documents relative to your academic achievements, income, etc.
-        </Typography>
-        <TextField type="file" variant="outlined" />
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<CloudUpload />}
-          disabled={!canSubmitDocuments(loan.status)}
-        >
-          Upload
-        </Button>
-      </Panel>
-      <hr />
-      <Panel>
-        <Typography variant="h5" color="secondary">
-          Cancel
-        </Typography>
-        <Typography variant="body1" color="textSecondary">
-          To cancel your loan, press the button below.
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          WARNING: you can&apos;t go back!
-        </Typography>
-        <ErrorButton variant="contained" disabled={!canCancel(loan.status)}>
-          Cancel
-        </ErrorButton>
-      </Panel>
-    </>
+        <hr />
+        <Panel>
+          <Typography variant="h5" color="secondary">
+            Loan info
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Information about the state of your loan.
+          </Typography>
+          <Box display="flex" justifyContent="center">
+            <CenteredTypography variant="body1" color="secondary">
+              <DAI />
+              <span style={{ paddingLeft: 20 }}>
+                {loan.current_amount}/{loan.amount}
+              </span>
+            </CenteredTypography>
+            <CenteredTypography variant="body1" color="secondary">
+              <School color="secondary" />
+              <span style={{ paddingLeft: 10 }}>{loan.school}</span>
+            </CenteredTypography>
+            <CenteredTypography variant="body1" color="secondary">
+              <Create />
+              <span style={{ paddingLeft: 10 }}>{loan.course}</span>
+            </CenteredTypography>
+            <CenteredTypography variant="body1" color="secondary">
+              <Room />
+              <span style={{ paddingLeft: 10 }}>{loan.destination}</span>
+            </CenteredTypography>
+          </Box>
+          <Box px={4} py={2}>
+            <ProgressBar completed={20} />
+          </Box>
+          <Box px={4}>
+            <Typography variant="subtitle2" paragraph>
+              Description
+            </Typography>
+            <Typography variant="body1" paragraph>
+              {loan.description}
+            </Typography>
+          </Box>
+        </Panel>
+        <hr />
+        <Panel>
+          <Typography variant="h5" color="secondary">
+            Documents
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Submit documents relative to your academic achievements, income,
+            etc.
+          </Typography>
+          <TextField type="file" variant="outlined" />
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<CloudUpload />}
+            disabled={!canSubmitDocuments(loan.status)}
+          >
+            Upload
+          </Button>
+        </Panel>
+        <hr />
+        <Panel>
+          <Typography variant="h5" color="secondary">
+            Cancel
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            To cancel your loan, press the button below.
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            WARNING: you can&apos;t go back!
+          </Typography>
+          <ErrorButton variant="contained" disabled={!canCancel(loan.status)}>
+            Cancel
+          </ErrorButton>
+        </Panel>
+      </>
+    )
   ) : (
     <Redirect to="/404" />
   );
