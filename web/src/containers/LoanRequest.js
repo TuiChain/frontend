@@ -10,6 +10,7 @@ import {
   Select,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
@@ -257,7 +258,11 @@ const LoanRequest = (props) => {
               color="primary"
               disabled={formik.isSubmitting}
             >
-              Request!
+              {formik.isSubmitting ? (
+                <CircularProgress color="secondary" size={20} />
+              ) : (
+                "Request!"
+              )}
             </Button>
           </Grid>
         </Grid>
