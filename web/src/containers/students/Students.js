@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 import TuneIcon from "@material-ui/icons/Tune";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
 const backgroundColor1 = "#EFF0F6";
 const backgroundColor2 = "#D7D8E7";
@@ -268,6 +269,7 @@ const Students = (props) => {
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [width, setWidth] = useState(window.innerWidth);
+  const [fetching, setFetching] = useState(true);
 
   const mobile = props.width === "xs" || props.width === "sm";
 
@@ -302,6 +304,7 @@ const Students = (props) => {
       setCourseFilter(courseFilterStatus);
       setStudents(studentList);
       setFilteredStudents(studentList);
+      setFetching(false);
     });
   }, []);
 
@@ -443,7 +446,11 @@ const Students = (props) => {
         )}
       </SearchArea>
       <Separator />
-      {filteredStudents.length >= 1 ? (
+      {!fetching ? (
+        <Box style={{ height: "50vh" }}>
+          <LoadingPageAnimation />
+        </Box>
+      ) : filteredStudents.length >= 1 ? (
         <StudentsGrid
           container
           direction="row"
