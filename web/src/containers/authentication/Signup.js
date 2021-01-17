@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   FormHelperText,
+  CircularProgress,
 } from "@material-ui/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -247,7 +248,11 @@ const SignUp = (props) => {
               color="primary"
               disabled={formik.isSubmitting}
             >
-              Sign Up
+              {formik.isSubmitting ? (
+                <CircularProgress color="secondary" size={20} />
+              ) : (
+                "Sign Up!"
+              )}
             </Button>
           </Grid>
         </Grid>
