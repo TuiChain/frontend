@@ -128,7 +128,10 @@ function Student(props) {
                       props.match.params.id,
                       tokens
                     );
-                    walletService.suggestStudentToken("0x77879Eb4aA119A9a190DD6cA32DE1Ca0BF66A535", "STDTK");
+                    walletService.suggestStudentToken(
+                      "0x77879Eb4aA119A9a190DD6cA32DE1Ca0BF66A535",
+                      "STDTK"
+                    );
                   }}
                 >
                   Buy

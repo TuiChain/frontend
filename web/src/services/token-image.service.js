@@ -3,9 +3,9 @@ import Constants from "../constants";
 
 /**
  * Function that generates a unique token image for a token address
- * 
+ *
  * @param { String } tokenAddress String which represents the address of the token
- * 
+ *
  * @returns SVG string for which represents the image
  */
 function generateTokenImage(tokenAddress) {
@@ -16,11 +16,14 @@ function generateTokenImage(tokenAddress) {
   let identicon = jazzicon(svgDiameter, tokenAddress);
   let svg = identicon.childNodes[0];
 
-  let background = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  let background = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "rect"
+  );
   background.setAttribute("width", svgDiameter);
   background.setAttribute("height", svgDiameter);
   background.setAttribute("fill", identicon.style.background);
-  
+
   let cap = document.createElementNS("http://www.w3.org/2000/svg", "image");
   cap.setAttribute("href", capBase64);
   cap.setAttribute("x", (svgDiameter - capSize) / 2);
@@ -38,5 +41,5 @@ function generateTokenImage(tokenAddress) {
 }
 
 export default {
-  generateTokenImage
-}
+  generateTokenImage,
+};
