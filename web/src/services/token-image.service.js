@@ -6,7 +6,7 @@ import Constants from "../constants";
  *
  * @param { String } tokenAddress String which represents the address of the token
  *
- * @returns SVG string for which represents the image
+ * @returns SVG string which represents the image
  */
 function generateTokenImage(tokenAddress) {
   let svgDiameter = 100;
