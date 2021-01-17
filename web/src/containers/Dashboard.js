@@ -129,16 +129,21 @@ const Investments = ({ investments }) => {
             {investments.map((i) => (
               <ListItem button key={i.id} divider>
                 <ListItemAvatar>
-                  <Avatar alt={i.name} src="/static/images/avatar/1.jpg" />
+                  <Avatar alt={i.name} />
                 </ListItemAvatar>
 
-                <ListItemText
-                  primary="NOME MUDAR"
-                  secondary={i.request.course}
-                />
+                <ListItemText primary={i.name} secondary={i.loan.course} />
                 <ListItemIcon>
-                  <Box display="flex" alignContent="center" alignItems="center">
-                    {i.amount} <DAI />
+                  <Box
+                    display="flex"
+                    alignContent="center"
+                    alignItems="center"
+                    pr={2}
+                  >
+                    <Typography>
+                      <Box pr={1}>{i.nrTokens}</Box>
+                    </Typography>
+                    <DAI />
                   </Box>
                 </ListItemIcon>
                 <ListItemIcon>

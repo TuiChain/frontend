@@ -25,9 +25,7 @@ const newInvestment = (inv) => {
 const getInvestments = () => {
   return [
     {
-      id: 1,
-      investor: 1,
-      request: {
+      loan: {
         id: 4,
         student: 2,
         request_date: "12/12/21",
@@ -40,18 +38,16 @@ const getInvestments = () => {
         recipient_address: "idk",
         identifier: "idk",
       },
-      amount: 200,
-      investment_date: "12/12/21",
+      name: "Pedro Moreira",
+      nrTokens: 200,
     },
     {
-      id: 2,
-      investor: 1,
-      request: {
+      loan: {
         id: 5,
-        student: 2,
+        student: 23,
         request_date: "12/12/21",
-        school: "Universidade",
-        course: "Vida",
+        school: "Universidade do Porto",
+        course: "Mestrado da Vida",
         destination: "Portugal",
         requested_value_atto_dai: "80000000000000000000",
         description: "ESTE É O MEU SONHO :)",
@@ -59,8 +55,8 @@ const getInvestments = () => {
         recipient_address: "idk",
         identifier: "idk",
       },
-      amount: 200,
-      investment_date: "12/12/21",
+      name: "Moreira Pedro",
+      nrTokens: 200,
     },
   ];
 };
