@@ -46,11 +46,22 @@ const createLoan = (
     });
 };
 
-const getPendingLoans = () => {
+const getPendingLoans = async () => {
+  const loans = await getAllLoans();
+  let pending = [];
+
+  loans.forEach(element => {
+    if (element.state == "PENDING")
+      pending.push(element);
+  });
+
+  return pending;
+};
+
+const getAllLoans = () => {
   return instance
-    .get("/get_all/") // todo
+    .get("/get_all/")
     .then((response) => {
-      console.log(response.data);
       return response.data.loans;
     })
     .catch((error) => {
