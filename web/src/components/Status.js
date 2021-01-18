@@ -12,6 +12,8 @@ const Status = ({ state }) => {
         return theme.palette.phase.expired;
       case "CANCELED":
         return theme.palette.phase.canceled;
+      case "WITHDRAWN":
+        return theme.palette.phase.withdrawn;
       case "ACTIVE":
         return theme.palette.phase.active;
       case "FINALIZED":

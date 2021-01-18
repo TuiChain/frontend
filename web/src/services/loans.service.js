@@ -99,11 +99,41 @@ const getLoan = (id) => {
   return instance
     .get("/get/" + id + "/")
     .then((response) => {
-      return response.data.loan;
+      const loan = response.data.loan;
+
+      loan.requested_value = parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+      loan.funded_value = loan.funded_value_atto_dai
+        ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+        : 0;
+
+      return loan;
     })
     .catch((error) => {
       console.log(error);
       return false;
+    });
+};
+
+const getStudentLoans = () => {
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      const loans = response.data.loans;
+      loans.forEach((loan) => {
+        loan.requested_value =
+          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+      });
+
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
     });
 };
 
@@ -113,4 +143,5 @@ export default {
   validateLoan,
   rejectLoan,
   getLoan,
+  getStudentLoans,
 };

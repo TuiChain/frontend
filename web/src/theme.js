@@ -28,6 +28,7 @@ const theme = createMuiTheme({
       funding: "#F5B300",
       expired: "#ED2E50",
       canceled: "#ED2E50",
+      withdrawn: "#ED2E50",
       active: "#58C400",
       finalized: "#293A41",
       pending: "#109D96",
