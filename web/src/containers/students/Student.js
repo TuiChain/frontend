@@ -59,20 +59,43 @@ function Student(props) {
   })(Box);
 
   const handleButtonClick = async () => {
-    const correct_chain = await LoansTransactionsService.provideFunds(
-      props.match.params.id,
-      tokens
-    );
 
-    if (correct_chain) {
+    try {
+
+      await LoansTransactionsService.provideFunds(
+        props.match.params.id,
+        tokens
+      );
+      
       await walletService.suggestStudentToken(user.token_address);
-    } else {
-      setToast({
-        message:
-          "Maybe you're not connected to a wallet, or maybe you're in the wrong network!",
-        severity: "error",
-      });
-      setOpen(true);
+
+    } catch (e) {
+
+      console.log('error:', e.message);
+
+      switch (e.message) {
+
+        case "Invalid parameters: must provide an Ethereum address.":
+          setToast({
+            message: "Your account is not connected!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+
+        case "Incorrect chain ID":
+          setToast({
+            message: "You're not in the correct network!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+        
+        default:
+          break;
+          
+      }
+
     }
   };
 

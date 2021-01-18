@@ -178,32 +178,27 @@ async function requestBlockchainInfo() {
  * Function that prepares a transaction for the user to accept in metamask
  *
  * @param { Object } transactionsParameters Array of transactions parameters
- *
- * @returns Boolean that represents if the chain was correct
  */
 async function sendTransactions(transactionsParameters) {
   const ethereum = checkConnection();
-
   const tuichain_info = await requestBlockchainInfo();
 
   if (tuichain_info != false && tuichain_info.chain_id == ethereum.chainId) {
-    try {
-      for (const element of transactionsParameters) {
-        const params = Object.assign({ from: checkAccount() }, element);
-        await ethereum
-          .request({
-            method: "eth_sendTransaction",
-            params: [params],
-          })
-          .catch((e) => console.log(e));
-      }
-    } catch (error) {
-      console.log(error);
+
+    for (const element of transactionsParameters) {
+
+      const params = Object.assign({ from: checkAccount() }, element);
+            
+      await ethereum
+        .request({
+          method: "eth_sendTransaction",
+          params: [params],
+        });
+
     }
 
-    return true;
   } else {
-    return false;
+    throw new Error("Incorrect chain ID");
   }
 }
 
