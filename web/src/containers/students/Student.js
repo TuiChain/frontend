@@ -15,12 +15,16 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import walletService from "../../services/wallet.service";
+import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
 function Student(props) {
-  let [user, setUser] = useState({});
-  let [userInfo, setUserInfo] = useState({});
-  let [percentage, setPercentage] = useState(0);
-  let [tokens, setTokens] = useState(0);
+  const [user, setUser] = useState({});
+  const [userInfo, setUserInfo] = useState({});
+  const [percentage, setPercentage] = useState(0);
+  const [tokens, setTokens] = useState(0);
+  const [fetching, setFetching] = useState(true);
+
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
@@ -30,8 +34,11 @@ function Student(props) {
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
+    setFetching(false);
   }, []);
+
   const matches = useMediaQuery("(min-width:600px)");
+
   const Box2 = withStyles({
     root: {
       justifyContent: matches === false ? "center" : "inherit",
@@ -39,6 +46,7 @@ function Student(props) {
       paddingBottom: "5%",
     },
   })(Box);
+
   const BoxDescr = withStyles({
     root: {
       paddingLeft: matches === false ? "12%" : "inherit",
@@ -46,100 +54,112 @@ function Student(props) {
       paddingBottom: matches === false ? "10%" : "inherit",
     },
   })(Box);
+
   return (
-    <Box className="student" component="span" m={1}>
-      <Grid container spacing={2} className="container">
-        <Grid className="left-cont" item xs={12} md={6}>
-          <Box>
-            <img src={userInfo.profile_image} />
-          </Box>
-        </Grid>
-        <Grid className="right-cont" item xs={12} md={6}>
-          <Box className="right">
-            <Box2 alignItems="baseline" className="header">
-              <Typography variant="h2" display="inline">
-                {userInfo.username}
-              </Typography>
-            </Box2>
-            <Box2 className="up">
-              <Box className="par-init" display="flex">
-                <School />
+    <>
+      {fetching ? (
+        <Box style={{ height: "calc(100vh - 128px)" }}>
+          <LoadingPageAnimation />
+        </Box>
+      ) : (
+        <Box className="student" component="span" m={1}>
+          <Grid container spacing={2} className="container">
+            <Grid className="left-cont" item xs={12} md={6}>
+              <Box>
+                <img src={userInfo.profile_image} />
+              </Box>
+            </Grid>
+            <Grid className="right-cont" item xs={12} md={6}>
+              <Box className="right">
+                <Box2 alignItems="baseline" className="header">
+                  <Typography variant="h2" display="inline">
+                    {userInfo.username}
+                  </Typography>
+                </Box2>
+                <Box2 className="up">
+                  <Box className="par-init" display="flex">
+                    <School />
+                    <Typography variant="body1" display="inline">
+                      {user.school}
+                    </Typography>
+                  </Box>
+                  <Box className="par" display="flex" paddingLeft="5%">
+                    <Create />
+                    <Typography variant="body1">{user.course}</Typography>
+                  </Box>
+                </Box2>
+                <Box2 className="down">
+                  <Box className="par" display="flex">
+                    <Room />
+                    <Typography variant="body1" display="inline">
+                      {user.destination}
+                    </Typography>
+                  </Box>
+                  <Box className="par" display="flex" paddingLeft="5%">
+                    <DAI />
+                    <Typography variant="body1" display="inline">
+                      {user.amount}
+                    </Typography>
+                  </Box>
+                </Box2>
+              </Box>
+              <BoxDescr className="description">
                 <Typography variant="body1" display="inline">
-                  {user.school}
+                  {user.description}
                 </Typography>
-              </Box>
-              <Box className="par" display="flex" paddingLeft="5%">
-                <Create />
-                <Typography variant="body1">{user.course}</Typography>
-              </Box>
-            </Box2>
-            <Box2 className="down">
-              <Box className="par" display="flex">
-                <Room />
-                <Typography variant="body1" display="inline">
-                  {user.destination}
-                </Typography>
-              </Box>
-              <Box className="par" display="flex" paddingLeft="5%">
-                <DAI />
-                <Typography variant="body1" display="inline">
-                  {user.amount}
-                </Typography>
-              </Box>
-            </Box2>
-          </Box>
-          <BoxDescr className="description">
-            <Typography variant="body1" display="inline">
-              {user.description}
-            </Typography>
-          </BoxDescr>
-        </Grid>
-        <Grid container spacing={2} className="container">
-          <Grid item xs={12} md={6}>
-            <Box
-              className="left-tok"
-              width="fit-content"
-              marginLeft="auto"
-              marginRight="auto"
-            >
-              <Box pt="10%" marginBottom="10%">
-                <Typography variant="h3">{"Tokens"}</Typography>
-              </Box>
-              <Box className="token">
-                <TextField
-                  type={"number"}
-                  label="Tokens"
-                  name="tokens"
-                  variant="outlined"
-                  onChange={(e) => {
-                    e.target.value = !Number.isInteger(e.target.value)
-                      ? Math.floor(e.target.value)
-                      : e.target.value;
-                    setTokens(e.target.value);
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  onClick={() =>
-                    LoansTransactionsService.provide_funds(
-                      props.match.params.id,
-                      tokens
-                    )
-                  }
+              </BoxDescr>
+            </Grid>
+            <Grid container spacing={2} className="container">
+              <Grid item xs={12} md={6}>
+                <Box
+                  className="left-tok"
+                  width="fit-content"
+                  marginLeft="auto"
+                  marginRight="auto"
                 >
-                  Buy
-                </Button>
-              </Box>
-              <Box className="barra" paddingTop="5%">
-                <ProgressBar completed={percentage} />
-              </Box>
-            </Box>
+                  <Box pt="10%" marginBottom="10%">
+                    <Typography variant="h3">{"Tokens"}</Typography>
+                  </Box>
+                  <Box className="token">
+                    <TextField
+                      type={"number"}
+                      label="Tokens"
+                      name="tokens"
+                      variant="outlined"
+                      onChange={(e) => {
+                        e.target.value = !Number.isInteger(e.target.value)
+                          ? Math.floor(e.target.value)
+                          : e.target.value;
+                        setTokens(e.target.value);
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      onClick={async () => {
+                        await LoansTransactionsService.provideFunds(
+                          props.match.params.id,
+                          tokens
+                        );
+                        await walletService.suggestStudentToken(
+                          user.token_address
+                        );
+                      }}
+                    >
+                      Buy
+                    </Button>
+                  </Box>
+                  <Box className="barra" paddingTop="5%">
+                    <ProgressBar completed={percentage} />
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-    </Box>
+        </Box>
+      )}
+    </>
   );
 }
 

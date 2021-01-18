@@ -66,6 +66,11 @@ const NavMenu = (props) => {
     </>
   );
 
+  const handleLoans = () => {
+    history.push("/personal/loans");
+    setAnchorEl(null);
+  };
+
   return (
     <Grid item>
       {nav_items}
@@ -86,7 +91,7 @@ const NavMenu = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleLoans}>Loans</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>

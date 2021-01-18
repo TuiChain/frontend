@@ -27,15 +27,15 @@ const getUserInfo = (id) => {
     });
 };
 
-// TODO
-const getUser = () => {
+const getCurrentUserInfo = () => {
+  // TODO
   return {
-    first_name: "Pedro",
-    last_name: "Moreira",
+    first_name: "pedro",
+    last_name: "moreira",
   };
 };
 
 export default {
   getUserInfo,
-  getUser,
+  getCurrentUserInfo,
 };

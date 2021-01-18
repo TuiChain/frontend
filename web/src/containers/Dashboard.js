@@ -235,7 +235,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = userService.getUser();
+      const user = userService.getCurrentUserInfo();
       setUser(user);
       setLoading(false);
     };

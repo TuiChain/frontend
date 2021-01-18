@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { AppBar, Toolbar, Button, Grid } from "@material-ui/core";
+import { AppBar, Toolbar, Button, Grid, IconButton } from "@material-ui/core";
 import NavMenu from "../components/NavMenu";
 import { Link as RouterLink } from "react-router-dom";
 import NavMenuAdmin from "./NavMenuAdmin";
+import Logo from "./Logo";
 
 const Header = (props) => {
   const { auth, onLogout, wallet, setWallet } = props;
@@ -32,17 +33,28 @@ const Header = (props) => {
   );
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="static">
       <Toolbar>
         <Grid container justify="flex-start">
           <Grid item>
-            <Button
+            <IconButton
               variant="contained"
               color="secondary"
               component={RouterLink}
               to="/"
             >
-              Home
+              <Logo />
+            </IconButton>
+          </Grid>
+          {/* TODO: REMOVE: */}
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              component={RouterLink}
+              to="/kyc"
+            >
+              KYC
             </Button>
           </Grid>
         </Grid>

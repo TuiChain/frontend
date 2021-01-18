@@ -6,17 +6,28 @@ import {
   withStyles,
   Grid,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AuthService from "../../services/auth.service";
 
-const styles = {
+const styles = (theme) => ({
   fullWidth: {
     width: "100%",
   },
-};
+  form: {
+    [theme.breakpoints.only("md")]: {
+      paddingLeft: "10%",
+      paddingRight: "10%",
+    },
+    [theme.breakpoints.up("lg")]: {
+      paddingLeft: "15%",
+      paddingRight: "15%",
+    },
+  },
+});
 
 const Login = (props) => {
   const { classes, onLogin } = props;
@@ -59,7 +70,7 @@ const Login = (props) => {
         Login
       </Typography>
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
-        <Grid container spacing={2}>
+        <Grid className={classes.form} container spacing={2}>
           <Grid item xs={12}>
             <TextField
               error={formik.errors.username && formik.touched.username}
@@ -115,7 +126,11 @@ const Login = (props) => {
               color="primary"
               disabled={formik.isSubmitting}
             >
-              Login
+              {formik.isSubmitting ? (
+                <CircularProgress color="secondary" size={20} />
+              ) : (
+                "Login"
+              )}
             </Button>
           </Grid>
         </Grid>
