@@ -7,7 +7,7 @@ import { styled, withStyles } from "@material-ui/core/styles";
 import { useWideCardMediaStyles } from "@mui-treasury/styles/cardMedia/wide";
 import Progress from "../components/Progress";
 import DAI from "../components/DAI";
-import { Home, FavoriteBorder, Create, School, Room } from "@material-ui/icons";
+import { Create, School, Room } from "@material-ui/icons";
 
 const StyledCardActionArea = withStyles({
   root: {
@@ -49,42 +49,23 @@ const StatusItem = ({ icon, text }) => {
   );
 };
 
-const StudentInfo = ({
-  name,
-  likes,
-  degree,
-  course,
-  origin,
-  university,
-  tuition,
-}) => {
+const LoanInfo = ({ name, course, school, tuition, destination }) => {
   return (
     <Grid container>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Typography gutterBottom variant="h5" component="h2">
           {name}
         </Typography>
       </Grid>
-      <StatusItem icon={<FavoriteBorder />} text={likes} />
-      <StatusItem icon={<School />} text={degree} />
+      <StatusItem icon={<School />} text={school} />
       <StatusItem icon={<Create />} text={course} />
-      <StatusItem icon={<Room />} text={origin} />
-      <StatusItem icon={<Home />} text={university} />
+      <StatusItem icon={<Room />} text={destination} />
       <StatusItem icon={<DAI size={22} />} text={tuition} />
     </Grid>
   );
 };
 
-const StudentCard = ({
-  name,
-  photo,
-  likes,
-  degree,
-  course,
-  origin,
-  university,
-  tuition,
-}) => {
+const LoanCard = ({ name, photo, course, school, tuition, destination }) => {
   const styles = useWideCardMediaStyles();
 
   return (
@@ -92,14 +73,12 @@ const StudentCard = ({
       <StyledCard>
         <CardMedia classes={styles} image={photo} />
         <CardContent>
-          <StudentInfo
+          <LoanInfo
             name={name}
-            likes={likes}
-            degree={degree}
             course={course}
-            origin={origin}
-            university={university}
+            school={school}
             tuition={tuition}
+            destination={destination}
           />
         </CardContent>
       </StyledCard>
@@ -110,26 +89,22 @@ const StudentCard = ({
   );
 };
 
-export default StudentCard;
+export default LoanCard;
 
-StudentCard.propTypes = {
+LoanCard.propTypes = {
   name: PropTypes.string.isRequired,
   photo: PropTypes.string.isRequired,
-  likes: PropTypes.string.isRequired,
-  degree: PropTypes.string.isRequired,
   course: PropTypes.string.isRequired,
-  origin: PropTypes.string.isRequired,
-  university: PropTypes.string.isRequired,
+  destination: PropTypes.string.isRequired,
+  school: PropTypes.string.isRequired,
   tuition: PropTypes.number.isRequired,
 };
 
-StudentInfo.propTypes = {
+LoanInfo.propTypes = {
   name: PropTypes.string.isRequired,
-  likes: PropTypes.string.isRequired,
-  degree: PropTypes.string.isRequired,
   course: PropTypes.string.isRequired,
-  origin: PropTypes.string.isRequired,
-  university: PropTypes.string.isRequired,
+  destination: PropTypes.string.isRequired,
+  school: PropTypes.string.isRequired,
   tuition: PropTypes.number.isRequired,
 };
 

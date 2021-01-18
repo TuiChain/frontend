@@ -107,10 +107,24 @@ const getLoan = (id) => {
     });
 };
 
+const getFundingLoans = () => {
+  return instance
+    .get("/get_state/APPROVED/1")
+    .then((response) => {
+      console.log(response);
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
 export default {
   createLoan,
   getPendingLoans,
   validateLoan,
   rejectLoan,
   getLoan,
+  getFundingLoans,
 };

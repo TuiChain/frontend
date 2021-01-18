@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import getStudents from "../../services/students.service";
+import LoansService from "../../services/loans.service";
 import {
   Box,
   Grid,
@@ -12,9 +12,10 @@ import {
   Typography,
   Button,
   withWidth,
+  Link,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import StudentCard from "../../components/StudentCard";
+import LoanCard from "../../components/StudentCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
 import TuneIcon from "@material-ui/icons/Tune";
@@ -141,7 +142,7 @@ const CheckboxFilter = ({
   );
 };
 
-const StudentsGrid = styled(Grid)({
+const LoansGrid = styled(Grid)({
   paddingTop: "5rem",
   [theme.breakpoints.only("xs")]: {
     paddingLeft: "15%",
@@ -149,19 +150,18 @@ const StudentsGrid = styled(Grid)({
   },
 });
 
-const StudentsGridItem = ({ studentCard, width, key }) => {
+const LoansGridItem = ({ loanCard, width }) => {
   const slim = width > 600 && width < 700;
   return (
     <Grid
       style={{ paddingLeft: slim && "6rem", paddingRight: slim && "6rem" }}
-      key={key}
       item
       xs={12}
       sm={width < 700 ? 12 : 6}
       md={width < 1060 ? 6 : 4}
       xl={3}
     >
-      {studentCard}
+      {loanCard}
     </Grid>
   );
 };
@@ -184,7 +184,7 @@ const SearchBar = ({ input, handleInput, mobile }) => {
       disableUnderline
       style={BarStyling}
       value={input}
-      placeholder={"Search for a student..."}
+      placeholder={"Search for a loan..."}
       onChange={(e) => handleInput(e.target.value)}
     />
   );
@@ -259,15 +259,15 @@ const SearchMessage = styled(Typography)({
   flex: "0 0 200px",
 });
 
-const Students = (props) => {
+const FundingLoans = (props) => {
   const [displayFilters, setDisplayFilters] = useState(false);
   const [searchInput, setInput] = useState("");
   const [country, setCountry] = useState("All");
   const [countryList, setCountryList] = useState([]);
-  const [degreeFilter, setDegreeFilter] = useState({ All: true });
+  const [schoolFilter, setSchoolFilter] = useState({ All: true });
   const [courseFilter, setCourseFilter] = useState({ All: true });
-  const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [loans, setLoans] = useState([]);
+  const [filteredLoans, setFilteredLoans] = useState([]);
   const [width, setWidth] = useState(window.innerWidth);
   const [fetching, setFetching] = useState(true);
 
@@ -278,20 +278,20 @@ const Students = (props) => {
   });
 
   useEffect(() => {
-    getStudents().then((studentList) => {
+    LoansService.getFundingLoans().then((loanList) => {
       let countries = new Set();
-      let degrees = new Set();
+      let schools = new Set();
       let courses = new Set();
 
-      studentList.map((s) => {
-        countries.add(s.origin);
-        degrees.add(s.degree);
-        courses.add(s.course);
+      loanList.map((l) => {
+        countries.add(l.destination);
+        courses.add(l.course);
+        schools.add(l.school);
       });
 
-      const degreeFilterStatus = buildStatusObject(
-        Array.from(degrees),
-        degreeFilter
+      const schoolFilterStatus = buildStatusObject(
+        Array.from(schools),
+        schoolFilter
       );
 
       const courseFilterStatus = buildStatusObject(
@@ -300,85 +300,87 @@ const Students = (props) => {
       );
 
       setCountryList(Array.from(countries));
-      setDegreeFilter(degreeFilterStatus);
+      setSchoolFilter(schoolFilterStatus);
       setCourseFilter(courseFilterStatus);
-      setStudents(studentList);
-      setFilteredStudents(studentList);
+      setLoans(loanList);
+      setFilteredLoans(loanList);
       setFetching(false);
     });
   }, []);
 
   const updateInput = (input) => {
     setInput(input);
-    filterStudents(input, country, degreeFilter, courseFilter);
+    filterLoans(input, country, schoolFilter, courseFilter);
   };
 
   const updateCountry = (country) => {
     setCountry(country);
-    filterStudents(searchInput, country, degreeFilter, courseFilter);
+    filterLoans(searchInput, country, schoolFilter, courseFilter);
   };
 
-  const updateDegreeFilter = (selectedDegree) => {
-    const updatedFilter = updateCheckboxFilter(selectedDegree, degreeFilter);
-    setDegreeFilter(updatedFilter);
-    filterStudents(searchInput, country, updatedFilter, courseFilter);
+  const updateSchoolFilter = (selectedSchool) => {
+    const updatedFilter = updateCheckboxFilter(selectedSchool, schoolFilter);
+    setSchoolFilter(updatedFilter);
+    filterLoans(searchInput, country, updatedFilter, courseFilter);
   };
 
   const updateCourseFilter = (selectedCourse) => {
     const updatedFilter = updateCheckboxFilter(selectedCourse, courseFilter);
     setCourseFilter(updatedFilter);
-    filterStudents(searchInput, country, degreeFilter, updatedFilter);
+    filterLoans(searchInput, country, schoolFilter, updatedFilter);
   };
 
   const resetFilters = () => {
-    const newDegreeFilter = resetFilter(degreeFilter);
+    const newSchoolFilter = resetFilter(schoolFilter);
     const newCourseFilter = resetFilter(courseFilter);
 
     setCountry("All");
-    setDegreeFilter(newDegreeFilter);
+    setSchoolFilter(newSchoolFilter);
     setCourseFilter(newCourseFilter);
 
-    filterStudents(searchInput, "All", newDegreeFilter, newCourseFilter);
+    filterLoans(searchInput, "All", newSchoolFilter, newCourseFilter);
   };
 
-  const filterStudents = (searchInput, country, degreeFilter, courseFilter) => {
-    let filtered = students;
+  const filterLoans = (searchInput, country, schoolFilter, courseFilter) => {
+    let filtered = loans;
 
     if (searchInput != "") {
-      filtered = students.filter((student) => {
-        return student.name.toLowerCase().includes(searchInput.toLowerCase());
+      filtered = loans.filter((loan) => {
+        return loan.user_full_name
+          .toLowerCase()
+          .includes(searchInput.toLowerCase());
       });
     }
 
     if (country != "All") {
-      filtered = filtered.filter((student) => {
-        return student.origin == country;
+      filtered = filtered.filter((loan) => {
+        return loan.destination == country;
       });
     }
 
-    if (!degreeFilter.All) {
-      const selectedDegrees = getSelected(degreeFilter);
-      console.log("Selected Degrees", selectedDegrees);
-      filtered = filtered.filter((student) => {
-        return selectedDegrees.includes(student.degree);
+    if (!schoolFilter.All) {
+      const selectedSchools = getSelected(schoolFilter);
+      console.log("Selected schools", selectedSchools);
+      filtered = filtered.filter((loan) => {
+        return selectedSchools.includes(loan.school);
       });
     }
 
     if (!courseFilter.All) {
       const selectedCourses = getSelected(courseFilter);
 
-      filtered = filtered.filter((student) => {
-        return selectedCourses.includes(student.course);
+      filtered = filtered.filter((loan) => {
+        return selectedCourses.includes(loan.course);
       });
     }
 
-    setFilteredStudents(filtered);
+    setFilteredLoans(filtered);
   };
 
   return (
     <>
       <Typography variant="h2" paragraph>
-        Students
+        Loans
       </Typography>
       <SearchBox mobile={mobile}>
         <SearchBar
@@ -411,9 +413,9 @@ const Students = (props) => {
               <CheckboxFilter
                 mobile={mobile}
                 parallel={mobile}
-                name={"Degree"}
-                status={degreeFilter}
-                handleOptionClick={updateDegreeFilter}
+                name={"School"}
+                status={schoolFilter}
+                handleOptionClick={updateSchoolFilter}
               />
             </Grid>
             <Grid item xs={12} md>
@@ -446,50 +448,39 @@ const Students = (props) => {
         )}
       </SearchArea>
       <Separator />
-      {!fetching ? (
+      {fetching ? (
         <Box style={{ height: "50vh" }}>
           <LoadingPageAnimation />
         </Box>
-      ) : filteredStudents.length >= 1 ? (
-        <StudentsGrid
-          container
-          direction="row"
-          alignItems="center"
-          spacing={10}
-        >
-          {filteredStudents.map(
-            ({
-              id,
-              name,
-              photo,
-              likes,
-              degree,
-              origin,
-              course,
-              university,
-              tuition,
-            }) => {
-              return (
-                <StudentsGridItem
-                  key={id}
+      ) : filteredLoans.length >= 1 ? (
+        <LoansGrid container direction="row" alignItems="center" spacing={10}>
+          {filteredLoans.map((l) => {
+            return (
+              <Link
+                href={`/students/${l.student}`}
+                key={l.student}
+                underline="none"
+              >
+                <LoansGridItem
+                  key={l.id}
                   width={width}
-                  studentCard={
-                    <StudentCard
-                      name={name}
-                      photo={photo}
-                      degree={degree}
-                      likes={likes}
-                      university={university}
-                      course={course}
-                      origin={origin}
-                      tuition={tuition}
+                  loanCard={
+                    <LoanCard
+                      name={l.user_full_name}
+                      photo={l.photo}
+                      school={l.school}
+                      course={l.course}
+                      destination={l.destination}
+                      tuition={
+                        Number(l.requested_value_atto_dai) / Math.pow(10, 18)
+                      }
                     />
                   }
                 />
-              );
-            }
-          )}
-        </StudentsGrid>
+              </Link>
+            );
+          })}
+        </LoansGrid>
       ) : (
         <Container>
           <SearchMessage variant="h6">No results were found</SearchMessage>
@@ -499,14 +490,14 @@ const Students = (props) => {
   );
 };
 
-export default withWidth()(Students);
+export default withWidth()(FundingLoans);
 
-Students.propTypes = {
+FundingLoans.propTypes = {
   width: PropTypes.string,
 };
 
-StudentsGridItem.propTypes = {
-  studentCard: PropTypes.object,
+LoansGridItem.propTypes = {
+  loanCard: PropTypes.object,
   width: PropTypes.number,
   key: PropTypes.string,
 };
