@@ -118,24 +118,30 @@ const Loans = () => {
     }, {});
   };
 
-  const translateTab = (tab) => {
+  const getTabSize = (tab) => {
+    return loans[tab] ? loans[tab].length : 0;
+  };
+
+  const getTabState = (tab) => {
     switch (tab) {
       case 0:
-        return "FUNDING";
+        return "ALL";
       case 1:
-        return "EXPIRED";
-      case 2:
-        return "CANCELED";
-      case 3:
-        return "ACTIVE";
-      case 4:
-        return "FINALIZED";
-      case 5:
         return "PENDING";
-      case 6:
-        return "REJECTED";
-      case 7:
+      case 2:
         return "WITHDRAWN";
+      case 3:
+        return "REJECTED";
+      case 4:
+        return "FUNDING";
+      case 5:
+        return "CANCELED";
+      case 6:
+        return "EXPIRED";
+      case 7:
+        return "ACTIVE";
+      case 8:
+        return "FINALIZED";
     }
   };
 
@@ -145,6 +151,7 @@ const Loans = () => {
     async function fetchLoans() {
       const data = await LoansService.getStudentLoans();
       const groups = groupBy(data, "state");
+      groups["ALL"] = data;
       console.log("Groups", groups);
       setLoans(groups);
       setLoading(false);
@@ -166,18 +173,19 @@ const Loans = () => {
             onChange={handleChange}
             aria-label="Vertical tabs example"
           >
-            <Tab label="Funding" />
-            <Tab label="Expired" />
-            <Tab label="Canceled" />
-            <Tab label="Active" />
-            <Tab label="Finalized" />
-            <Tab label="Pending" />
-            <Tab label="Rejected" />
-            <Tab label="Withdrawn" />
+            <Tab label={"All (" + getTabSize("ALL") + ")"} />
+            <Tab label={"Pending (" + getTabSize("PENDING") + ")"} />
+            <Tab label={"Withdrawn (" + getTabSize("WITHDRAWN") + ")"} />
+            <Tab label={"Rejected (" + getTabSize("REJECTED") + ")"} />
+            <Tab label={"Funding (" + getTabSize("FUNDING") + ")"} />
+            <Tab label={"Canceled (" + getTabSize("CANCELED") + ")"} />
+            <Tab label={"Expired (" + getTabSize("EXPIRED") + ")"} />
+            <Tab label={"Active (" + getTabSize("ACTIVE") + ")"} />
+            <Tab label={"Finalized (" + getTabSize("FINALIZED") + ")"} />
           </Tabs>
         </Grid>
         <Grid item xs={12} lg={10}>
-          <LoansList loans={loans[translateTab(tab)]} loading={loading} />
+          <LoansList loans={loans[getTabState(tab)]} loading={loading} />
         </Grid>
       </Grid>
     </Box>
