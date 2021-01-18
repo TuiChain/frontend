@@ -19,7 +19,6 @@ import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
 import Loans from "./containers/loans/Loans";
-import KycButton from "./containers/KycButton";
 
 const styles = {
   back: {
@@ -108,8 +107,6 @@ const App = (props) => {
                     <Signup onSignUp={handlerLogin} />
                   )}
                 </Route>
-                {/* TODO - REMOVE: */}
-                <Route auth={auth} path="/kyc" render={() => <KycButton />} />
                 {/* ADMIN ROUTES */}
                 <ProtectedRoute
                   auth={auth}

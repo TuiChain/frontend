@@ -16,7 +16,6 @@ import {
   Avatar,
   ListItemText,
   makeStyles,
-  Chip,
   Divider,
 } from "@material-ui/core";
 import DAI from "../components/DAI";
@@ -24,6 +23,8 @@ import ProgressBar from "../components/Progress";
 import investmentService from "../services/investment.service";
 import loansService from "../services/loans.service";
 import userService from "../services/user.service";
+import Status from "../components/Status";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles({
   card: {
@@ -40,6 +41,7 @@ const useStyles = makeStyles({
 
 const ActiveLoan = ({ loan }) => {
   const classes = useStyles();
+
   return (
     <Card elevation={2} className={classes.card}>
       <CardContent>
@@ -53,7 +55,7 @@ const ActiveLoan = ({ loan }) => {
           <Typography variant="h3" color="secondary">
             Active Loan
           </Typography>
-          {loan && <Chip label={loan.state} />}
+          {loan && <Status state={loan.state} />}
         </Box>
 
         {loan ? (
@@ -85,7 +87,9 @@ const ActiveLoan = ({ loan }) => {
                   <DAI />
                 </ListItemIcon>
                 <ListItemText>
-                  <ProgressBar completed={20} />
+                  <ProgressBar
+                    completed={(loan.funded_value * 100) / loan.requested_value}
+                  />
                 </ListItemText>
               </ListItem>
               <Divider />
@@ -97,11 +101,21 @@ const ActiveLoan = ({ loan }) => {
       </CardContent>
       <CardActions className={classes.actions}>
         {loan ? (
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            component={RouterLink}
+            to={`/students/${loan.id}`}
+          >
             Open
           </Button>
         ) : (
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            component={RouterLink}
+            to="/request"
+          >
             Make a request
           </Button>
         )}
@@ -124,12 +138,18 @@ const Investments = ({ investments }) => {
           Investments
         </Typography>
 
-        {investments ? (
+        {investments && investments.length > 0 ? (
           <List component="nav">
             {investments.map((i) => (
-              <ListItem button key={i.id} divider>
+              <ListItem
+                button
+                key={i.loan.id}
+                divider
+                component={RouterLink}
+                to="/investments"
+              >
                 <ListItemAvatar>
-                  <Avatar alt={i.name} />
+                  <Avatar>{i.name.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={i.name} secondary={i.loan.course} />
@@ -140,20 +160,9 @@ const Investments = ({ investments }) => {
                     alignItems="center"
                     pr={2}
                   >
-                    <Typography>
-                      <Box pr={1}>{i.nrTokens}</Box>
-                    </Typography>
+                    <Box pr={1}>{i.nrTokens}</Box>
                     <DAI />
                   </Box>
-                </ListItemIcon>
-                <ListItemIcon>
-                  <Box color="success.main">&#x2197; 2.96%</Box>
-
-                  {/* {i.last_24 >= 0 ? (
-                              <Box color="success.main">&#x2197; {i.last_24}%</Box>
-                            ) : (
-                              <Box color="error.main">&#x2198; {i.last_24}%</Box>
-                            )} */}
                 </ListItemIcon>
               </ListItem>
             ))}
@@ -165,9 +174,25 @@ const Investments = ({ investments }) => {
         )}
       </CardContent>
       <CardActions className={classes.actions}>
-        <Button variant="outlined" color="secondary">
-          {investments ? "Show all" : "Start investing"}
-        </Button>
+        {investments && investments.length > 0 ? (
+          <Button
+            variant="outlined"
+            color="secondary"
+            component={RouterLink}
+            to="/investments"
+          >
+            Show all
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            color="secondary"
+            component={RouterLink}
+            to="/students"
+          >
+            Start investing
+          </Button>
+        )}
       </CardActions>
     </Card>
   );
@@ -187,23 +212,35 @@ const FeaturedLoans = ({ loans }) => {
           Featured Loans
         </Typography>
 
-        {loans ? (
+        {loans && loans.length > 0 ? (
           <List component="nav">
             {loans.map((l) => (
-              <ListItem button key={l.id} divider>
+              <ListItem
+                button
+                key={l.id}
+                divider
+                component={RouterLink}
+                to={`/students/${l.id}`}
+              >
                 <ListItemAvatar>
-                  <Avatar alt={l.name} src="/static/images/avatar/1.jpg" />
+                  <Avatar>{l.user_full_name.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={l.course} secondary={l.school} />
-                <ListItemText>
-                  <Box display="flex" alignContent="center" alignItems="center">
-                    <Room color="secondary" />
-                    <ListItemText primary={l.destination} />
-                  </Box>
-                </ListItemText>
 
-                <ListItemIcon>&#x2197; {l.price}</ListItemIcon>
+                <ListItemIcon>
+                  <Box
+                    display="flex"
+                    alignContent="center"
+                    alignItems="center"
+                    pr={2}
+                  >
+                    <Box pr={1}>
+                      {l.funded_value}/{l.requested_value}
+                    </Box>
+                    <DAI />
+                  </Box>
+                </ListItemIcon>
               </ListItem>
             ))}
           </List>
@@ -214,7 +251,13 @@ const FeaturedLoans = ({ loans }) => {
         )}
       </CardContent>
       <CardActions className={classes.actions}>
-        <Button variant="outlined" color="secondary" slot="end">
+        <Button
+          variant="outlined"
+          color="secondary"
+          slot="end"
+          component={RouterLink}
+          to="/students"
+        >
           Explore
         </Button>
       </CardActions>
@@ -235,7 +278,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = userService.getCurrentUserInfo();
+      const user = await userService.getCurrentUserInfo();
       setUser(user);
       setLoading(false);
     };
@@ -244,7 +287,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchActiveLoan = async () => {
-      const loan = loansService.getActiveLoan();
+      const loan = await loansService.getActiveLoan();
       setActiveLoan(loan);
     };
     fetchActiveLoan();
@@ -252,7 +295,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchInvestiments = async () => {
-      const investments = investmentService.getInvestments();
+      const investments = await investmentService.getInvestments();
       setInvestments(investments);
     };
     fetchInvestiments();
@@ -260,25 +303,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchFeaturedLoans = async () => {
-      const loans = loansService.getLoans();
+      const loans = await loansService.getFeaturedLoans();
       setFeaturedLoans(loans);
     };
     fetchFeaturedLoans();
   }, []);
 
-  // TODO - REMOVE
-  const reset = () => {
-    setActiveLoan(null);
-    setInvestments(null);
-    setFeaturedLoans(null);
-  };
-
   return (
     !isLoading && (
       <Box>
-        <Button onClick={reset}>TODO - REMOVE</Button>
         <Typography variant="h2" color="secondary">
-          Welcome, {user.first_name} {user.last_name}!
+          Welcome, @{user.username}!
         </Typography>
         <Box paddingTop={3}>
           <Grid container spacing={4}>

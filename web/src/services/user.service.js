@@ -28,11 +28,15 @@ const getUserInfo = (id) => {
 };
 
 const getCurrentUserInfo = () => {
-  // TODO
-  return {
-    first_name: "pedro",
-    last_name: "moreira",
-  };
+  return instance
+    .get("/get/")
+    .then((response) => {
+      return response.data.user;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
 };
 
 export default {

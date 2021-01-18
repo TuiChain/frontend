@@ -277,7 +277,6 @@ const Panel = ({ title, subtitle, theme, children, hasPadding }) => {
   let subcolor = "#999";
 
   if (theme === "dark") {
-    console.log("here");
     background = "secondary.main";
     color = "secondary.contrastText";
   }
@@ -343,8 +342,7 @@ const Landing = () => {
                   textAlign="center"
                   style={{ padding: "0 14%" }}
                 >
-                  lorem lorem lorem lorem lorem asdf asd fasd fsasdfasdfasfdas
-                  fdsa asdfasdfasdfas df asdfasdfa sdf asdf
+                  A Blockchain Platform for Higher Education Funding
                 </Box>
               </Typography>
             </Box>
@@ -357,11 +355,7 @@ const Landing = () => {
                   display="flex"
                   justifyContent="flex-end"
                 >
-                  <img
-                    src={logo}
-                    className={classes.img}
-                    // style={{ width: "70%", marginRight: "-20%" }}
-                  />
+                  <img src={logo} className={classes.img} />
                 </Box>
               </Typography>
             </Grid>

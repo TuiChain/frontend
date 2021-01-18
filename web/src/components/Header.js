@@ -33,7 +33,7 @@ const Header = (props) => {
   );
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Grid container justify="flex-start">
           <Grid item>
@@ -45,17 +45,6 @@ const Header = (props) => {
             >
               <Logo />
             </IconButton>
-          </Grid>
-          {/* TODO: REMOVE: */}
-          <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              component={RouterLink}
-              to="/kyc"
-            >
-              KYC
-            </Button>
           </Grid>
         </Grid>
         <Grid container justify="flex-end">

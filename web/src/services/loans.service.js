@@ -116,51 +116,56 @@ const getLoan = (id) => {
 };
 
 const getActiveLoan = () => {
-  return {
-    id: 4,
-    student: 2,
-    request_date: "12/12/21",
-    school: "Universidade do minho",
-    course: "Mestrado Engenharia Informática",
-    destination: "Portugal",
-    requested_value_atto_dai: "80000000000000000000",
-    description: "ESTE É O MEU SONHO :)",
-    state: "Pending",
-    recipient_address: "idk",
-    identifier: "idk",
-  };
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      const loans = response.data.loans;
+      const filtered = loans.filter((loan) =>
+        ["PENDING", "FUNDING", "ACTIVE"].includes(loan.state.toUpperCase())
+      );
+      if (filtered.length > 0) {
+        const loan = filtered[0];
+        loan.requested_value =
+          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+        return loan;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
 };
 
 // TODO
-const getLoans = () => {
-  return [
-    {
-      id: 4,
-      student: 2,
-      request_date: "12/12/21",
-      school: "Universidade do minho",
-      course: "Mestrado Engenharia Informática",
-      destination: "Portugal",
-      requested_value_atto_dai: "80000000000000000000",
-      description: "ESTE É O MEU SONHO :)",
-      state: "Pending",
-      recipient_address: "idk",
-      identifier: "idk",
-    },
-    {
-      id: 5,
-      student: 2,
-      request_date: "12/12/21",
-      school: "Universidade do minho",
-      course: "Mestrado Engenharia Informática",
-      destination: "Portugal",
-      requested_value_atto_dai: "80000000000000000000",
-      description: "ESTE É O MEU SONHO :)",
-      state: "Pending",
-      recipient_address: "idk",
-      identifier: "idk",
-    },
-  ];
+const getFeaturedLoans = () => {
+  return instance
+    .get(`/get_state/ACTIVE/1/`)
+    .then((response) => {
+      let loans = response.data.loans;
+
+      // Get top 3
+      loans = loans.slice(0, 3);
+
+      loans.forEach((loan) => {
+        loan.requested_value =
+          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+      });
+
+      return loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
+    });
 };
 
 const getStudentLoans = () => {
@@ -177,7 +182,7 @@ const getStudentLoans = () => {
           : 0;
       });
 
-      return response.data.loans;
+      return loans;
     })
     .catch((error) => {
       console.log(error.response);
@@ -192,6 +197,6 @@ export default {
   rejectLoan,
   getLoan,
   getActiveLoan,
-  getLoans,
+  getFeaturedLoans,
   getStudentLoans,
 };
