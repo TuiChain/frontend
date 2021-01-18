@@ -34,7 +34,7 @@ function Student(props) {
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
-    setFetching(false)
+    setFetching(false);
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
@@ -107,56 +107,15 @@ function Student(props) {
                 <Typography variant="body1" display="inline">
                   {user.description}
                 </Typography>
-              </Box>
-              <Box className="par" display="flex" paddingLeft="5%">
-                <DAI />
-                <Typography variant="body1" display="inline">
-                  {user.amount}
-                </Typography>
-              </Box>
-            </Box2>
-          </Box>
-          <BoxDescr className="description">
-            <Typography variant="body1" display="inline">
-              {user.description}
-            </Typography>
-          </BoxDescr>
-        </Grid>
-        <Grid container spacing={2} className="container">
-          <Grid item xs={12} md={6}>
-            <Box
-              className="left-tok"
-              width="fit-content"
-              marginLeft="auto"
-              marginRight="auto"
-            >
-              <Box pt="10%" marginBottom="10%">
-                <Typography variant="h3">{"Tokens"}</Typography>
-              </Box>
-              <Box className="token">
-                <TextField
-                  type={"number"}
-                  label="Tokens"
-                  name="tokens"
-                  variant="outlined"
-                  onChange={(e) => {
-                    e.target.value = !Number.isInteger(e.target.value)
-                      ? Math.floor(e.target.value)
-                      : e.target.value;
-                    setTokens(e.target.value);
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  onClick={async () => {
-                    await LoansTransactionsService.provideFunds(
-                      props.match.params.id,
-                      tokens
-                    );
-                    await walletService.suggestStudentToken(user.token_address);
-                  }}
+              </BoxDescr>
+            </Grid>
+            <Grid container spacing={2} className="container">
+              <Grid item xs={12} md={6}>
+                <Box
+                  className="left-tok"
+                  width="fit-content"
+                  marginLeft="auto"
+                  marginRight="auto"
                 >
                   <Box pt="10%" marginBottom="10%">
                     <Typography variant="h3">{"Tokens"}</Typography>
@@ -178,12 +137,15 @@ function Student(props) {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      onClick={() =>
-                        LoansTransactionsService.provideFunds(
+                      onClick={async () => {
+                        await LoansTransactionsService.provideFunds(
                           props.match.params.id,
                           tokens
-                        )
-                      }
+                        );
+                        await walletService.suggestStudentToken(
+                          user.token_address
+                        );
+                      }}
                     >
                       Buy
                     </Button>
