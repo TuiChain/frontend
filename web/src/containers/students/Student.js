@@ -65,17 +65,16 @@ function Student(props) {
     );
 
     if (correct_chain) {
-      await walletService.suggestStudentToken(
-        user.token_address
-      );
+      await walletService.suggestStudentToken(user.token_address);
     } else {
       setToast({
-        message: "Maybe you're not connected to a wallet, or maybe you're in the wrong network!",
+        message:
+          "Maybe you're not connected to a wallet, or maybe you're in the wrong network!",
         severity: "error",
       });
       setOpen(true);
     }
-  }
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {

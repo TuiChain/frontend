@@ -23,7 +23,7 @@ instance.interceptors.request.use(
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to invest
- * 
+ *
  * @returns Boolean that represents if the chain was correct
  */
 async function provideFunds(loan_identifier, tokens) {
@@ -40,7 +40,7 @@ async function provideFunds(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to withdraw
- * 
+ *
  * @returns Boolean that represents if the chain was correct
  */
 async function withdrawFunds(loan_identifier, tokens) {
@@ -57,7 +57,7 @@ async function withdrawFunds(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to payback
- * 
+ *
  * @returns Boolean that represents if the chain was correct
  */
 async function makePayment(loan_identifier, tokens) {
@@ -74,7 +74,7 @@ async function makePayment(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to redeem
- * 
+ *
  * @returns Boolean that represents if the chain was correct
  */
 async function redeemTokens(loan_identifier, tokens) {
@@ -91,7 +91,7 @@ async function redeemTokens(loan_identifier, tokens) {
  *
  * @param { String } api_route API route to consume
  * @param {*} post_params Parameters needed for post
- * 
+ *
  * @returns Boolean that represents if the chain was correct
  */
 async function walletTransaction(api_route, post_params) {
