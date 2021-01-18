@@ -24,6 +24,15 @@ const theme = createMuiTheme({
       dark: "#C30023",
       contrastText: "#fff",
     },
+    phase: {
+      funding: "#F5B300",
+      expired: "#ED2E50",
+      canceled: "#ED2E50",
+      active: "#58C400",
+      finalized: "#293A41",
+      pending: "#109D96",
+      rejected: "#ED2E50",
+    },
   },
   overrides: {
     MuiButton: {
