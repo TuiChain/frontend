@@ -29,7 +29,7 @@ function Student(props) {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
-    setPercentage((temp.current_amount / temp.amount) * 100);
+    setPercentage((temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100);
     console.log(percentage);
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
@@ -98,7 +98,7 @@ function Student(props) {
                   <Box className="par" display="flex" paddingLeft="5%">
                     <DAI />
                     <Typography variant="body1" display="inline">
-                      {user.amount}
+                    {user.requested_value_atto_dai/Math.pow(10,18)}
                     </Typography>
                   </Box>
                 </Box2>
@@ -111,7 +111,11 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-                <Box
+              {user.state==="PENDING" && (<Box>
+              <Typography variant="h3">Request waiting for approval</Typography>
+            </Box>)
+            }
+              {user.state!="PENDING" && (<Box
                   className="left-tok"
                   width="fit-content"
                   marginLeft="auto"
@@ -126,6 +130,7 @@ function Student(props) {
                       label="Tokens"
                       name="tokens"
                       variant="outlined"
+                      InputProps={{ inputProps: { min: 0} }}
                       onChange={(e) => {
                         e.target.value = !Number.isInteger(e.target.value)
                           ? Math.floor(e.target.value)
@@ -153,7 +158,7 @@ function Student(props) {
                   <Box className="barra" paddingTop="5%">
                     <ProgressBar completed={percentage} />
                   </Box>
-                </Box>
+                </Box>)}
               </Grid>
             </Grid>
           </Grid>
