@@ -33,7 +33,7 @@ function Student(props) {
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
-    setFetching(false)
+    setFetching(false);
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
