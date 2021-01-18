@@ -15,6 +15,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
 function Student(props) {
@@ -33,7 +34,7 @@ function Student(props) {
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
-    setFetching(false)
+    setFetching(false);
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
@@ -136,12 +137,15 @@ function Student(props) {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      onClick={() =>
-                        LoansTransactionsService.provideFunds(
+                      onClick={async () => {
+                        await LoansTransactionsService.provideFunds(
                           props.match.params.id,
                           tokens
-                        )
-                      }
+                        );
+                        await walletService.suggestStudentToken(
+                          user.token_address
+                        );
+                      }}
                     >
                       Buy
                     </Button>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import Constants from "../constants";
+import TokenImageService from "./token-image.service";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -113,6 +114,9 @@ async function suggestToken(
 
 /**
  * Function that suggests adding DAI to an account
+ *
+ * @param { Object } ethereum Object which represents window.ethereum object
+ * @param { Object } tuichain_info Object which represents blockchain info from backend
  */
 async function suggestDAI(ethereum, tuichain_info) {
   if (
@@ -129,6 +133,27 @@ async function suggestDAI(ethereum, tuichain_info) {
       18,
       Constants.dai_svg
     );
+  }
+}
+
+/**
+ * Function that suggests adding student token to an account
+ *
+ * @param { String } student_token String which represents the student token address
+ * @param { String } symbol String which represents the symbol of student token
+ */
+async function suggestStudentToken(student_token) {
+  try {
+    const ethereum = checkConnection();
+    const tuichain_info = await requestBlockchainInfo();
+
+    if (tuichain_info != false && tuichain_info.chain_id == ethereum.chainId) {
+      const base64 = TokenImageService.generateTokenImage(student_token);
+
+      suggestToken(student_token, "TUI", 0, base64);
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -177,5 +202,6 @@ export default {
   connectToWallet,
   changeAccounts,
   suggestDAI,
+  suggestStudentToken,
   sendTransactions,
 };
