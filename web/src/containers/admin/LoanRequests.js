@@ -12,7 +12,7 @@ import {
   CardContent,
   CardActions,
   TextField,
-  Grid
+  Grid,
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -42,11 +42,23 @@ const ActionButton = ({ color, children, onClick }) => {
 };
 
 const Actions = (props) => {
-  const { onAccept, onReject, loanID, daysToExpiration, fundingFee, paymentFee  } = props;
+  const {
+    onAccept,
+    onReject,
+    loanID,
+    daysToExpiration,
+    fundingFee,
+    paymentFee,
+  } = props;
 
   return (
     <>
-      <ActionButton color="success" onClick={() => onAccept(loanID, daysToExpiration, fundingFee, paymentFee)}>
+      <ActionButton
+        color="success"
+        onClick={() =>
+          onAccept(loanID, daysToExpiration, fundingFee, paymentFee)
+        }
+      >
         <CheckCircleIcon />
       </ActionButton>
       <ActionButton color="error" onClick={() => onReject(loanID)}>
@@ -57,7 +69,6 @@ const Actions = (props) => {
 };
 
 const Description = ({ modal, onAccept, onReject, onClose }) => {
-
   const [days_to_expiration, setDaysToExpiration] = React.useState(100);
   const [funding_fee, setFundingFee] = React.useState(10);
   const [payment_fee, setPaymentFee] = React.useState(10);
@@ -102,7 +113,7 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
           <Typography variant="h5" component="h3">
             Amount
             <Typography paragraph>
-              {modal.requested_value_atto_dai / (10 ** 18)}
+              {modal.requested_value_atto_dai / 10 ** 18}
               <DAI />
             </Typography>
           </Typography>
@@ -118,7 +129,9 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 name="days_to_expiration"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 1 } }}
-                onChange={(e) => { setDaysToExpiration(e.target.value) }}
+                onChange={(e) => {
+                  setDaysToExpiration(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,7 +141,9 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 name="funding_fee"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 0, max: 100 } }}
-                onChange={(e) => { setFundingFee(e.target.value) }}
+                onChange={(e) => {
+                  setFundingFee(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -138,19 +153,21 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 name="payment_fee"
                 variant="outlined"
                 InputProps={{ inputProps: { min: 0, max: 100 } }}
-                onChange={(e) => { setPaymentFee(e.target.value) }}
+                onChange={(e) => {
+                  setPaymentFee(e.target.value);
+                }}
               />
             </Grid>
           </Grid>
         </CardContent>
         <CardActions>
-          <Actions 
+          <Actions
             loanID={modal.id}
             daysToExpiration={days_to_expiration}
             fundingFee={funding_fee}
             paymentFee={payment_fee}
-            onAccept={onAccept} 
-            onReject={onReject} 
+            onAccept={onAccept}
+            onReject={onReject}
           />
         </CardActions>
       </Card>
@@ -192,8 +209,18 @@ const LoanRequests = (props) => {
     setModal(false);
   };
 
-  const acceptRequest = async (id, days_to_expiration, funding_fee, payment_fee) => {
-    const valid = await LoansService.validateLoan(id, days_to_expiration, funding_fee, payment_fee);
+  const acceptRequest = async (
+    id,
+    days_to_expiration,
+    funding_fee,
+    payment_fee
+  ) => {
+    const valid = await LoansService.validateLoan(
+      id,
+      days_to_expiration,
+      funding_fee,
+      payment_fee
+    );
 
     if (valid) {
       const filtered_requests = requests.filter((e) => e.id != id);
@@ -252,7 +279,7 @@ const LoanRequests = (props) => {
       renderCell: (props) => {
         return (
           <>
-            <Typography>{props.value / (10 ** 18)}</Typography>
+            <Typography>{props.value / 10 ** 18}</Typography>
             <DAI size={16} />
           </>
         );

@@ -50,9 +50,8 @@ const getPendingLoans = async () => {
   const loans = await getAllLoans();
   let pending = [];
 
-  loans.forEach(element => {
-    if (element.state == "PENDING")
-      pending.push(element);
+  loans.forEach((element) => {
+    if (element.state == "PENDING") pending.push(element);
   });
 
   return pending;
