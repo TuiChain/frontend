@@ -23,6 +23,8 @@ instance.interceptors.request.use(
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to invest
+ * 
+ * @returns Boolean that represents if the chain was correct
  */
 async function provideFunds(loan_identifier, tokens) {
   let post = {
@@ -30,7 +32,7 @@ async function provideFunds(loan_identifier, tokens) {
     loan_id: loan_identifier,
   };
 
-  await walletTransaction("/provide_funds/", post);
+  return await walletTransaction("/provide_funds/", post);
 }
 
 /**
@@ -38,6 +40,8 @@ async function provideFunds(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to withdraw
+ * 
+ * @returns Boolean that represents if the chain was correct
  */
 async function withdrawFunds(loan_identifier, tokens) {
   let post = {
@@ -45,7 +49,7 @@ async function withdrawFunds(loan_identifier, tokens) {
     loan_id: loan_identifier,
   };
 
-  await walletTransaction("/withdraw_funds/", post);
+  return await walletTransaction("/withdraw_funds/", post);
 }
 
 /**
@@ -53,6 +57,8 @@ async function withdrawFunds(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to payback
+ * 
+ * @returns Boolean that represents if the chain was correct
  */
 async function makePayment(loan_identifier, tokens) {
   let post = {
@@ -60,7 +66,7 @@ async function makePayment(loan_identifier, tokens) {
     loan_id: loan_identifier,
   };
 
-  await walletTransaction("/make_payment/", post);
+  return await walletTransaction("/make_payment/", post);
 }
 
 /**
@@ -68,6 +74,8 @@ async function makePayment(loan_identifier, tokens) {
  *
  * @param { String } loan_identifier The id's loan identifier
  * @param { Number } tokens The number of tokens that user want to redeem
+ * 
+ * @returns Boolean that represents if the chain was correct
  */
 async function redeemTokens(loan_identifier, tokens) {
   let post = {
@@ -75,7 +83,7 @@ async function redeemTokens(loan_identifier, tokens) {
     loan_id: loan_identifier,
   };
 
-  await walletTransaction("/redeem_tokens/", post);
+  return await walletTransaction("/redeem_tokens/", post);
 }
 
 /**
@@ -83,12 +91,14 @@ async function redeemTokens(loan_identifier, tokens) {
  *
  * @param { String } api_route API route to consume
  * @param {*} post_params Parameters needed for post
+ * 
+ * @returns Boolean that represents if the chain was correct
  */
 async function walletTransaction(api_route, post_params) {
   return instance
     .post(api_route, post_params)
-    .then((response) => {
-      WalletService.sendTransactions(response.data.transactions);
+    .then(async (response) => {
+      return await WalletService.sendTransactions(response.data.transactions);
     })
     .catch((error) => {
       console.log(error);
