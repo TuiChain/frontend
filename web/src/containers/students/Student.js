@@ -123,17 +123,13 @@ function Student(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  onClick={
-                    async () => {                  
-                      await LoansTransactionsService.provideFunds(
-                        props.match.params.id,
-                        tokens
-                      );
-                      await walletService.suggestStudentToken(
-                        "0x77879Eb4aA119A9a190DD6cA32DE1Ca0BF66A535"
-                      );
-                    }
-                  }
+                  onClick={async () => {
+                    await LoansTransactionsService.provideFunds(
+                      props.match.params.id,
+                      tokens
+                    );
+                    await walletService.suggestStudentToken(user.token_address);
+                  }}
                 >
                   Buy
                 </Button>

@@ -99,7 +99,7 @@ const getLoan = (id) => {
   return instance
     .get("/get/" + id + "/")
     .then((response) => {
-      return response.data.loan_request;
+      return response.data.loan;
     })
     .catch((error) => {
       console.log(error);

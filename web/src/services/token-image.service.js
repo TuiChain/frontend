@@ -13,7 +13,10 @@ function generateTokenImage(tokenAddress) {
   let capSize = 814;
 
   let capBase64 = Constants.logo_png;
-  let identicon = jazzicon(svgDiameter, tokenAddress);
+  let identicon = jazzicon(
+    svgDiameter,
+    Number(BigInt(tokenAddress) & 0xffffffffn)
+  );
   let svg = identicon.childNodes[0];
 
   let background = document.createElementNS(
