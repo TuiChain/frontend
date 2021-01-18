@@ -33,6 +33,9 @@ const Home = () => {
       >
         Login
       </Button>
+      <Button variant="contained" color="secondary" component={Link} to="/kyc">
+        KYC
+      </Button>
     </div>
   );
 };

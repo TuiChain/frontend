@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
-import LoansService from "../../services/loans.service";
+import LoanRequestService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import InvestmentService from "../../services/investment.service";
 import { Euro, Create, School, Room } from "@material-ui/icons";
@@ -21,7 +21,7 @@ function Student(props) {
   let [percentage, setPercentage] = useState(0);
   let [tokens, setTokens] = useState(0);
   useEffect(async () => {
-    const temp = await LoansService.getLoan(props.match.params.id);
+    const temp = await LoanRequestService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
     setPercentage((temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100);
@@ -51,16 +51,6 @@ function Student(props) {
       paddingLeft: matches === false ? "12%" : "inherit",
       paddingRight: matches === false ? "12%" : "inherit",
       paddingBottom: matches === false ? "10%" : "inherit",
-    },
-  })(Box);
-  const BoxTok = withStyles({
-    root: {
-      display: user.state === "PENDING" ? "none" : "inherit",
-    },
-  })(Box);
-  const BoxPending = withStyles({
-    root: {
-      display: user.state === "PENDING" ? "inherit":"none",
     },
   })(Box);
   return (
@@ -100,7 +90,7 @@ function Student(props) {
               <Box className="par" display="flex" paddingLeft="5%">
                 <Euro />
                 <Typography variant="body1" display="inline">
-                  {user.requested_value_atto_dai/Math.pow(10,18)}
+                {user.requested_value_atto_dai/Math.pow(10,18)}
                 </Typography>
               </Box>
             </Box2>
@@ -113,8 +103,11 @@ function Student(props) {
         </Grid>
         <Grid container spacing={2} className="container">
           <Grid item xs={12} md={6}>
-            <BoxTok>
-            <Box
+          {user.state==="PENDING" && (<Box>
+              <Typography variant="h3">Request waiting for approval</Typography>
+            </Box>)
+            }
+          {user.state!="PENDING" && (<Box
               className="left-tok"
               width="fit-content"
               marginLeft="auto"
@@ -129,6 +122,7 @@ function Student(props) {
                   label="Tokens"
                   name="tokens"
                   variant="outlined"
+                  InputProps={{ inputProps: { min: 0} }}
                   onChange={(e) => {
                   setTokens(e.target.value)
                   console.log(tokens);
@@ -141,13 +135,7 @@ function Student(props) {
               <Box className="barra" paddingTop="5%">
                 <ProgressBar completed={percentage} />
               </Box>
-            </Box>
-            </BoxTok>
-            <BoxPending>
-            <Typography variant="h5" display="inline">
-              Waiting for approval
-            </Typography>
-            </BoxPending>
+            </Box>)}
           </Grid>
         </Grid>
       </Grid>
