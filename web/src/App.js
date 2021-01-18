@@ -17,6 +17,8 @@ import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
+import ManageLoan from "./containers/loans/ManageLoan";
+import Loans from "./containers/loans/Loans";
 import KycButton from "./containers/KycButton";
 
 const styles = {
@@ -63,6 +65,16 @@ const App = (props) => {
                 auth={auth}
                 path="/students/:id"
                 component={Student}
+              />
+              <ProtectedRoute
+                auth={auth}
+                path="/personal/loans/:id"
+                component={ManageLoan}
+              />
+              <ProtectedRoute
+                auth={auth}
+                path="/personal/loans"
+                component={Loans}
               />
               <ProtectedRoute
                 auth={auth}
