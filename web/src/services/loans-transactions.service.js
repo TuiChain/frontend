@@ -74,7 +74,7 @@ async function redeemTokens(loan_identifier, tokens) {
     amount_tokens: tokens,
     loan_id: loan_identifier,
   };
-  
+
   await walletTransaction("/redeem_tokens/", post);
 }
 
@@ -86,11 +86,9 @@ async function redeemTokens(loan_identifier, tokens) {
  *
  */
 async function walletTransaction(api_route, post_params) {
-  return instance
-    .post(api_route, post_params)
-    .then(async (response) => {
-      await WalletService.sendTransactions(response.data.transactions);
-    });
+  return instance.post(api_route, post_params).then(async (response) => {
+    await WalletService.sendTransactions(response.data.transactions);
+  });
 }
 
 export default {

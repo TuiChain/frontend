@@ -184,19 +184,14 @@ async function sendTransactions(transactionsParameters) {
   const tuichain_info = await requestBlockchainInfo();
 
   if (tuichain_info != false && tuichain_info.chain_id == ethereum.chainId) {
-
     for (const element of transactionsParameters) {
-
       const params = Object.assign({ from: checkAccount() }, element);
-            
-      await ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [params],
-        });
 
+      await ethereum.request({
+        method: "eth_sendTransaction",
+        params: [params],
+      });
     }
-
   } else {
     throw new Error("Incorrect chain ID");
   }

@@ -59,22 +59,15 @@ function Student(props) {
   })(Box);
 
   const handleButtonClick = async () => {
-
     try {
-
       await LoansTransactionsService.provideFunds(
         props.match.params.id,
         tokens
       );
-      
+
       await walletService.suggestStudentToken(user.token_address);
-
     } catch (e) {
-
-      console.log('error:', e.message);
-
       switch (e.message) {
-
         case "Invalid parameters: must provide an Ethereum address.":
           setToast({
             message: "Your account is not connected!",
@@ -90,12 +83,10 @@ function Student(props) {
           });
           setOpen(true);
           break;
-        
+
         default:
           break;
-          
       }
-
     }
   };
 
