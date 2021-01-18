@@ -279,7 +279,9 @@ const LoanRequests = (props) => {
       renderCell: (props) => {
         return (
           <>
-            <Typography>{props.value / 10 ** 18}</Typography>
+            <Box pr={1}>
+              <Typography>{props.value / 10 ** 18}</Typography>
+            </Box>
             <DAI size={16} />
           </>
         );
