@@ -3,16 +3,16 @@ import PropTypes from "prop-types";
 import {
   Box,
   Button,
-  Chip,
   TextField,
   Typography,
   withStyles,
   styled,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
-import { Create, School, Room, CloudUpload } from "@material-ui/icons";
+import { Create, School, Room, CloudUpload, Today } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import ProgressBar from "../../components/Progress";
+import Status from "../../components/Status";
 import { Redirect } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
@@ -36,39 +36,6 @@ const Panel = styled(Box)({
   padding: "15px 0",
 });
 
-const Status = ({ state }) => {
-  const matchState = (state) => {
-    switch (state) {
-      case "Funding":
-        return "#F5B300";
-      case "Expired":
-        return "#ED2E50";
-      case "Canceled":
-        return "#ED2E50";
-      case "Active":
-        return "#58C400";
-      case "Finalized":
-        return "#293A41";
-      case "Requested":
-        return "#109D96";
-      case "Rejected":
-        return "#ED2E50";
-      default:
-        return "#109D96";
-    }
-  };
-
-  const color = matchState(state);
-
-  return (
-    <Chip label={state} style={{ backgroundColor: color, color: "white" }} />
-  );
-};
-
-Status.propTypes = {
-  state: PropTypes.string,
-};
-
 const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
@@ -84,11 +51,11 @@ const ManageLoan = (props) => {
   }, []);
 
   const canCancel = (status) => {
-    return [0, 5].includes(status);
+    return ["FUNDING", "PENDING"].includes(status.toUpperCase());
   };
 
   const canSubmitDocuments = (status) => {
-    return [3, 4].includes(status);
+    return ["ACTIVE", "FINALIZED"].includes(status.toUpperCase());
   };
 
   return loan ? (
@@ -112,7 +79,7 @@ const ManageLoan = (props) => {
             <CenteredTypography variant="body1" color="secondary">
               <DAI />
               <span style={{ paddingLeft: 20 }}>
-                {loan.current_amount}/{loan.amount}
+                {loan.funded_value}/{loan.requested_value}
               </span>
             </CenteredTypography>
             <CenteredTypography variant="body1" color="secondary">
@@ -127,9 +94,17 @@ const ManageLoan = (props) => {
               <Room />
               <span style={{ paddingLeft: 10 }}>{loan.destination}</span>
             </CenteredTypography>
+            <CenteredTypography variant="body1" color="secondary">
+              <Today />
+              <span style={{ paddingLeft: 10 }}>
+                {loan.request_date.substring(0, 10)}
+              </span>
+            </CenteredTypography>
           </Box>
           <Box px={4} py={2}>
-            <ProgressBar completed={20} />
+            <ProgressBar
+              completed={(loan.funded_value * 100) / loan.requested_value}
+            />
           </Box>
           <Box px={4}>
             <Typography variant="subtitle2" paragraph>
@@ -154,7 +129,7 @@ const ManageLoan = (props) => {
             variant="contained"
             color="secondary"
             startIcon={<CloudUpload />}
-            disabled={!canSubmitDocuments(loan.status)}
+            disabled={!canSubmitDocuments(loan.state)}
           >
             Upload
           </Button>
@@ -170,7 +145,7 @@ const ManageLoan = (props) => {
           <Typography variant="body1" color="textSecondary" paragraph>
             WARNING: you can&apos;t go back!
           </Typography>
-          <ErrorButton variant="contained" disabled={!canCancel(loan.status)}>
+          <ErrorButton variant="contained" disabled={!canCancel(loan.state)}>
             Cancel
           </ErrorButton>
         </Panel>

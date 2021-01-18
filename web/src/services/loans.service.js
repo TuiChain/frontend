@@ -99,7 +99,15 @@ const getLoan = (id) => {
   return instance
     .get("/get/" + id + "/")
     .then((response) => {
-      return response.data.loan_request;
+      const loan = response.data.loan;
+
+      loan.requested_value = parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+      loan.funded_value = loan.funded_value_atto_dai
+        ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+        : 0;
+
+      return loan;
     })
     .catch((error) => {
       console.log(error);
@@ -111,27 +119,15 @@ const getStudentLoans = () => {
   return instance
     .get(`/get_personal/`)
     .then((response) => {
-      // TODO
-      console.log("Personal loans: ", response.data.loans);
-      for (let index = 0; index < 7; index++) {
-        response.data.loans.push(
-          JSON.parse(JSON.stringify(response.data.loans[0]))
-        );
-      }
-      response.data.loans[0].state = "Funding";
-      response.data.loans[1].state = "Expired";
-      response.data.loans[2].state = "Canceled";
-      response.data.loans[3].state = "Active";
-      response.data.loans[4].state = "Finalized";
-      response.data.loans[5].state = "Requested";
-      response.data.loans[6].state = "Rejected";
-      response.data.loans[0].id = 0;
-      response.data.loans[1].id = 1;
-      response.data.loans[2].id = 2;
-      response.data.loans[3].id = 3;
-      response.data.loans[4].id = 4;
-      response.data.loans[5].id = 5;
-      response.data.loans[6].id = 6;
+      const loans = response.data.loans;
+      loans.forEach((loan) => {
+        loan.requested_value =
+          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+      });
 
       return response.data.loans;
     })

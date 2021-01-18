@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import { DataGrid, GridOverlay } from "@material-ui/data-grid";
 import LoansService from "../../services/loans.service";
+import DAI from "../../components/DAI";
 
 const NoRowOverlay = () => {
   return (
@@ -44,20 +45,33 @@ function LoansList({ loans, loading }) {
       width: 210,
     },
     {
-      field: "amount",
-      headerName: "Amount",
-      type: "number",
+      field: "destination",
+      headerName: "Country",
       width: 110,
     },
     {
       field: "school",
       headerName: "School",
-      width: 280,
+      width: 240,
     },
     {
       field: "course",
       headerName: "Course",
-      width: 280,
+      width: 240,
+    },
+    {
+      field: "requested_value",
+      headerName: "Requested",
+      width: 170,
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => {
+        return (
+          <Box display="flex" alignItems="center">
+            <Box paddingRight={1}>{props.value}</Box>
+            <DAI size={16} />
+          </Box>
+        );
+      },
     },
   ];
 
@@ -99,7 +113,7 @@ const Loans = () => {
 
   const groupBy = (xs, key) => {
     return xs.reduce(function (rv, x) {
-      (rv[x[key]] = rv[x[key]] || []).push(x);
+      (rv[x[key].toUpperCase()] = rv[x[key].toUpperCase()] || []).push(x);
       return rv;
     }, {});
   };
@@ -107,19 +121,21 @@ const Loans = () => {
   const translateTab = (tab) => {
     switch (tab) {
       case 0:
-        return "Funding";
+        return "FUNDING";
       case 1:
-        return "Expired";
+        return "EXPIRED";
       case 2:
-        return "Canceled";
+        return "CANCELED";
       case 3:
-        return "Active";
+        return "ACTIVE";
       case 4:
-        return "Finalized";
+        return "FINALIZED";
       case 5:
-        return "Requested";
+        return "PENDING";
       case 6:
-        return "Rejected";
+        return "REJECTED";
+      case 7:
+        return "WITHDRAWN";
     }
   };
 
@@ -150,13 +166,14 @@ const Loans = () => {
             onChange={handleChange}
             aria-label="Vertical tabs example"
           >
-            <Tab label="Funding" /> {/* status=0 */}
-            <Tab label="Expired" /> {/* status=1 */}
-            <Tab label="Canceled" /> {/* status=2 */}
-            <Tab label="Active" /> {/* status=3 */}
-            <Tab label="Finalized" /> {/* status=4 */}
-            <Tab label="Requested" />
+            <Tab label="Funding" />
+            <Tab label="Expired" />
+            <Tab label="Canceled" />
+            <Tab label="Active" />
+            <Tab label="Finalized" />
+            <Tab label="Pending" />
             <Tab label="Rejected" />
+            <Tab label="Withdrawn" />
           </Tabs>
         </Grid>
         <Grid item xs={12} lg={10}>
