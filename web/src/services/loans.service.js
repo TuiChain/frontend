@@ -70,16 +70,16 @@ const getAllLoans = () => {
     });
 };
 
-const validateLoan = (id) => {
+const validateLoan = (id, days_to_expiration, funding_fee, payment_fee) => {
   return instance
     .put(`/validate/${id}/`, {
-      days_to_expiration: 100,
+      days_to_expiration,
       funding_fee_atto_dai_per_dai: (
-        BigInt(10) *
+        BigInt(funding_fee) *
         BigInt(10) ** BigInt(16)
       ).toString(),
       payment_fee_atto_dai_per_dai: (
-        BigInt(10) *
+        BigInt(payment_fee) *
         BigInt(10) ** BigInt(16)
       ).toString(),
     })
