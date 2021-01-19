@@ -119,6 +119,18 @@ const getLoan = (id) => {
     });
 };
 
+const getFundingLoans = () => {
+  return instance
+    .get("/get_state/FUNDING/1")
+    .then((response) => {
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
 const getStudentLoans = () => {
   return instance
     .get(`/get_personal/`)
@@ -147,5 +159,6 @@ export default {
   validateLoan,
   rejectLoan,
   getLoan,
+  getFundingLoans,
   getStudentLoans,
 };
