@@ -6,6 +6,7 @@ import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
 import { Create, School, Room } from "@material-ui/icons";
 import DAI from "../../components/DAI";
+import Toast from "../../components/Toast";
 import {
   Typography,
   TextField,
@@ -24,12 +25,16 @@ function Student(props) {
   const [percentage, setPercentage] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [fetching, setFetching] = useState(true);
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
 
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
-    setPercentage((temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100);
+    setPercentage(
+      (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100
+    );
     console.log(percentage);
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
@@ -54,6 +59,45 @@ function Student(props) {
       paddingBottom: matches === false ? "10%" : "inherit",
     },
   })(Box);
+
+  const handleButtonClick = async () => {
+    try {
+      await LoansTransactionsService.provideFunds(
+        props.match.params.id,
+        tokens
+      );
+
+      await walletService.suggestStudentToken(user.token_address);
+    } catch (e) {
+      switch (e.message) {
+        case "Invalid parameters: must provide an Ethereum address.":
+          setToast({
+            message: "Your account is not connected!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+
+        case "Incorrect chain ID":
+          setToast({
+            message: "You're not in the correct network!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   return (
     <>
@@ -98,7 +142,7 @@ function Student(props) {
                   <Box className="par" display="flex" paddingLeft="5%">
                     <DAI />
                     <Typography variant="body1" display="inline">
-                    {user.requested_value_atto_dai/Math.pow(10,18)}
+                      {user.requested_value_atto_dai / Math.pow(10, 18)}
                     </Typography>
                   </Box>
                 </Box2>
@@ -111,57 +155,57 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-              {user.state==="PENDING" && (<Box>
-              <Typography variant="h3">Request waiting for approval</Typography>
-            </Box>)
-            }
-              {user.state!="PENDING" && (<Box
-                  className="left-tok"
-                  width="fit-content"
-                  marginLeft="auto"
-                  marginRight="auto"
-                >
-                  <Box pt="10%" marginBottom="10%">
-                    <Typography variant="h3">{"Tokens"}</Typography>
+                {user.state === "PENDING" && (
+                  <Box>
+                    <Typography variant="h3">
+                      Request waiting for approval
+                    </Typography>
                   </Box>
-                  <Box className="token">
-                    <TextField
-                      type={"number"}
-                      label="Tokens"
-                      name="tokens"
-                      variant="outlined"
-                      InputProps={{ inputProps: { min: 0} }}
-                      onChange={(e) => {
-                        e.target.value = !Number.isInteger(e.target.value)
-                          ? Math.floor(e.target.value)
-                          : e.target.value;
-                        setTokens(e.target.value);
-                      }}
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      onClick={async () => {
-                        await LoansTransactionsService.provideFunds(
-                          props.match.params.id,
-                          tokens
-                        );
-                        await walletService.suggestStudentToken(
-                          user.token_address
-                        );
-                      }}
-                    >
-                      Buy
-                    </Button>
+                )}
+                {user.state != "PENDING" && (
+                  <Box
+                    className="left-tok"
+                    width="fit-content"
+                    marginLeft="auto"
+                    marginRight="auto"
+                  >
+                    <Box pt="10%" marginBottom="10%">
+                      <Typography variant="h3">{"Tokens"}</Typography>
+                    </Box>
+                    <Box className="token">
+                      <TextField
+                        type={"number"}
+                        label="Tokens"
+                        name="tokens"
+                        variant="outlined"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        onChange={(e) => {
+                          e.target.value = !Number.isInteger(e.target.value)
+                            ? Math.floor(e.target.value)
+                            : e.target.value;
+                          setTokens(e.target.value);
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        onClick={handleButtonClick}
+                      >
+                        Buy
+                      </Button>
+                    </Box>
+                    <Box className="barra" paddingTop="5%">
+                      <ProgressBar completed={percentage} />
+                    </Box>
                   </Box>
-                  <Box className="barra" paddingTop="5%">
-                    <ProgressBar completed={percentage} />
-                  </Box>
-                </Box>)}
+                )}
               </Grid>
             </Grid>
           </Grid>
+          <Toast open={open} onClose={handleClose} severity={toast.severity}>
+            {toast.message}
+          </Toast>
         </Box>
       )}
     </>

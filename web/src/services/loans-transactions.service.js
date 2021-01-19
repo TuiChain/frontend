@@ -83,16 +83,12 @@ async function redeemTokens(loan_identifier, tokens) {
  *
  * @param { String } api_route API route to consume
  * @param {*} post_params Parameters needed for post
+ *
  */
 async function walletTransaction(api_route, post_params) {
-  return instance
-    .post(api_route, post_params)
-    .then((response) => {
-      WalletService.sendTransactions(response.data.transactions);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  return instance.post(api_route, post_params).then(async (response) => {
+    await WalletService.sendTransactions(response.data.transactions);
+  });
 }
 
 export default {
