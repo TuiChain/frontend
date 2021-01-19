@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
 import Loans from "./containers/loans/Loans";
+import Market from "./containers/Market";
 
 const styles = {
   back: {
@@ -96,6 +97,7 @@ const App = (props) => {
                   component={LoanRequest}
                   wallet={wallet}
                 />
+                <ProtectedRoute auth={auth} path="/market" component={Market} />
                 <Route path="/login">
                   {auth ? (
                     auth.is_admin ? (
