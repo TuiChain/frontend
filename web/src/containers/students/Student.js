@@ -6,6 +6,7 @@ import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
 import { Create, School, Room } from "@material-ui/icons";
 import DAI from "../../components/DAI";
+import Toast from "../../components/Toast";
 import {
   Typography,
   TextField,
@@ -24,6 +25,8 @@ function Student(props) {
   const [percentage, setPercentage] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [fetching, setFetching] = useState(true);
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
 
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
@@ -56,6 +59,45 @@ function Student(props) {
       paddingBottom: matches === false ? "10%" : "inherit",
     },
   })(Box);
+
+  const handleButtonClick = async () => {
+    try {
+      await LoansTransactionsService.provideFunds(
+        props.match.params.id,
+        tokens
+      );
+
+      await walletService.suggestStudentToken(user.token_address);
+    } catch (e) {
+      switch (e.message) {
+        case "Invalid parameters: must provide an Ethereum address.":
+          setToast({
+            message: "Your account is not connected!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+
+        case "Incorrect chain ID":
+          setToast({
+            message: "You're not in the correct network!",
+            severity: "error",
+          });
+          setOpen(true);
+          break;
+
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   return (
     <>
@@ -148,15 +190,7 @@ function Student(props) {
                         variant="contained"
                         color="primary"
                         type="submit"
-                        onClick={async () => {
-                          await LoansTransactionsService.provideFunds(
-                            props.match.params.id,
-                            tokens
-                          );
-                          await walletService.suggestStudentToken(
-                            user.token_address
-                          );
-                        }}
+                        onClick={handleButtonClick}
                       >
                         Buy
                       </Button>
@@ -169,6 +203,9 @@ function Student(props) {
               </Grid>
             </Grid>
           </Grid>
+          <Toast open={open} onClose={handleClose} severity={toast.severity}>
+            {toast.message}
+          </Toast>
         </Box>
       )}
     </>
