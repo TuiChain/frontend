@@ -28,6 +28,34 @@ const getInvestmentInLoan = (loan_id, account_address) => {
     });
 };
 
+// Investments for dashboard - limits 3
+const getDashboardInvestments = () => {
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      let investments = response.data.investments;
+
+      investments = investments.slice(0, 3);
+
+      investments.forEach((investment) => {
+        investment.loan.requested_value = Number(
+          BigInt(investment.loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        );
+
+        investment.loan.funded_value = investment.loan.funded_value_atto_dai
+          ? parseInt(investment.loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+      });
+
+      return investments;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
+    });
+};
+
 export default {
   getInvestmentInLoan,
+  getDashboardInvestments,
 };
