@@ -31,16 +31,16 @@ function Student(props) {
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
-    console.log(temp);
+    console.log("loan:",temp);
 
     let percentage = (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100;
     percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
     setPercentage(percentage);
-    console.log(percentage);
+    console.log("percentage:",percentage);
 
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
-    console.log(Info.user);
+    console.log("user:",Info.user);
 
     setFetching(false);
   }, []);
