@@ -32,11 +32,16 @@ function Student(props) {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
-    setPercentage((temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100);
+
+    let percentage = (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100;
+    percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
+    setPercentage(percentage);
     console.log(percentage);
+
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log(Info.user);
+
     setFetching(false);
   }, []);
 
@@ -95,7 +100,7 @@ function Student(props) {
       return;
     }
     setOpen(false);
-  };
+  }; 
 
   return (
     <>
@@ -172,7 +177,7 @@ function Student(props) {
                       label="Tokens"
                       name="tokens"
                       variant="outlined"
-                      InputProps={{ inputProps: { min: 0} }}
+                      InputProps={{ inputProps: { min: 1 } }}
                       onChange={(e) => {
                         e.target.value = !Number.isInteger(e.target.value)
                           ? Math.floor(e.target.value)
