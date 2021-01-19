@@ -47,6 +47,11 @@ const NavMenu = (props) => {
     setProfileAnchorEl(null);
   };
 
+  const handleAction = (path) => {
+    history.push(path);
+    setActionsAnchorEl(null);
+  };
+
   const connect_button =
     wallet == null ? (
       <Button
@@ -116,6 +121,7 @@ const NavMenu = (props) => {
     <Grid item>
       {mobile ? (
         <>
+          {connect_button}
           <IconButton
             color="secondary"
             aria-label="menu"
@@ -130,14 +136,10 @@ const NavMenu = (props) => {
             open={Boolean(actionsAnchorEl)}
             onClose={handleActionsClose}
           >
-            <MenuItem disableGutters>
-              {studentsButton}
-            </MenuItem>
-            <MenuItem component="button" disableGutters>
-              {dashboardButton}
-            </MenuItem>
-            <MenuItem component="button" disableGutters>
-              {loanRequestButton}
+            <MenuItem onClick={() => handleAction("/students")}>Students</MenuItem>
+            <MenuItem onClick={() => handleAction("/dashboard")}>Dashboard</MenuItem>
+            <MenuItem onClick={() => handleAction("/request")}>
+              Request a Loan
             </MenuItem>
           </Menu>
         </>
