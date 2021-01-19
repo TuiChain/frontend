@@ -105,10 +105,12 @@ const getLoan = (id) => {
     .then((response) => {
       const loan = response.data.loan;
 
-      loan.requested_value = parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+      loan.requested_value = Number(
+        BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+      );
 
       loan.funded_value = loan.funded_value_atto_dai
-        ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+        ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
         : 0;
 
       return loan;
@@ -116,6 +118,34 @@ const getLoan = (id) => {
     .catch((error) => {
       console.log(error);
       return false;
+    });
+};
+
+const getActiveLoan = () => {
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      const loans = response.data.loans;
+      const filtered = loans.filter((loan) =>
+        ["PENDING", "FUNDING", "ACTIVE"].includes(loan.state.toUpperCase())
+      );
+      if (filtered.length > 0) {
+        const loan = filtered[0];
+
+        loan.requested_value = Number(
+          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        );
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+
+        return loan;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error.response);
     });
 };
 
@@ -128,6 +158,34 @@ const getFundingLoans = () => {
     .catch((error) => {
       console.log(error);
       return false;
+    });
+};
+
+// TODO
+const getFeaturedLoans = () => {
+  return instance
+    .get(`/get_state/ACTIVE/1/`)
+    .then((response) => {
+      let loans = response.data.loans;
+
+      // Get top 3
+      loans = loans.slice(0, 3);
+
+      loans.forEach((loan) => {
+        loan.requested_value = Number(
+          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        );
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+      });
+
+      return loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
     });
 };
 
@@ -145,7 +203,7 @@ const getStudentLoans = () => {
           : 0;
       });
 
-      return response.data.loans;
+      return loans;
     })
     .catch((error) => {
       console.log(error.response);
@@ -159,6 +217,8 @@ export default {
   validateLoan,
   rejectLoan,
   getLoan,
+  getActiveLoan,
+  getFeaturedLoans,
   getFundingLoans,
   getStudentLoans,
 };
