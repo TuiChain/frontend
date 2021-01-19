@@ -1,4 +1,5 @@
 import axios from "axios";
+import Web3 from "web3";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -18,8 +19,10 @@ instance.interceptors.request.use(
 );
 
 const getInvestmentInLoan = (loan_id, account_address) => {
+  const account = Web3.utils.toChecksumAddress(account_address);
+
   return instance
-    .get("/get/" + loan_id + "/" + account_address + "/")
+    .get("/get/" + loan_id + "/" + account + "/")
     .then((response) => {
       return response.data.loan;
     })

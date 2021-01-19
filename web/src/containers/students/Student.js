@@ -5,7 +5,6 @@ import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
 import InvestmentsService from "../../services/investment.service";
-import Web3 from "web3";
 import { Create, School, Room } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import Toast from "../../components/Toast";
@@ -51,7 +50,7 @@ function Student(props) {
     if (temp && temp.state.toUpperCase() == "FUNDING" && account != null) {
       const investment = await InvestmentsService.getInvestmentInLoan(
         temp.id,
-        Web3.utils.toChecksumAddress(account)
+        account
       );
       setInvestment(investment.nrTokens);
       console.log("investment:", investment);
