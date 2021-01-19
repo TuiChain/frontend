@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { Button, CardHeader, Chip, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
-import { green, yellow } from '@material-ui/core/colors';
+import { Button, CardHeader, Grid, makeStyles, TextField, Typography } from '@material-ui/core';
 import theme from '../theme';
 import SpinnerInput from './SpinnerInput';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import DAI from './DAI';
+import Status from './Status';
 
 const useStyles = makeStyles({
   root: {
@@ -39,26 +39,11 @@ const useStyles = makeStyles({
 
 });
 
-const getPhaseChipColor = (phase) => {
-  switch (phase) {
-    case 'active':
-      return green[400]
-    case 'funding':
-      return yellow[900]
-    case 'completed':
-      return theme.palette.primary.main
-  }
-}
-
 const investmentCardHeader = (classes, phase, loanName) =>
   <CardHeader
     className={classes.headers}
     action={
-      <Chip
-          className={classes.chip}
-          style={{backgroundColor: getPhaseChipColor(phase)}}
-          label={phase}
-        />
+      <Status state={phase} />
     }
     title={loanName}
   />
@@ -111,7 +96,7 @@ const activePhaseContent = (props) =>
   </Grid>
   </CardContent>
 
-const completedPhaseContent = (props) =>
+const finalizedPhaseContent = (props) =>
   <CardContent>
   <Grid style={{height: 250}} container direction='column' justify='space-between'>
     <Grid item>
@@ -214,8 +199,8 @@ const renderPhaseContent = props => {
       return activePhaseContent(props)
     case 'funding':
       return fundingPhaseContent(props)
-    case 'completed':
-      return completedPhaseContent(props)
+    case 'finalized':
+      return finalizedPhaseContent(props)
   }
 }
 

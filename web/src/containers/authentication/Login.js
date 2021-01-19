@@ -6,6 +6,7 @@ import {
   withStyles,
   Grid,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
@@ -125,7 +126,11 @@ const Login = (props) => {
               color="primary"
               disabled={formik.isSubmitting}
             >
-              Login
+              {formik.isSubmitting ? (
+                <CircularProgress color="secondary" size={20} />
+              ) : (
+                "Login"
+              )}
             </Button>
           </Grid>
         </Grid>

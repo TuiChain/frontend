@@ -34,7 +34,7 @@ const investmentsHardCoded = [
     id:2,
     loan:'Loan to Manel',
     tokens:42,
-    phase:'completed',
+    phase:'finalized',
     inMarketplace:0
   }
 ]

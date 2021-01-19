@@ -18,6 +18,22 @@ const theme = createMuiTheme({
       root: "#FCFCFC",
       paper: "white",
     },
+    error: {
+      light: "#FF6161",
+      main: "#ED2E50",
+      dark: "#C30023",
+      contrastText: "#fff",
+    },
+    phase: {
+      funding: "#F5B300",
+      expired: "#ED2E50",
+      canceled: "#ED2E50",
+      withdrawn: "#ED2E50",
+      active: "#58C400",
+      finalized: "#293A41",
+      pending: "#109D96",
+      rejected: "#ED2E50",
+    },
   },
   overrides: {
     MuiButton: {
@@ -54,6 +70,24 @@ const theme = createMuiTheme({
         "&:hover": {
           backgroundColor: "#c2c2c2",
         },
+      },
+    },
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          backgroundColor: "transparent",
+        },
+      },
+    },
+    MuiCheckbox: {
+      root: {
+        color: "#D7D8E7",
+      },
+    },
+    MuiSvgIcon: {
+      root: {
+        width: "0.8em",
+        height: "0.8em",
       },
     },
   },

@@ -46,11 +46,15 @@ const createLoan = (
     });
 };
 
-const getPendingLoans = () => {
+const getPendingLoans = async () => {
+  const loans = await getAllLoans();
+  return loans.filter((e) => e.state.toUpperCase() == "PENDING");
+};
+
+const getAllLoans = () => {
   return instance
-    .get("/get_all/") // todo
+    .get("/get_all/")
     .then((response) => {
-      console.log(response.data);
       return response.data.loans;
     })
     .catch((error) => {
@@ -59,16 +63,16 @@ const getPendingLoans = () => {
     });
 };
 
-const validateLoan = (id) => {
+const validateLoan = (id, days_to_expiration, funding_fee, payment_fee) => {
   return instance
     .put(`/validate/${id}/`, {
-      days_to_expiration: 100,
+      days_to_expiration,
       funding_fee_atto_dai_per_dai: (
-        BigInt(10) *
+        BigInt(funding_fee) *
         BigInt(10) ** BigInt(16)
       ).toString(),
       payment_fee_atto_dai_per_dai: (
-        BigInt(10) *
+        BigInt(payment_fee) *
         BigInt(10) ** BigInt(16)
       ).toString(),
     })
@@ -99,11 +103,53 @@ const getLoan = (id) => {
   return instance
     .get("/get/" + id + "/")
     .then((response) => {
-      return response.data.loan_request;
+      const loan = response.data.loan;
+
+      loan.requested_value = parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+      loan.funded_value = loan.funded_value_atto_dai
+        ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+        : 0;
+
+      return loan;
     })
     .catch((error) => {
       console.log(error);
       return false;
+    });
+};
+
+const getFundingLoans = () => {
+  return instance
+    .get("/get_state/FUNDING/1")
+    .then((response) => {
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
+const getStudentLoans = () => {
+  return instance
+    .get(`/get_personal/`)
+    .then((response) => {
+      const loans = response.data.loans;
+      loans.forEach((loan) => {
+        loan.requested_value =
+          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          : 0;
+      });
+
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
     });
 };
 
@@ -113,4 +159,6 @@ export default {
   validateLoan,
   rejectLoan,
   getLoan,
+  getFundingLoans,
+  getStudentLoans,
 };

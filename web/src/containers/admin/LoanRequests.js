@@ -11,6 +11,8 @@ import {
   Card,
   CardContent,
   CardActions,
+  TextField,
+  Grid,
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -40,11 +42,23 @@ const ActionButton = ({ color, children, onClick }) => {
 };
 
 const Actions = (props) => {
-  const { onAccept, onReject, loanID } = props;
+  const {
+    onAccept,
+    onReject,
+    loanID,
+    daysToExpiration,
+    fundingFee,
+    paymentFee,
+  } = props;
 
   return (
     <>
-      <ActionButton color="success" onClick={() => onAccept(loanID)}>
+      <ActionButton
+        color="success"
+        onClick={() =>
+          onAccept(loanID, daysToExpiration, fundingFee, paymentFee)
+        }
+      >
         <CheckCircleIcon />
       </ActionButton>
       <ActionButton color="error" onClick={() => onReject(loanID)}>
@@ -54,61 +68,112 @@ const Actions = (props) => {
   );
 };
 
-const Description = ({ modal, onAccept, onReject, onClose }) => (
-  <Modal
-    open={Boolean(modal)}
-    onClose={onClose}
-    aria-labelledby="simple-modal-title"
-    aria-describedby="simple-modal-description"
-    style={{
-      display: "flex",
-      maxWidth: "80%",
-      margin: "0 auto",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-    <Card variant="outlined">
-      <CardContent>
-        <Typography color="textSecondary" variant="h4" gutterBottom>
-          Loan #{modal.id}
-        </Typography>
-        <Typography variant="h5" component="h3">
-          Request date
-          <Typography paragraph>
-            {new Date(modal.request_date).toLocaleString()}
+const Description = ({ modal, onAccept, onReject, onClose }) => {
+  const [days_to_expiration, setDaysToExpiration] = React.useState(100);
+  const [funding_fee, setFundingFee] = React.useState(10);
+  const [payment_fee, setPaymentFee] = React.useState(10);
+
+  return (
+    <Modal
+      open={Boolean(modal)}
+      onClose={onClose}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      style={{
+        display: "flex",
+        maxWidth: "80%",
+        margin: "0 auto",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Card variant="outlined">
+        <CardContent>
+          <Typography color="textSecondary" variant="h4" gutterBottom>
+            Loan #{modal.id}
           </Typography>
-        </Typography>
-        <Typography variant="h5" component="h3">
-          Destination
-          <Typography paragraph>{modal.destination}</Typography>
-        </Typography>
-        <Typography variant="h5" component="h3">
-          School
-          <Typography paragraph>{modal.school}</Typography>
-        </Typography>
-        <Typography variant="h5" component="h3">
-          Course
-          <Typography paragraph>{modal.course}</Typography>
-        </Typography>
-        <Typography variant="h5" component="h3">
-          Amount
-          <Typography paragraph>
-            {modal.amount}
-            <DAI />
+          <Typography variant="h5" component="h3">
+            Request date
+            <Typography paragraph>
+              {new Date(modal.request_date).toLocaleString()}
+            </Typography>
           </Typography>
-        </Typography>
-        <Typography variant="h5" component="h3">
-          Description
-          <Typography paragraph>{modal.desc}</Typography>
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Actions loanID={modal.id} onAccept={onAccept} onReject={onReject} />
-      </CardActions>
-    </Card>
-  </Modal>
-);
+          <Typography variant="h5" component="h3">
+            Destination
+            <Typography paragraph>{modal.destination}</Typography>
+          </Typography>
+          <Typography variant="h5" component="h3">
+            School
+            <Typography paragraph>{modal.school}</Typography>
+          </Typography>
+          <Typography variant="h5" component="h3">
+            Course
+            <Typography paragraph>{modal.course}</Typography>
+          </Typography>
+          <Typography variant="h5" component="h3">
+            Amount
+            <Typography paragraph>
+              {modal.requested_value_atto_dai / 10 ** 18}
+              <DAI />
+            </Typography>
+          </Typography>
+          <Typography variant="h5" component="h3">
+            Description
+            <Typography paragraph>{modal.description}</Typography>
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                type="number"
+                label="Days to Expiration"
+                name="days_to_expiration"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 1 } }}
+                onChange={(e) => {
+                  setDaysToExpiration(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                type="number"
+                label="Funding Fee (%)"
+                name="funding_fee"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                onChange={(e) => {
+                  setFundingFee(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                type="number"
+                label="Payment Fee (%)"
+                name="payment_fee"
+                variant="outlined"
+                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                onChange={(e) => {
+                  setPaymentFee(e.target.value);
+                }}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardActions>
+          <Actions
+            loanID={modal.id}
+            daysToExpiration={days_to_expiration}
+            fundingFee={funding_fee}
+            paymentFee={payment_fee}
+            onAccept={onAccept}
+            onReject={onReject}
+          />
+        </CardActions>
+      </Card>
+    </Modal>
+  );
+};
 
 const LoanRequests = (props) => {
   const { classes } = props;
@@ -129,7 +194,6 @@ const LoanRequests = (props) => {
   useEffect(() => {
     async function fetchRequests() {
       const data = await LoansService.getPendingLoans();
-      console.log(data);
       setRequests(data);
       setLoading(false);
     }
@@ -139,16 +203,24 @@ const LoanRequests = (props) => {
   // Description modal
   const [modal, setModal] = useState(false);
   const handleModalOpen = (request) => {
-    console.log(request);
     setModal(request);
   };
   const handleModalClose = () => {
     setModal(false);
   };
 
-  const acceptRequest = async (id) => {
-    console.log("ID:", id);
-    const valid = await LoansService.validateLoan(id);
+  const acceptRequest = async (
+    id,
+    days_to_expiration,
+    funding_fee,
+    payment_fee
+  ) => {
+    const valid = await LoansService.validateLoan(
+      id,
+      days_to_expiration,
+      funding_fee,
+      payment_fee
+    );
 
     if (valid) {
       const filtered_requests = requests.filter((e) => e.id != id);
@@ -199,7 +271,7 @@ const LoanRequests = (props) => {
       width: 210,
     },
     {
-      field: "amount",
+      field: "requested_value_atto_dai",
       headerName: "Amount",
       type: "number",
       width: 110,
@@ -207,7 +279,9 @@ const LoanRequests = (props) => {
       renderCell: (props) => {
         return (
           <>
-            <Typography>{props.value}</Typography>
+            <Box pr={1}>
+              <Typography>{props.value / 10 ** 18}</Typography>
+            </Box>
             <DAI size={16} />
           </>
         );
@@ -244,6 +318,9 @@ const LoanRequests = (props) => {
       renderCell: (props) => (
         <Actions
           loanID={props.row.id}
+          daysToExpiration={100}
+          fundingFee={10}
+          paymentFee={10}
           onAccept={acceptRequest}
           onReject={rejectRequest}
         />
