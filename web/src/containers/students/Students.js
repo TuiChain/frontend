@@ -150,7 +150,7 @@ const LoansGrid = styled(Grid)({
   },
 });
 
-const LoansGridItem = ({ loanCard, width }) => {
+const LoansGridItem = ({ loanCard, width, studentId }) => {
   const slim = width > 600 && width < 700;
   return (
     <Grid
@@ -161,7 +161,9 @@ const LoansGridItem = ({ loanCard, width }) => {
       md={width < 1060 ? 6 : 4}
       xl={3}
     >
-      {loanCard}
+      <Link href={`/students/${studentId}`} underline="none">
+        {loanCard}
+      </Link>
     </Grid>
   );
 };
@@ -456,28 +458,23 @@ const FundingLoans = (props) => {
         <LoansGrid container direction="row" alignItems="center" spacing={10}>
           {filteredLoans.map((l) => {
             return (
-              <Link
-                href={`/students/${l.student}`}
-                key={l.student}
-                underline="none"
-              >
-                <LoansGridItem
-                  key={l.id}
-                  width={width}
-                  loanCard={
-                    <LoanCard
-                      name={l.user_full_name}
-                      photo={l.photo}
-                      school={l.school}
-                      course={l.course}
-                      destination={l.destination}
-                      tuition={
-                        Number(l.requested_value_atto_dai) / Math.pow(10, 18)
-                      }
-                    />
-                  }
-                />
-              </Link>
+              <LoansGridItem
+                key={l.id}
+                width={width}
+                studentId={l.student}
+                loanCard={
+                  <LoanCard
+                    name={l.user_full_name}
+                    photo={l.photo}
+                    school={l.school}
+                    course={l.course}
+                    destination={l.destination}
+                    tuition={
+                      Number(l.requested_value_atto_dai) / Math.pow(10, 18)
+                    }
+                  />
+                }
+              />
             );
           })}
         </LoansGrid>
@@ -500,6 +497,7 @@ LoansGridItem.propTypes = {
   loanCard: PropTypes.object,
   width: PropTypes.number,
   key: PropTypes.string,
+  studentId: PropTypes.number,
 };
 
 SearchBar.propTypes = {
