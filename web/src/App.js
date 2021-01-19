@@ -12,6 +12,7 @@ import LoanRequests from "./containers/admin/LoanRequests";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
+import Students from "./containers/students/Students";
 import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
@@ -92,6 +93,7 @@ const App = (props) => {
                   <Signup onSignUp={handlerLogin} />
                 )}
               </Route>
+              <Route path="/students" component={Students} />
               {/* ADMIN ROUTES */}
               <ProtectedRoute
                 auth={auth}

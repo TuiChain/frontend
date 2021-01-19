@@ -39,6 +39,7 @@ function Student(props) {
     setPercentage(percentage);
     console.log("percentage:", percentage);
 
+
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
     console.log("user:", Info.user);
