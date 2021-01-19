@@ -7,6 +7,7 @@ import { green, yellow } from '@material-ui/core/colors';
 import theme from '../theme';
 import SpinnerInput from './SpinnerInput';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
+import DAI from './DAI';
 
 const useStyles = makeStyles({
   root: {
@@ -141,7 +142,7 @@ const completedPhaseContent = (props) =>
             style={{width: 100, marginRight: 30}}
             variant="standard"
             value={props.tokens*1} //received from the backend
-            currencySymbol="$"
+            currencySymbol={<DAI/>}
             outputFormat="number"
             disabled
           />
@@ -190,7 +191,7 @@ const fundingPhaseContent = (props) =>
             style={{width: 100}}
             variant="standard"
             value={props.tokens}
-            currencySymbol="$"
+            currencySymbol={<DAI />}
             outputFormat="number"
             disabled
           />

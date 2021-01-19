@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
-
 import React, { useEffect, useState } from "react";
-import LoanRequestService from "../../services/loanrequest.service";
+import LoansService from "../../services/loans.service";
 import { DataGrid } from "@material-ui/data-grid";
 import {
   IconButton,
@@ -13,11 +11,11 @@ import {
   Card,
   CardContent,
   CardActions,
-  Button,
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Toast from "../../components/Toast";
+import DAI from "../../components/DAI";
 
 const styles = {
   grid: {
@@ -95,7 +93,10 @@ const Description = ({ modal, onAccept, onReject, onClose }) => (
         </Typography>
         <Typography variant="h5" component="h3">
           Amount
-          <Typography paragraph>{modal.amount}€</Typography>
+          <Typography paragraph>
+            {modal.amount}
+            <DAI />
+          </Typography>
         </Typography>
         <Typography variant="h5" component="h3">
           Description
@@ -127,7 +128,7 @@ const LoanRequests = (props) => {
   const [requests, setRequests] = useState([]);
   useEffect(() => {
     async function fetchRequests() {
-      const data = await LoanRequestService.getPendingLoanRequests();
+      const data = await LoansService.getPendingLoans();
       console.log(data);
       setRequests(data);
       setLoading(false);
@@ -147,7 +148,7 @@ const LoanRequests = (props) => {
 
   const acceptRequest = async (id) => {
     console.log("ID:", id);
-    const valid = await LoanRequestService.validateLoanRequest(id);
+    const valid = await LoansService.validateLoan(id);
 
     if (valid) {
       const filtered_requests = requests.filter((e) => e.id != id);
@@ -168,7 +169,7 @@ const LoanRequests = (props) => {
 
   const rejectRequest = async (id) => {
     console.log("ID REJECTED:", id);
-    const valid = await LoanRequestService.closeLoanRequest(id);
+    const valid = await LoansService.rejectLoan(id);
 
     if (valid) {
       const filtered_requests = requests.filter((e) => e.id != id);
@@ -202,6 +203,15 @@ const LoanRequests = (props) => {
       headerName: "Amount",
       type: "number",
       width: 110,
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => {
+        return (
+          <>
+            <Typography>{props.value}</Typography>
+            <DAI size={16} />
+          </>
+        );
+      },
     },
     {
       field: "school",

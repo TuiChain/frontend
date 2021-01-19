@@ -4,6 +4,7 @@ import { Grid, IconButton, TextField } from '@material-ui/core';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
+import DAI from './DAI';
 
 const SpinnerInput = (props) => {
   const step = props.step || 1
@@ -80,7 +81,7 @@ const SpinnerInput = (props) => {
           style={{width: 100}}
           variant="standard"
           value={value}
-          currencySymbol="$"
+          currencySymbol={<DAI />}
           outputFormat="number"
           onChange={(event, value)=> setValue(value)}
           minimumValue={props.minValue}

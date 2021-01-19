@@ -5,17 +5,13 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
-//import AuthService from "../services/auth.service";
-import WalletService from "../services/wallet.service";
 import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
-const NavMenu = (props) => {
-  const { onLogout, wallet, setWallet } = props;
+const NavMenuAdmin = (props) => {
+  const { onLogout } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
-
-  WalletService.changeAccounts(setWallet);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,38 +26,15 @@ const NavMenu = (props) => {
     onLogout();
   };
 
-  const connect_button =
-    wallet == null ? (
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => WalletService.connectToWallet()}
-      >
-        Connect Wallet
-      </Button>
-    ) : wallet != 0 ? (
-      <Button variant="contained" color="secondary" disabled>
-        Connected
-      </Button>
-    ) : (
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => window.open("https://metamask.io/")}
-      >
-        Install Metamask
-      </Button>
-    );
-
   const nav_items = (
     <>
       <Button
         variant="contained"
         color="secondary"
         component={RouterLink}
-        to="/request"
+        to="/admin/requests"
       >
-        Request a Loan
+        Pending
       </Button>
     </>
   );
@@ -69,7 +42,6 @@ const NavMenu = (props) => {
   return (
     <Grid item>
       {nav_items}
-      {connect_button}
       <IconButton
         color="secondary"
         aria-label="menu"
@@ -86,12 +58,10 @@ const NavMenu = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Grid>
   );
 };
 
-export default NavMenu;
+export default NavMenuAdmin;
