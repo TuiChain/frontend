@@ -119,7 +119,6 @@ const getFundingLoans = () => {
   return instance
     .get("/get_state/FUNDING/1")
     .then((response) => {
-      console.log(response);
       return response.data.loans;
     })
     .catch((error) => {

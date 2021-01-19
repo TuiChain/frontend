@@ -71,7 +71,7 @@ const LoanCard = ({ name, photo, course, school, tuition, destination }) => {
   return (
     <StyledCardActionArea>
       <StyledCard>
-        <CardMedia classes={styles} image={photo} />
+        <CardMedia classes={styles} image={photo} component="img" />
         <CardContent>
           <LoanInfo
             name={name}

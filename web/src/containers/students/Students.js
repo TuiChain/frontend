@@ -104,7 +104,7 @@ const CheckboxFilter = ({
   mobile,
 }) => {
   return (
-    <FilterBox mobile={mobile}>
+    <FilterBox mobile={mobile.toString()}>
       <FilterTitle title={name} mobile={mobile} />
       {mobile && <Separator color={backgroundColor2} />}
       <Grid style={{ paddingTop: mobile && "1rem" }} container>
@@ -384,14 +384,14 @@ const FundingLoans = (props) => {
       <Typography variant="h2" paragraph>
         Loans
       </Typography>
-      <SearchBox mobile={mobile}>
+      <SearchBox mobile={mobile.toString()}>
         <SearchBar
           mobile={mobile}
           input={searchInput}
           handleInput={updateInput}
         />
         <FilterButton
-          mobile={mobile}
+          mobile={mobile.toString()}
           startIcon={<TuneIcon />}
           variant={displayFilters ? "outlined" : "contained"}
           color="primary"
@@ -400,7 +400,11 @@ const FundingLoans = (props) => {
           {displayFilters ? "Hide Filters" : "Show Filters"}
         </FilterButton>
       </SearchBox>
-      <SearchArea opened={displayFilters} container justify="space-between">
+      <SearchArea
+        opened={displayFilters.toString()}
+        container
+        justify="space-between"
+      >
         {displayFilters && (
           <>
             <Grid item xs={12} md={4}>
@@ -469,9 +473,9 @@ const FundingLoans = (props) => {
                     school={l.school}
                     course={l.course}
                     destination={l.destination}
-                    tuition={
-                      Number(l.requested_value_atto_dai) / Math.pow(10, 18)
-                    }
+                    tuition={Number(
+                      BigInt(l.requested_value_atto_dai) / BigInt(10 ** 18)
+                    )}
                   />
                 }
               />
@@ -496,7 +500,6 @@ FundingLoans.propTypes = {
 LoansGridItem.propTypes = {
   loanCard: PropTypes.object,
   width: PropTypes.number,
-  key: PropTypes.string,
   studentId: PropTypes.number,
 };
 
