@@ -11,6 +11,7 @@ import {
   Typography,
   TextField,
   Button,
+  ButtonGroup,
   Grid,
   Box,
   useMediaQuery,
@@ -191,14 +192,25 @@ function Student(props) {
                           setTokens(e.target.value);
                         }}
                       />
-                      <Button
-                        variant="contained"
+                      <ButtonGroup
+                        disableElevation
+                        variant="contained" 
                         color="primary"
-                        type="submit"
-                        onClick={handleButtonClick}
                       >
-                        Buy
-                      </Button>
+                        <Button
+                          type="submit"
+                          disabled={tokens == 0}
+                          onClick={handleButtonClick}
+                        >
+                          Buy
+                        </Button>
+                        <Button
+                          type="submit"
+                          onClick={handleButtonClick}
+                        >
+                          Withdraw
+                        </Button>
+                      </ButtonGroup>
                     </Box>
                     <Box className="barra" paddingTop="5%">
                       <ProgressBar completed={percentage} />
