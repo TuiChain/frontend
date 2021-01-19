@@ -62,16 +62,17 @@ const App = (props) => {
             <Layout auth={auth}>
               <Switch>
                 <Route exact path="/">
-                  {auth ? (
-                    auth.is_admin ? (
-                      <Redirect to="/admin/requests" />
-                    ) : (
-                      <Dashboard />
-                    )
+                  {auth && auth.is_admin ? (
+                    <Redirect to="/admin/requests" />
                   ) : (
                     <Landing />
                   )}
                 </Route>
+                <ProtectedRoute
+                  auth={auth}
+                  path="/dashboard"
+                  component={Dashboard}
+                />
                 <ProtectedRoute
                   auth={auth}
                   path="/students/:id"
@@ -95,14 +96,14 @@ const App = (props) => {
                 />
                 <Route path="/login">
                   {auth ? (
-                    <Redirect to="/" />
+                    <Redirect to="/dashboard" />
                   ) : (
                     <Login onLogin={handlerLogin} />
                   )}
                 </Route>
                 <Route path="/signup">
                   {auth ? (
-                    <Redirect to="/" />
+                    <Redirect to="/dashboard" />
                   ) : (
                     <Signup onSignUp={handlerLogin} />
                   )}

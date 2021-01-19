@@ -295,7 +295,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchInvestiments = async () => {
-      const investments = await investmentService.getInvestments();
+      const investments = await investmentService.getDashboardInvestments();
       setInvestments(investments);
     };
     fetchInvestiments();

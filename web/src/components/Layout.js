@@ -20,17 +20,11 @@ const Inside = styled(Box)({
   },
 });
 
-const Layout = ({ children, match, auth }) => {
+const Layout = ({ children, match }) => {
   const is_home_page = match.isExact; // "/" is the only exact path
 
   return is_home_page ? (
-    !auth ? (
-      <Content>{children}</Content>
-    ) : (
-      <Content>
-        <Inside>{children}</Inside>
-      </Content>
-    )
+    <Content>{children}</Content>
   ) : (
     <Content>
       <Inside>{children}</Inside>
@@ -43,10 +37,6 @@ Layout.propTypes = {
   match: PropTypes.shape({
     isExact: PropTypes.bool,
   }),
-  auth: PropTypes.oneOfType([
-    PropTypes.object, // user token & type
-    PropTypes.bool, // no auth token (false)
-  ]),
 };
 
 export default withRouter(Layout);

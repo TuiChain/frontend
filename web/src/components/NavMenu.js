@@ -59,6 +59,14 @@ const NavMenu = (props) => {
         variant="contained"
         color="secondary"
         component={RouterLink}
+        to="/dashboard"
+      >
+        Dashboard
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={RouterLink}
         to="/request"
       >
         Request a Loan

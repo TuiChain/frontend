@@ -14,8 +14,10 @@ import {
   StepLabel,
   Button,
   SvgIcon,
+  IconButton,
 } from "@material-ui/core";
-import Carousel from "react-material-ui-carousel";
+import SettingsBackupRestoreIcon from "@material-ui/icons/SettingsBackupRestore";
+// import Carousel from "react-material-ui-carousel";
 import world from "../assets/images/world.png";
 import logo from "../assets/images/logo-white.png";
 import { ReactComponent as Quote } from "../assets/icons/left-quote.svg";
@@ -117,7 +119,6 @@ const useTestimonialsStyles = makeStyles((theme) => ({
   },
 }));
 
-/* eslint-disable no-unused-vars */
 const Testimonial = ({ testimonial, name, job }) => {
   const classes = useTestimonialsStyles();
 
@@ -164,7 +165,13 @@ const useStylesTutorial = makeStyles((theme) => ({
 function getSteps(user) {
   return user === "student"
     ? ["Create an account", "Make a request", "Wait to be funded", "Pay back"]
-    : ["2", "3", "4"];
+    : [
+        "Create an account",
+        "Finance a student",
+        "Receive tokens",
+        "Secondary market",
+        "Exchange tokens",
+      ];
 }
 
 function getStepContent(stepIndex, user) {
@@ -175,7 +182,13 @@ function getStepContent(stepIndex, user) {
       "Wait to be funded because not everyone can finance your request and other students can be in the same situation as you!",
       "Pay back the money you received through planned payments only when you have the financial means to do so!",
     ],
-    investor: ["ola2", "asd", "asdasd"],
+    investor: [
+      "Create an account to help others get the money they need to study",
+      "Make an investment to finance a loan requested by a student",
+      "Receive tokens that represent your funding and can be exchanged later",
+      "Sell or buy tokens in the market to possibly get a better return on your investment",
+      "Exchange your tokens for currency when the loan is paid off by the student",
+    ],
   };
 
   return steps[user][stepIndex];
@@ -220,13 +233,13 @@ const Tutorial = () => {
               You&apos;re now ready to start using our application. Good luck!
             </Typography>
             <Box display="flex" justifyContent="center" pt={3}>
-              <Button
+              <IconButton
                 color="secondary"
                 variant="outlined"
                 onClick={handleReset}
               >
-                Reset
-              </Button>
+                <SettingsBackupRestoreIcon />
+              </IconButton>
             </Box>
           </Box>
         ) : (
@@ -246,6 +259,15 @@ const Tutorial = () => {
               <Button variant="contained" color="primary" onClick={handleNext}>
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
+            </Box>
+            <Box display="flex" justifyContent="center" pt={1}>
+              <IconButton
+                color="secondary"
+                variant="outlined"
+                onClick={handleReset}
+              >
+                <SettingsBackupRestoreIcon />
+              </IconButton>
             </Box>
           </Box>
         )}
@@ -446,7 +468,7 @@ const Landing = () => {
         <Tutorial />
       </Panel>
 
-      <Panel
+      {/* <Panel
         title="Our Testimonials"
         subtitle="What our users think about us"
         theme="dark"
@@ -466,7 +488,7 @@ const Landing = () => {
             job="teste1241234"
           />
         </Carousel>
-      </Panel>
+      </Panel> */}
     </Box>
   );
 };
