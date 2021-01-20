@@ -4,7 +4,8 @@ import SimpleTable from "../components/SimpleTable";
 import MonetizationOnTwoToneIcon from "@material-ui/icons/MonetizationOnTwoTone";
 import { yellow } from '@material-ui/core/colors';
 import InvestmentCard from "../components/InvestmentCard";
-import InvestmentsService from "../services/investments.service";
+import investmentService from "../services/investment.service";
+import walletService from "../services/wallet.service";
 
 const columns = [
   { field: "loan", headerName: "Loan", width: 160, headerClassName: 'data-grid-header'},
@@ -30,16 +31,21 @@ const columns = [
 
 const Investments = () => {
   const [investments, setInvestments] = useState([])
-  const [selected, setSelected] = useState({loan: 'Mock'})
+  const [selected, setSelected] = useState()
 
   useEffect(() => {
-    async function getResponseFromAPI() {
-     const response = await InvestmentsService.getPersonal()
+    async function getResponseFromAPI(account) {
+     const response = await investmentService.getPersonal(account)
      setInvestments(response)
      setSelected(response[0])
     }
     
-    getResponseFromAPI()
+    const account = walletService.checkAccount();
+    if(account != null) {
+      getResponseFromAPI(account)
+    }
+
+    
   },[])
 
   const useStyles = makeStyles(theme => ({
@@ -77,13 +83,15 @@ const Investments = () => {
           </div>
         </Grid>
         <Grid item xs={5}>
-          <InvestmentCard 
-            loanName={selected.loan}
-            phase={selected.phase}
-            tokens={selected.tokens}
-            inMarketplace={selected.inMarketplace}
-            loanId={selected.id}
-          />
+          { selected != undefined &&
+              <InvestmentCard 
+                loanName={selected.loan}
+                phase={selected.phase}
+                tokens={selected.tokens}
+                inMarketplace={selected.inMarketplace}
+                loanId={selected.id}
+              />
+          }
         </Grid>
       </Grid>
     </div>

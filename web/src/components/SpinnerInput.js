@@ -7,7 +7,7 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import DAI from './DAI';
 
 const SpinnerInput = (props) => {
-  const step = props.step || 1
+  const step = props.isPrice ? 0.2 : 1
   const isPrice = props.isPrice || false
   const [value, setValue] = useState(props.defaultValue)
   const [isMinusEnable, setIsMinusEnable] = useState(props.defaultValue !== props.minValue)
@@ -84,7 +84,8 @@ const SpinnerInput = (props) => {
           currencySymbol={<DAI />}
           outputFormat="number"
           onChange={(event, value)=> setValue(value)}
-          minimumValue={props.minValue}
+          minimumValue={props.minValue.toString()}
+          disabled={props.disabled}
         />
       )
     }else{
@@ -94,8 +95,8 @@ const SpinnerInput = (props) => {
           id="standard-number"
           type="number"
           onChange={(event) => onChangeHandler(event)}
-          defaultValue={value}
           value={value}
+          disabled={props.disabled}
         />
       )
     }
@@ -126,7 +127,8 @@ SpinnerInput.propTypes = {
   maxValue: PropTypes.number,
   minValue: PropTypes.number,
   isPrice: PropTypes.bool,
-  step: PropTypes.number
+  step: PropTypes.number,
+  disabled: PropTypes.bool
 };
 
 export default (SpinnerInput);

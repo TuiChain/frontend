@@ -29,6 +29,53 @@ const newInvestment = (inv) => {
     });
 };
 
+
+// const investmentsHardCoded = [
+//   { 
+//     id:0,
+//     loan:'Loan to Zé',
+//     tokens:142,
+//     phase:'active',
+//     inMarketplace:40
+//   },
+//   {
+//     id:1,
+//     loan:'Loan to Quim',
+//     tokens:22,
+//     phase:'funding',
+//     inMarketplace:0
+//   },
+//   {
+//     id:2,
+//     loan:'Loan to Manel',
+//     tokens:42,
+//     phase:'finalized',
+//     inMarketplace:0
+//   },
+//   {
+//     id:3,
+//     loan:'Loan to Ventura',
+//     tokens:422,
+//     phase:'expired',
+//     inMarketplace:0
+//   }
+// ]
+
+const getPersonal = (userAddr) => {
+  return instance
+    .get(`/get_personal/${userAddr}/`)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      // TODO : why is error overwritten in browser? we need to catch a specific error
+      console.log(error);
+      return false;
+    });
+  //return investmentsHardCoded;
+};
+
 export default {
   newInvestment,
+  getPersonal
 };
