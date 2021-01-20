@@ -187,8 +187,6 @@ async function sendTransactions(transactionsParameters) {
     for (const element of transactionsParameters) {
       const params = Object.assign({ from: checkAccount() }, element);
 
-      console.log("params:", params);
-
       await ethereum.request({
         method: "eth_sendTransaction",
         params: [params],

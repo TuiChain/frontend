@@ -461,6 +461,7 @@ const FundingLoans = (props) => {
       ) : filteredLoans.length >= 1 ? (
         <LoansGrid container direction="row" alignItems="center" spacing={10}>
           {filteredLoans.map((l) => {
+            console.log("loan:", l);
             return (
               <LoansGridItem
                 key={l.id}
