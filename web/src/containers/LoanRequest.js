@@ -63,25 +63,31 @@ const LoanRequest = (props) => {
         recipient_address,
       } = values;
       console.log(school, course, amount, desc, destination, recipient_address);
-      const valid = await LoansService.createLoan(
-        school,
-        course,
-        amount,
-        desc,
-        destination,
-        recipient_address
-      );
 
-      if (valid) {
+      try {
+        await LoansService.createLoan(
+          school,
+          course,
+          amount,
+          desc,
+          destination,
+          recipient_address
+        );
+
         setSubmitting(false);
         history.replace("/");
-      } else {
+      } catch (e) {
+        const error = e.response.data.error;
+        let message = error.includes("cannot create Loan Requests")
+          ? "You can only have one loan request at a time."
+          : error.includes("Invalid address")
+          ? "Your Account Address should be checksummed!"
+          : error;
+
         setFieldValue(
           "error",
           <Grid item xs={12}>
-            <Alert severity="error">
-              You can only have one loan request at a time.
-            </Alert>
+            <Alert severity="error">{message}</Alert>
           </Grid>
         );
         setSubmitting(false);
