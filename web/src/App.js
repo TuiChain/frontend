@@ -19,7 +19,7 @@ import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
-import Loans from "./containers/loans/Loans";
+import PersonalLoans from "./containers/loans/PersonalLoans";
 
 const styles = {
   back: {
@@ -88,7 +88,7 @@ const App = (props) => {
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans"
-                  component={Loans}
+                  component={PersonalLoans}
                 />
                 <ProtectedRoute
                   auth={auth}
