@@ -19,6 +19,7 @@ import LoansService from "../services/loans.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 import DAI from "../components/DAI";
+import Web3 from "web3";
 
 const styles = (theme) => ({
   fullWidth: {
@@ -92,9 +93,13 @@ const LoanRequest = (props) => {
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
       destination: Yup.string().required("Destination is required"),
-      recipient_address: Yup.string().required(
-        "An Account Address is required"
-      ),
+      recipient_address: Yup.string()
+        .required("An Account Address is required")
+        .test(
+          "checksum",
+          "Your Account Address should be checksummed!",
+          (value) => Web3.utils.isAddress(value)
+        ),
     }),
   });
 
@@ -223,12 +228,17 @@ const LoanRequest = (props) => {
                   ? "Account Address"
                   : recipient_touched == true
                   ? "Account Address"
-                  : "Selected Account Address: " + wallet
+                  : "Selected Account Address: " +
+                    Web3.utils.toChecksumAddress(wallet)
               }
               name="recipient_address"
               value={formik.values.recipient_address}
               onChange={formik.handleChange}
-              onBlur={() => setRecipientTouched(false)}
+              onBlur={() =>
+                formik.values.recipient_address == ""
+                  ? setRecipientTouched(false)
+                  : true
+              }
               onFocus={() => setRecipientTouched(true)}
               helperText={
                 formik.errors.recipient_address &&
