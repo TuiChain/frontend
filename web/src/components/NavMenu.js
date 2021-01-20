@@ -96,14 +96,14 @@ const NavMenu = (props) => {
       </Button>
     );
 
-  const studentsButton = (
+  const loansButton = (
     <Button
       variant="contained"
       color="secondary"
       component={RouterLink}
-      to="/students"
+      to="/loans"
     >
-      Students
+      Loans
     </Button>
   );
 
@@ -131,7 +131,7 @@ const NavMenu = (props) => {
 
   const nav_items = (
     <>
-      {studentsButton}
+      {loansButton}
       {dashboardButton}
       {loanRequestButton}
       {connect_button}
@@ -149,8 +149,8 @@ const NavMenu = (props) => {
 
   const actionsDrawerDivision = [
     {
-      text: "Students",
-      handler: () => handleAction("/students"),
+      text: "Loans",
+      handler: () => handleAction("/loans"),
       icon: <MonetizationOnIcon />,
     },
     {
@@ -167,7 +167,7 @@ const NavMenu = (props) => {
 
   const profileDrawerDivision = [
     {
-      text: "Loans",
+      text: "My loans",
       handler: () => handleAction("/personal/loans"),
       icon: <AccountBalanceIcon />,
     },
