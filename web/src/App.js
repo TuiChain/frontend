@@ -6,13 +6,13 @@ import Header from "./components/Header";
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
-import Student from "./containers/loans/Student";
+import Loan from "./containers/loans/Loan";
+import Loans from "./containers/loans/Loans";
 import LoanRequest from "./containers/LoanRequest";
 import LoanRequests from "./containers/admin/LoanRequests";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
-import Students from "./containers/loans/Students";
 import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
@@ -77,9 +77,9 @@ const App = (props) => {
                 <ProtectedRoute
                   auth={auth}
                   path="/students/:id"
-                  component={Student}
+                  component={Loan}
                 />
-                <Route path="/students" component={Students} />
+                <Route path="/students" component={Loans} />
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans/:id"
