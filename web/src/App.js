@@ -76,10 +76,10 @@ const App = (props) => {
                 />
                 <ProtectedRoute
                   auth={auth}
-                  path="/students/:id"
+                  path="/loans/:id"
                   component={Loan}
                 />
-                <Route path="/students" component={Loans} />
+                <Route path="/loans" component={Loans} />
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans/:id"

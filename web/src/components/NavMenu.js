@@ -59,9 +59,9 @@ const NavMenu = (props) => {
         variant="contained"
         color="secondary"
         component={RouterLink}
-        to="/students"
+        to="/loans"
       >
-        Students
+        Loans
       </Button>
       <Button
         variant="contained"
