@@ -4,6 +4,7 @@ import ProgressBar from "../../components/Progress";
 import LoansService from "../../services/loans.service";
 import UserService from "../../services/user.service";
 import LoansTransactionsService from "../../services/loans-transactions.service";
+import InvestmentsService from "../../services/investment.service";
 import { Create, School, Room } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import Toast from "../../components/Toast";
@@ -11,6 +12,7 @@ import {
   Typography,
   TextField,
   Button,
+  ButtonGroup,
   Grid,
   Box,
   useMediaQuery,
@@ -24,6 +26,7 @@ function Student(props) {
   const [userInfo, setUserInfo] = useState({});
   const [percentage, setPercentage] = useState(0);
   const [tokens, setTokens] = useState(0);
+  const [investment, setInvestment] = useState(0);
   const [fetching, setFetching] = useState(true);
   const [toast, setToast] = React.useState({});
   const [open, setOpen] = React.useState(false);
@@ -31,14 +34,28 @@ function Student(props) {
   useEffect(async () => {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
-    console.log(temp);
-    setPercentage(
-      (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100
-    );
-    console.log(percentage);
+    console.log("loan:", temp);
+
+    let percentage =
+      (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100;
+    percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
+    setPercentage(percentage);
+    console.log("percentage:", percentage);
+
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
-    console.log(Info.user);
+    console.log("user:", Info.user);
+
+    const account = walletService.checkAccount();
+    if (temp && temp.state.toUpperCase() == "FUNDING" && account != null) {
+      const investment = await InvestmentsService.getInvestmentInLoan(
+        temp.id,
+        account
+      );
+      setInvestment(investment.nrTokens);
+      console.log("investment:", investment);
+    }
+
     setFetching(false);
   }, []);
 
@@ -60,7 +77,7 @@ function Student(props) {
     },
   })(Box);
 
-  const handleButtonClick = async () => {
+  const handleBuyClick = async () => {
     try {
       await LoansTransactionsService.provideFunds(
         props.match.params.id,
@@ -69,26 +86,38 @@ function Student(props) {
 
       await walletService.suggestStudentToken(user.token_address);
     } catch (e) {
-      switch (e.message) {
-        case "Invalid parameters: must provide an Ethereum address.":
-          setToast({
-            message: "Your account is not connected!",
-            severity: "error",
-          });
-          setOpen(true);
-          break;
+      buttonErrorTreatment(e);
+    }
+  };
 
-        case "Incorrect chain ID":
-          setToast({
-            message: "You're not in the correct network!",
-            severity: "error",
-          });
-          setOpen(true);
-          break;
+  const handleWithdrawClick = async () => {
+    try {
+      await LoansTransactionsService.withdrawFunds(
+        props.match.params.id,
+        tokens
+      );
+    } catch (e) {
+      buttonErrorTreatment(e);
+    }
+  };
 
-        default:
-          break;
-      }
+  const buttonErrorTreatment = (e) => {
+    switch (e.message) {
+      case "Invalid parameters: must provide an Ethereum address.":
+        setToast({
+          message: "Your account is not connected!",
+          severity: "error",
+        });
+        setOpen(true);
+        break;
+
+      case "Incorrect chain ID":
+        setToast({
+          message: "You're not in the correct network!",
+          severity: "error",
+        });
+        setOpen(true);
+        break;
     }
   };
 
@@ -98,6 +127,72 @@ function Student(props) {
     }
     setOpen(false);
   };
+
+  /* -------------------------------------------------------------------------- */
+
+  const pending = (
+    <Box>
+      <Typography variant="h3">Request waiting for approval</Typography>
+    </Box>
+  );
+
+  const funding = (
+    <Box className="left-tok" width="fit-content" mx="auto">
+      <Box py="10%">
+        <Typography variant="h3">{"Tokens"}</Typography>
+      </Box>
+      <Box className="token">
+        <TextField
+          type={"number"}
+          label="Tokens"
+          name="tokens"
+          variant="outlined"
+          InputProps={{ inputProps: { min: 1 } }}
+          onChange={(e) => {
+            e.target.value = !Number.isInteger(e.target.value)
+              ? Math.floor(e.target.value)
+              : e.target.value;
+            setTokens(e.target.value);
+          }}
+        />
+        <ButtonGroup
+          disableElevation
+          variant="contained"
+          color="primary"
+          style={{ padding: "8px" }}
+        >
+          <Button
+            type="submit"
+            disabled={tokens == 0}
+            onClick={handleBuyClick}
+            style={{ margin: 0 }}
+          >
+            Buy
+          </Button>
+          <Button
+            type="submit"
+            disabled={investment == 0}
+            onClick={handleWithdrawClick}
+            style={{ margin: 0 }}
+          >
+            Withdraw
+          </Button>
+        </ButtonGroup>
+      </Box>
+      {investment > 0 && (
+        <Box paddingTop="5%">
+          <Typography variant="body1" display="inline">
+            You&apos;ve already bought {investment} tokens!!
+          </Typography>
+        </Box>
+      )}
+      <Box className="barra" paddingTop="5%">
+        <ProgressBar completed={percentage} />
+      </Box>
+    </Box>
+  );
+
+  /* -------------------------------------------------------------------------- */
 
   return (
     <>
@@ -155,51 +250,8 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-                {user.state === "PENDING" && (
-                  <Box>
-                    <Typography variant="h3">
-                      Request waiting for approval
-                    </Typography>
-                  </Box>
-                )}
-                {user.state != "PENDING" && (
-                  <Box
-                    className="left-tok"
-                    width="fit-content"
-                    marginLeft="auto"
-                    marginRight="auto"
-                  >
-                    <Box pt="10%" marginBottom="10%">
-                      <Typography variant="h3">{"Tokens"}</Typography>
-                    </Box>
-                    <Box className="token">
-                      <TextField
-                        type={"number"}
-                        label="Tokens"
-                        name="tokens"
-                        variant="outlined"
-                        InputProps={{ inputProps: { min: 0 } }}
-                        onChange={(e) => {
-                          e.target.value = !Number.isInteger(e.target.value)
-                            ? Math.floor(e.target.value)
-                            : e.target.value;
-                          setTokens(e.target.value);
-                        }}
-                      />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        onClick={handleButtonClick}
-                      >
-                        Buy
-                      </Button>
-                    </Box>
-                    <Box className="barra" paddingTop="5%">
-                      <ProgressBar completed={percentage} />
-                    </Box>
-                  </Box>
-                )}
+                {user.state.toUpperCase() == "PENDING" && pending}
+                {user.state.toUpperCase() == "FUNDING" && funding}
               </Grid>
             </Grid>
           </Grid>

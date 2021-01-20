@@ -362,7 +362,6 @@ const FundingLoans = (props) => {
 
     if (!schoolFilter.All) {
       const selectedSchools = getSelected(schoolFilter);
-      console.log("Selected schools", selectedSchools);
       filtered = filtered.filter((loan) => {
         return selectedSchools.includes(loan.school);
       });

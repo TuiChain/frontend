@@ -1,4 +1,5 @@
 import axios from "axios";
+import Web3 from "web3";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -17,15 +18,16 @@ instance.interceptors.request.use(
   }
 );
 
-const newInvestment = (inv) => {
+const getInvestmentInLoan = (loan_id, account_address) => {
+  const account = Web3.utils.toChecksumAddress(account_address);
+
   return instance
-    .post("/new/", inv)
-    .then(() => {
-      return true;
+    .get("/get/" + loan_id + "/" + account + "/")
+    .then((response) => {
+      return response.data.loan;
     })
     .catch((error) => {
       console.log(error);
-      return false;
     });
 };
 
@@ -57,6 +59,6 @@ const getDashboardInvestments = () => {
 };
 
 export default {
-  newInvestment,
+  getInvestmentInLoan,
   getDashboardInvestments,
 };
