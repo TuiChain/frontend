@@ -24,7 +24,9 @@ const NavMenu = (props) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleProfile = () => {
+    history.push("/personal/profile");
+  };
   const handleLogout = () => {
     history.push("/");
     onLogout();
@@ -92,7 +94,7 @@ const NavMenu = (props) => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleLoans}>Loans</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleProfile}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Grid>

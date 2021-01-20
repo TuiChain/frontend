@@ -19,6 +19,7 @@ import Footer from "./components/Footer";
 import ManageLoan from "./containers/loans/ManageLoan";
 import Loans from "./containers/loans/Loans";
 import KycButton from "./containers/KycButton";
+import Profile from "./containers/UserProfile";
 
 const styles = {
   back: {
@@ -80,6 +81,11 @@ const App = (props) => {
                 path="/request"
                 component={LoanRequest}
                 wallet={wallet}
+              />
+                <ProtectedRoute
+                auth={auth}
+                path="/personal/profile/"
+                component={Profile}
               />
               <Route auth={auth} path="/kyc" render={() => <KycButton />} />
               <Route path="/login">

@@ -26,7 +26,19 @@ const getUserInfo = (id) => {
       return false;
     });
 };
+const getPersonalInfo = () => {
+  return instance
+    .get("/get/")
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
 
 export default {
   getUserInfo,
+  getPersonalInfo
 };
