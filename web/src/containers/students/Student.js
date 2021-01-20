@@ -137,11 +137,7 @@ function Student(props) {
   );
 
   const funding = (
-    <Box
-      className="left-tok"
-      width="fit-content"
-      mx="auto"
-    >
+    <Box className="left-tok" width="fit-content" mx="auto">
       <Box py="10%">
         <Typography variant="h3">{"Tokens"}</Typography>
       </Box>
@@ -254,7 +250,7 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-                {user.state.toUpperCase() === "PENDING" && pending}
+                {user.state.toUpperCase() == "PENDING" && pending}
                 {user.state.toUpperCase() == "FUNDING" && funding}
               </Grid>
             </Grid>
