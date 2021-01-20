@@ -162,6 +162,34 @@ const getFundingLoans = () => {
 };
 
 // TODO
+const getActiveLoans = () => {
+  return instance
+    .get(`/get_state/ACTIVE/1/`)
+    .then((response) => {
+      let loans = response.data.loans;
+
+      // Get top 3
+      loans = loans.slice(0, 3);
+
+      loans.forEach((loan) => {
+        loan.requested_value = Number(
+          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        );
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+      });
+
+      return loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
+    });
+};
+
+// TODO
 const getFeaturedLoans = () => {
   return instance
     .get(`/get_state/ACTIVE/1/`)
@@ -220,5 +248,6 @@ export default {
   getActiveLoan,
   getFeaturedLoans,
   getFundingLoans,
+  getActiveLoans,
   getStudentLoans,
 };

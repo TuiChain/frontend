@@ -23,6 +23,7 @@ import ProgressBar from "../components/Progress";
 import investmentService from "../services/investment.service";
 import loansService from "../services/loans.service";
 import userService from "../services/user.service";
+import walletService from "../services/wallet.service";
 import Status from "../components/Status";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -125,7 +126,7 @@ const ActiveLoan = ({ loan }) => {
 };
 
 ActiveLoan.propTypes = {
-  loan: PropTypes.object,
+  loan: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
 const Investments = ({ investments }) => {
@@ -295,8 +296,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchInvestiments = async () => {
-      const investments = await investmentService.getDashboardInvestments();
-      setInvestments(investments);
+      const account = walletService.checkAccount();
+
+      if (account) {
+        const investments = await investmentService.getDashboardInvestments(
+          account
+        );
+        setInvestments(investments);
+      } else {
+        // TODO SHOW ERROR
+        setInvestments([]);
+        console.log("Não tem a carteira");
+      }
     };
     fetchInvestiments();
   }, []);

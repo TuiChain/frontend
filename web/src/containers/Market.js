@@ -251,7 +251,8 @@ const Market = (props) => {
   //   });
 
   useEffect(() => {
-    LoansService.getFundingLoans().then((loanList) => {
+    LoansService.getActiveLoans().then((loanList) => {
+      console.log("LOANS:", loanList);
       let countries = new Set();
       let schools = new Set();
       let courses = new Set();
@@ -353,7 +354,7 @@ const Market = (props) => {
   return (
     <>
       <Typography variant="h2" paragraph>
-        Loans
+        Market
       </Typography>
       <SearchBox mobile={mobile.toString()}>
         <SearchBar
