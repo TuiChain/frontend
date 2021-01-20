@@ -140,10 +140,9 @@ function Student(props) {
     <Box
       className="left-tok"
       width="fit-content"
-      marginLeft="auto"
-      marginRight="auto"
+      mx="auto"
     >
-      <Box pt="10%" marginBottom="10%">
+      <Box py="10%">
         <Typography variant="h3">{"Tokens"}</Typography>
       </Box>
       <Box className="token">
