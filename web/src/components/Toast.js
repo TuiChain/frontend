@@ -21,7 +21,7 @@ Toast.propTypes = {
   children: PropTypes.string,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  severity: PropTypes.string, // TODO CHECK DEFAULT
+  severity: PropTypes.string,
 };
 
 export default Toast;

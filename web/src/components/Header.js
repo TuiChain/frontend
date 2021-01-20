@@ -33,47 +33,37 @@ const Header = (props) => {
   );
 
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container justify="flex-start">
-            <Grid item>
-              <IconButton
-                variant="contained"
-                color="secondary"
-                component={RouterLink}
-                to="/"
-              >
-                <Logo />
-              </IconButton>
-            </Grid>
-          </Grid>
-          <Grid container justify="flex-end">
-            <Button
+    <AppBar position="sticky">
+      <Toolbar>
+        <Grid container justify="flex-start">
+          <Grid item>
+            <IconButton
               variant="contained"
               color="secondary"
               component={RouterLink}
-              to="/students"
+              to="/"
             >
-              Students
-            </Button>
-            {auth ? (
-              auth.is_admin ? (
-                <NavMenuAdmin onLogout={onLogout} />
-              ) : (
-                <NavMenu
-                  onLogout={onLogout}
-                  wallet={wallet}
-                  setWallet={setWallet}
-                />
-              )
-            ) : (
-              auth !== null && account_btns
-            )}
+              <Logo />
+            </IconButton>
           </Grid>
-        </Toolbar>
-      </AppBar>
-    </div>
+        </Grid>
+        <Grid container justify="flex-end">
+          {auth ? (
+            auth.is_admin ? (
+              <NavMenuAdmin onLogout={onLogout} />
+            ) : (
+              <NavMenu
+                onLogout={onLogout}
+                wallet={wallet}
+                setWallet={setWallet}
+              />
+            )
+          ) : (
+            auth !== null && account_btns
+          )}
+        </Grid>
+      </Toolbar>
+    </AppBar>
   );
 };
 
