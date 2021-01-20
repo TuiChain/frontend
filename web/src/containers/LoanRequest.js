@@ -81,7 +81,7 @@ const LoanRequest = (props) => {
         let message = error.includes("cannot create Loan Requests")
           ? "You can only have one loan request at a time."
           : error.includes("Invalid address")
-          ? "Your Account Address should be checksummed."
+          ? "Invalid Account Address checksum."
           : error;
 
         setFieldValue(
@@ -103,7 +103,7 @@ const LoanRequest = (props) => {
         .required("An Account Address is required")
         .test(
           "checksum",
-          "Your Account Address should be checksummed",
+          "Invalid Account Address checksum",
           (value) => Web3.utils.isAddress(value)
         ),
     }),
