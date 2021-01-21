@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridOverlay } from '@material-ui/data-grid';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
@@ -11,6 +11,15 @@ const styles = theme => ({
   }
 });
 
+const CustomNoRowsOverlay = () => {
+  return (
+    <GridOverlay>
+      <div>Sem investimentos</div>
+    </GridOverlay>
+  );
+}
+
+
 const SimpleTable = (props) =>
   <DataGrid
     rows={props.rows}
@@ -19,6 +28,9 @@ const SimpleTable = (props) =>
     hideFooterSelectedRowCount
     autoHeight
     onSelectionChange={props.onSelectionChange}
+    components={{
+      noRowsOverlay: CustomNoRowsOverlay,
+    }}
   />
 
 SimpleTable.propTypes = {

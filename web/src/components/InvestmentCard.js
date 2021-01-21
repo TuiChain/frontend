@@ -8,6 +8,7 @@ import SpinnerInput from './SpinnerInput';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import DAI from './DAI';
 import Status from './Status';
+import loansTransactionsService from '../services/loans-transactions.service';
 
 const useStyles = makeStyles({
   root: {
@@ -44,19 +45,19 @@ const useStyles = makeStyles({
 });
 
 const copy = {
-  'active': {
+  'ACTIVE': {
     titleText: "List your tokens in the marketplace",
     buttonText: "List"
   },
-  'funding':{
+  'FUNDING':{
     titleText: "Cancel your funding",
     buttonText: "Cancel"
   },
-  'finalized':{
+  'FINALIZED':{
     titleText: "Reedem your tokens",
     buttonText: "Redeem"
   },
-  'expired':{
+  'EXPIRED':{
     titleText: "Cash out your tokens",
     buttonText: "Cash out"
   }
@@ -69,7 +70,7 @@ const investmentCardHeader = (classes, phase, loanName) =>
     action={
       <Status state={phase} />
     }
-    title={loanName}
+    title={`Loan to ${loanName}`}
   />
 
 const SpinnerInputWithLabel = ({labelText, spinnerDefaultValue, spinnerMaxValue, spinnerLoanId, isPrice, disabled}) =>
@@ -180,15 +181,40 @@ const expiredPhaseInputContent = (props) =>
 </Grid>
 
 const renderPhaseInputContent = props => {
+  console.log(props)
   switch(props.phase) {
-    case 'active':
+    case 'ACTIVE':
       return activePhaseInputContent(props)
-    case 'funding':
+    case 'FUNDING':
       return fundingPhaseInputContent(props)
-    case 'finalized':
+    case 'FINALIZED':
       return finalizedPhaseInputContent(props)
-    case 'expired':
+    case 'EXPIRED':
       return expiredPhaseInputContent(props)
+  }
+}
+
+const handleWithdrawClick = async (props) => {
+  try {
+    await loansTransactionsService.withdrawFunds(
+      props.loanId,
+      props.tokens
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const handleButtonClick = (props) => {
+  switch(props.phase) {
+    //case 'ACTIVE':
+      //return activePhaseInputContent(props)
+    case 'FUNDING':
+      return handleWithdrawClick(props)
+    // /case 'FINALIZED':
+    //   return finalizedPhaseInputContent(props)
+    // case 'EXPIRED':
+    //   return expiredPhaseInputContent(props)
   }
 }
 
@@ -206,7 +232,7 @@ const renderPhaseContent = props => {
     </Grid>
     <Grid container justify='flex-end'>
       <Grid item>
-        <Button style={{alignSelf: 'flex-end', width: 120}} variant="contained" size="medium" color="primary">
+        <Button onClick={() =>handleButtonClick(props)} style={{alignSelf: 'flex-end', width: 120}} variant="contained" size="medium" color="primary">
           {copy[props.phase].buttonText}
         </Button>
       </Grid>

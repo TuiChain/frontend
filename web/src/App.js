@@ -52,69 +52,6 @@ const App = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-<<<<<<< HEAD
-      <div className={classes.back}>
-        <BrowserRouter>
-          <Header
-            auth={auth}
-            onLogout={handlerLogout}
-            wallet={wallet}
-            setWallet={setWallet}
-          />
-          <Layout>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <ProtectedRoute
-                auth={auth}
-                path="/students/:id"
-                component={Student}
-              />
-              <ProtectedRoute
-                auth={auth}
-                path="/personal/loans/:id"
-                component={ManageLoan}
-              />
-              <ProtectedRoute
-                auth={auth}
-                path="/personal/loans"
-                component={Loans}
-              />
-              <ProtectedRoute
-                auth={auth}
-                path="/request"
-                component={LoanRequest}
-                wallet={wallet}
-              />
-              <ProtectedRoute
-                auth={auth}
-                path="/investments"
-                component={Investments}
-              />
-              <Route path="/login">
-                {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
-              </Route>
-              <Route path="/signup">
-                {auth ? (
-                  <Redirect to="/" />
-                ) : (
-                  <Signup onSignUp={handlerLogin} />
-                )}
-              </Route>
-              <Route path="/students" component={Students} />
-              {/* ADMIN ROUTES */}
-              <ProtectedRoute
-                auth={auth}
-                type="admin"
-                path="/admin/requests"
-                component={LoanRequests}
-              />
-              <Route component={Error} />
-            </Switch>
-          </Layout>
-          <Footer />
-        </BrowserRouter>
-      </div>
-=======
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
@@ -160,6 +97,12 @@ const App = (props) => {
                   component={LoanRequest}
                   wallet={wallet}
                 />
+                <ProtectedRoute
+                  auth={auth}
+                  path="/investments"
+                  component={Investments}
+                  wallet={wallet}
+                />
                 <Route path="/login">
                   {auth ? (
                     auth.is_admin ? (
@@ -196,7 +139,6 @@ const App = (props) => {
           </BrowserRouter>
         </div>
       )}
->>>>>>> origin/main
     </ThemeProvider>
   );
 };

@@ -90,9 +90,11 @@ const getDashboardInvestments = () => {
 //   }
 // ]
 
-const getPersonal = (userAddr) => {
+const getPersonal = (accountAddress) => {
+  const account = Web3.utils.toChecksumAddress(accountAddress);
+
   return instance
-    .get(`/get_personal/${userAddr}/`)
+    .get(`/get_personal/${account}/`)
     .then((response) => {
       return response;
     })
@@ -105,11 +107,7 @@ const getPersonal = (userAddr) => {
 };
 
 export default {
-<<<<<<< HEAD
-  newInvestment,
-  getPersonal
-=======
+  getPersonal,
   getInvestmentInLoan,
   getDashboardInvestments,
->>>>>>> origin/main
 };
