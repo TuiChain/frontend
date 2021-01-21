@@ -1,3 +1,4 @@
+/* eslint react/prop-types: 0 */
 import React, { useState, useEffect } from "react";
 import LoansService from "../services/loans.service";
 import {
@@ -12,6 +13,7 @@ import {
   Typography,
   Button,
   withWidth,
+  Avatar,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
@@ -19,6 +21,8 @@ import TuneIcon from "@material-ui/icons/Tune";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import LoadingPageAnimation from "../components/LoadingPageAnimation";
+import { DataGrid } from "@material-ui/data-grid";
+import { useHistory } from "react-router";
 
 const backgroundColor1 = "#EFF0F6";
 const backgroundColor2 = "#D7D8E7";
@@ -241,18 +245,19 @@ const Market = (props) => {
   const [courseFilter, setCourseFilter] = useState({ All: true });
   const [loans, setLoans] = useState([]);
   const [filteredLoans, setFilteredLoans] = useState([]);
-  //const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(window.innerWidth);
   const [fetching, setFetching] = useState(true);
+  const history = useHistory();
 
   const mobile = props.width === "xs" || props.width === "sm";
-
-  //   window.addEventListener("resize", () => {
-  //     setWidth(window.innerWidth);
-  //   });
+  console.log("TODO - tirar", width);
+  console.log("loans:", filteredLoans);
+  window.addEventListener("resize", () => {
+    setWidth(window.innerWidth);
+  });
 
   useEffect(() => {
     LoansService.getActiveLoans().then((loanList) => {
-      console.log("LOANS:", loanList);
       let countries = new Set();
       let schools = new Set();
       let courses = new Set();
@@ -334,7 +339,6 @@ const Market = (props) => {
 
     if (!schoolFilter.All) {
       const selectedSchools = getSelected(schoolFilter);
-      console.log("Selected schools", selectedSchools);
       filtered = filtered.filter((loan) => {
         return selectedSchools.includes(loan.school);
       });
@@ -349,6 +353,35 @@ const Market = (props) => {
     }
 
     setFilteredLoans(filtered);
+  };
+
+  const columns = [
+    { field: "id", headerName: "ID", hide: true },
+    {
+      field: "user_full_name",
+      headerName: " ",
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Avatar>{("TODO" + props.row.user_full_name).charAt(0)}</Avatar>
+      ),
+      width: 70,
+    },
+    {
+      field: "school",
+      headerName: "School",
+      width: 240,
+    },
+    {
+      field: "course",
+      headerName: "Course",
+      width: 240,
+    },
+  ];
+
+  const handleLoanClick = (element) => {
+    const loan = element.row;
+
+    history.push(`/loans/${loan.id}`);
   };
 
   return (
@@ -431,11 +464,13 @@ const Market = (props) => {
           <LoadingPageAnimation />
         </Box>
       ) : filteredLoans.length >= 1 ? (
-        <Box>
-          {filteredLoans.map((l) => (
-            <p key={l.id}>{l.id}</p>
-          ))}
-        </Box>
+        <DataGrid
+          rows={filteredLoans}
+          columns={columns}
+          pageSize={10}
+          autoHeight
+          onRowClick={handleLoanClick}
+        />
       ) : (
         <Container>
           <SearchMessage variant="h6">No results were found</SearchMessage>
