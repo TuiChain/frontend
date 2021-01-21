@@ -6,21 +6,21 @@ import Header from "./components/Header";
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
-import Student from "./containers/students/Student";
+import Loan from "./containers/loans/Loan";
+import Loans from "./containers/loans/Loans";
 import LoanRequest from "./containers/LoanRequest";
 import LoanRequests from "./containers/admin/LoanRequests";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
 import theme from "./theme";
-import Students from "./containers/students/Students";
 import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
-import Loans from "./containers/loans/Loans";
 import Market from "./containers/Market";
+import PersonalLoans from "./containers/loans/PersonalLoans";
 
 const styles = {
   back: {
@@ -77,10 +77,10 @@ const App = (props) => {
                 />
                 <ProtectedRoute
                   auth={auth}
-                  path="/students/:id"
-                  component={Student}
+                  path="/loans/:id"
+                  component={Loan}
                 />
-                <Route path="/students" component={Students} />
+                <Route path="/loans" component={Loans} />
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans/:id"
@@ -89,7 +89,7 @@ const App = (props) => {
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans"
-                  component={Loans}
+                  component={PersonalLoans}
                 />
                 <ProtectedRoute
                   auth={auth}

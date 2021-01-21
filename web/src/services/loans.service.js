@@ -39,10 +39,6 @@ const createLoan = (
     })
     .then(() => {
       return true;
-    })
-    .catch((error) => {
-      console.log(error.response);
-      return false;
     });
 };
 
