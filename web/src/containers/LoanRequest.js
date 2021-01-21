@@ -101,10 +101,8 @@ const LoanRequest = (props) => {
       destination: Yup.string().required("Destination is required"),
       recipient_address: Yup.string()
         .required("An Account Address is required")
-        .test(
-          "checksum",
-          "Invalid Account Address checksum",
-          (value) => Web3.utils.isAddress(value)
+        .test("checksum", "Invalid Account Address checksum", (value) =>
+          Web3.utils.isAddress(value)
         ),
     }),
   });

@@ -130,11 +130,19 @@ function Student(props) {
 
   /* -------------------------------------------------------------------------- */
 
-  const pending = (
+  const message = (message) => (
     <Box>
-      <Typography variant="h3">Request waiting for approval</Typography>
+      <Typography variant="h4">{message}</Typography>
     </Box>
   );
+
+  const pending = message("Request waiting for approval");
+
+  const rejected = message(
+    "This loan request was rejected by Tuichain Administration"
+  );
+
+  const withdrawn = message("This loan request was rejected by the student");
 
   const funding = (
     <Box className="left-tok" width="fit-content" mx="auto">
@@ -191,6 +199,18 @@ function Student(props) {
       </Box>
     </Box>
   );
+
+  const active = message("This loan is active");
+  // show docs and stuff
+
+  const finalized = message("This loan is active");
+  // redeem token
+
+  const expired = message("This loan has expired");
+  // withdraw funds
+
+  const canceled = message("This loan is canceled");
+  // withdraw funds
 
   /* -------------------------------------------------------------------------- */
 
@@ -251,7 +271,13 @@ function Student(props) {
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
                 {loan.state.toUpperCase() == "PENDING" && pending}
+                {loan.state.toUpperCase() == "REJECTED" && rejected}
+                {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
                 {loan.state.toUpperCase() == "FUNDING" && funding}
+                {loan.state.toUpperCase() == "ACTIVE" && active}
+                {loan.state.toUpperCase() == "FINALIZED" && finalized}
+                {loan.state.toUpperCase() == "EXPIRED" && expired}
+                {loan.state.toUpperCase() == "CANCELED" && canceled}
               </Grid>
             </Grid>
           </Grid>
