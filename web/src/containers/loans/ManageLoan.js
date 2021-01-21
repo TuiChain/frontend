@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
   withStyles,
+  Grid,
   styled,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
@@ -14,6 +15,8 @@ import DAI from "../../components/DAI";
 import ProgressBar from "../../components/Progress";
 import Status from "../../components/Status";
 import { Redirect } from "react-router";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const ErrorButton = withStyles((theme) => ({
   root: {
@@ -40,6 +43,27 @@ const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
   const [isLoading, setLoading] = useState(true);
+
+  const public_docs_form = useFormik({
+    initialValues: {
+      document: "",
+    },
+    onSubmit: async (values, { setSubmitting }) => {
+      //const { document } = values;
+
+      console.log(values);
+      setSubmitting(false);
+    },
+    validationSchema: Yup.object().shape({
+      document: Yup.mixed()
+        .required("A file is required")
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value) => value && ["application/pdf"].includes(value.type)
+        ),
+    }),
+  });
 
   useEffect(() => {
     async function fetchLoan() {
@@ -116,24 +140,75 @@ const ManageLoan = (props) => {
           </Box>
         </Panel>
         <hr />
-        <Panel>
-          <Typography variant="h5" color="secondary">
-            Documents
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Submit documents relative to your academic achievements, income,
-            etc.
-          </Typography>
-          <TextField type="file" variant="outlined" />
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<CloudUpload />}
-            disabled={!canSubmitDocuments(loan.state)}
-          >
-            Upload
-          </Button>
-        </Panel>
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={6}>
+            <Panel>
+              <Typography variant="h5" color="secondary">
+                Public Documents
+              </Typography>
+              <Typography variant="body1" color="textSecondary" paragraph>
+                Submit documents relative to your academic achievements, income,
+                etc.
+              </Typography>
+              <form onSubmit={public_docs_form.handleSubmit}>
+                <TextField
+                  type="file"
+                  variant="outlined"
+                  name="document"
+                  inputProps={{
+                    accept: "application/pdf",
+                  }}
+                  onChange={(event) => {
+                    console.log(event);
+                    public_docs_form.setFieldValue(
+                      "document",
+                      event.currentTarget.files[0]
+                    );
+                  }}
+                  error={
+                    public_docs_form.errors.document &&
+                    public_docs_form.touched.document
+                  }
+                  helperText={
+                    public_docs_form.errors.document &&
+                    public_docs_form.touched.document &&
+                    public_docs_form.errors.document
+                  }
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<CloudUpload />}
+                  disabled={!canSubmitDocuments(loan.state)}
+                >
+                  Upload
+                </Button>
+              </form>
+            </Panel>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <Panel>
+              <Typography variant="h5" color="secondary">
+                Private Documents
+              </Typography>
+              <Typography variant="body1" color="textSecondary" paragraph>
+                Submit documents relative to your academic achievements, income,
+                etc.
+              </Typography>
+              <TextField type="file" variant="outlined" />
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<CloudUpload />}
+                disabled={!canSubmitDocuments(loan.state)}
+              >
+                Upload
+              </Button>
+            </Panel>
+          </Grid>
+        </Grid>
+
         <hr />
         <Panel>
           <Typography variant="h5" color="secondary">
