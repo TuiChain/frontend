@@ -21,7 +21,7 @@ import { withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
-function Student(props) {
+function Loan(props) {
   const [loan, setLoan] = useState({});
   const [user, setUser] = useState({});
   const [percentage, setPercentage] = useState(0);
@@ -290,7 +290,7 @@ function Student(props) {
   );
 }
 
-Student.propTypes = {
+Loan.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -298,4 +298,4 @@ Student.propTypes = {
   }),
 };
 
-export default Student;
+export default Loan;
