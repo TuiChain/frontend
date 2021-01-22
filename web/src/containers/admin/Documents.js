@@ -7,6 +7,7 @@ import {
   Typography,
   withStyles,
   Box,
+  Link,
 } from "@material-ui/core";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -62,7 +63,7 @@ const Documents = (props) => {
     setOpen(false);
   };
 
-  // Pending Requests
+  // Pending Documents
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState([]);
   useEffect(() => {
@@ -75,7 +76,7 @@ const Documents = (props) => {
   }, []);
 
   const validateDocument = async (id) => {
-    const valid = await DocumentService.validateDocument(id);
+    const valid = await DocumentsService.validateDocument(id);
 
     if (valid) {
       const filtered_documents = documents.filter((d) => d.id != id);
@@ -96,7 +97,7 @@ const Documents = (props) => {
 
   const rejectDocument = async (id) => {
     console.log("ID REJECTED:", id);
-    const valid = await DocumentService.rejectDocument(id);
+    const valid = await DocumentsService.rejectDocument(id);
 
     if (valid) {
       const filtered_documents = documents.filter((d) => d.id != id);
@@ -117,16 +118,23 @@ const Documents = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "student", headerName: "Student" },
+    { field: "student", headerName: "Student", width: 250 },
+    { field: "course", headerName: "Course", width: 250 },
     {
-      field: "desc",
-      headerName: "Description",
+      field: "document",
+      headerName: "Document",
       sortable: false,
+      width: 150,
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
-        <button type="button" onClick={() => handleModalOpen(props.row)}>
-          Open...
-        </button>
+        <Link
+          href={props.row.url}
+          target="_blank"
+          key={props.row.id}
+          underline="none"
+        >
+          <button>Open...</button>
+        </Link>
       ),
     },
     {

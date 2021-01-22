@@ -40,6 +40,51 @@ const uploadDocument = (id, name, document, is_public) => {
     });
 };
 
+const getPendingDocuments = () => {
+  console.log("GET PENDING");
+
+  return instance
+    .get(`/documents/`)
+    .then(() => {
+      // todo
+      return [
+        {
+          id: 1,
+          student: "Pedro",
+          course: "MIEI",
+          name: "teste",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+        {
+          id: 2,
+          student: "Pedro 2",
+          course: "MIEI 2",
+          name: "teste",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+      ];
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [
+        {
+          id: 1,
+          student: "Pedro",
+          course: "MIEI",
+          name: "teste",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+        {
+          id: 2,
+          student: "Pedro 2",
+          course: "MIEI 2",
+          name: "teste",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+      ];
+    });
+};
+
 const validateDocument = (id) => {
   console.log("accept", id);
 
@@ -70,6 +115,7 @@ const rejectDocument = (id) => {
 
 export default {
   uploadDocument,
-  acceptDocument: validateDocument,
+  getPendingDocuments,
+  validateDocument,
   rejectDocument,
 };

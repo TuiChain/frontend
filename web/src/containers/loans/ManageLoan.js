@@ -10,6 +10,7 @@ import {
   styled,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
+import DocumentsService from "../../services/documents.service";
 import { Create, School, Room, CloudUpload, Today } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import ProgressBar from "../../components/Progress";
@@ -48,7 +49,7 @@ const createForm = (loan_id, is_public, setToast, setOpen) => {
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       const { name, document } = values;
-      const valid = await LoansService.uploadDocument(
+      const valid = await DocumentsService.uploadDocument(
         loan_id,
         name,
         document,

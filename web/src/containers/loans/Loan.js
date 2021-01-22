@@ -261,7 +261,7 @@ function Loan(props) {
               <Box>
                 <Box2 alignItems="baseline">
                   <Typography variant="h2" display="inline">
-                    {user.username}
+                    {user.full_name}
                   </Typography>
                 </Box2>
                 <Box2>

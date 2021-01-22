@@ -219,29 +219,6 @@ const getStudentLoans = () => {
     });
 };
 
-const uploadDocument = (id, name, document, is_public) => {
-  console.log({
-    id,
-    document,
-    name,
-    is_public,
-  });
-
-  return instance
-    .post(`${id}/documents/`, {
-      is_public,
-      document,
-      name,
-    })
-    .then(() => {
-      return true;
-    })
-    .catch((error) => {
-      console.log(error.response);
-      return false;
-    });
-};
-
 export default {
   createLoan,
   getPendingLoans,
@@ -252,5 +229,4 @@ export default {
   getFeaturedLoans,
   getFundingLoans,
   getStudentLoans,
-  uploadDocument,
 };
