@@ -109,6 +109,18 @@ const getLoan = (id) => {
         ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
         : 0;
 
+      // TODO
+      loan.documents = [
+        {
+          name: "teste",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+        {
+          name: "teste 2",
+          url: "http://192.168.1.68:8080/copeland2015.pdf",
+        },
+      ];
+
       return loan;
     })
     .catch((error) => {
@@ -207,6 +219,29 @@ const getStudentLoans = () => {
     });
 };
 
+const uploadDocument = (id, name, document, is_public) => {
+  console.log({
+    id,
+    document,
+    name,
+    is_public,
+  });
+
+  return instance
+    .post(`${id}/documents/`, {
+      is_public,
+      document,
+      name,
+    })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
+};
+
 export default {
   createLoan,
   getPendingLoans,
@@ -217,4 +252,5 @@ export default {
   getFeaturedLoans,
   getFundingLoans,
   getStudentLoans,
+  uploadDocument,
 };
