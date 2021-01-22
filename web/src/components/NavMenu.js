@@ -1,5 +1,5 @@
 /* eslint react/prop-types: 0 */
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import {
   Button,
   Grid,
@@ -46,18 +46,12 @@ const useStyles = makeStyles((theme) => ({
 
 const NavMenu = (props) => {
   const classes = useStyles();
-  const { onLogout, wallet, setWallet } = props;
+  const { onLogout, wallet } = props;
 
   const history = useHistory();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const mobile = props.width === "xs" || props.width === "sm";
-
-  useEffect(async () => {
-
-    await WalletService.changeAccounts(setWallet);
-
-  }, []);
 
   const handleLogout = () => {
     history.push("/");

@@ -48,6 +48,9 @@ const App = (props) => {
   };
 
   const [wallet, setWallet] = useState(WalletService.checkAccount);
+  useEffect(async () => {
+    await WalletService.changeAccounts(setWallet);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -58,7 +61,6 @@ const App = (props) => {
               auth={auth}
               onLogout={handlerLogout}
               wallet={wallet}
-              setWallet={setWallet}
             />
             <Layout auth={auth}>
               <Switch>
