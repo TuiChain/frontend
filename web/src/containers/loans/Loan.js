@@ -21,9 +21,9 @@ import { withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 
-function Student(props) {
+function Loan(props) {
+  const [loan, setLoan] = useState({});
   const [user, setUser] = useState({});
-  const [userInfo, setUserInfo] = useState({});
   const [percentage, setPercentage] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [investment, setInvestment] = useState(0);
@@ -32,24 +32,24 @@ function Student(props) {
   const [open, setOpen] = React.useState(false);
 
   useEffect(async () => {
-    const temp = await LoansService.getLoan(props.match.params.id);
-    setUser(temp);
-    console.log("loan:", temp);
+    const loan = await LoansService.getLoan(props.match.params.id);
+    setLoan(loan);
+    console.log("loan:", loan);
 
     let percentage =
-      (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100;
+      (loan.funded_value_atto_dai / loan.requested_value_atto_dai) * 100;
     percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
     setPercentage(percentage);
     console.log("percentage:", percentage);
 
-    const Info = await UserService.getUserInfo(temp.student);
-    setUserInfo(Info.user);
+    const Info = await UserService.getUserInfo(loan.student);
+    setUser(Info.user);
     console.log("user:", Info.user);
 
     const account = walletService.checkAccount();
-    if (temp && temp.state.toUpperCase() == "FUNDING" && account != null) {
+    if (loan && loan.state.toUpperCase() == "FUNDING" && account != null) {
       const investment = await InvestmentsService.getInvestmentInLoan(
-        temp.id,
+        loan.id,
         account
       );
       setInvestment(investment.nrTokens);
@@ -84,7 +84,7 @@ function Student(props) {
         tokens
       );
 
-      await walletService.suggestStudentToken(user.token_address);
+      await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
       buttonErrorTreatment(e);
     }
@@ -130,11 +130,19 @@ function Student(props) {
 
   /* -------------------------------------------------------------------------- */
 
-  const pending = (
+  const message = (message) => (
     <Box>
-      <Typography variant="h3">Request waiting for approval</Typography>
+      <Typography variant="h4">{message}</Typography>
     </Box>
   );
+
+  const pending = message("Request waiting for approval");
+
+  const rejected = message(
+    "This loan request was rejected by Tuichain Administration"
+  );
+
+  const withdrawn = message("This loan request was rejected by the student");
 
   const funding = (
     <Box className="left-tok" width="fit-content" mx="auto">
@@ -192,6 +200,18 @@ function Student(props) {
     </Box>
   );
 
+  const active = message("This loan is active");
+  // show docs and stuff
+
+  const finalized = message("This loan is active");
+  // redeem token
+
+  const expired = message("This loan has expired");
+  // withdraw funds
+
+  const canceled = message("This loan is canceled");
+  // withdraw funds
+
   /* -------------------------------------------------------------------------- */
 
   return (
@@ -205,53 +225,59 @@ function Student(props) {
           <Grid container spacing={2} className="container">
             <Grid className="left-cont" item xs={12} md={6}>
               <Box>
-                <img src={userInfo.profile_image} />
+                <img src={user.profile_image} />
               </Box>
             </Grid>
             <Grid className="right-cont" item xs={12} md={6}>
               <Box className="right">
                 <Box2 alignItems="baseline" className="header">
                   <Typography variant="h2" display="inline">
-                    {userInfo.username}
+                    {user.username}
                   </Typography>
                 </Box2>
                 <Box2 className="up">
                   <Box className="par-init" display="flex">
                     <School />
                     <Typography variant="body1" display="inline">
-                      {user.school}
+                      {loan.school}
                     </Typography>
                   </Box>
                   <Box className="par" display="flex" paddingLeft="5%">
                     <Create />
-                    <Typography variant="body1">{user.course}</Typography>
+                    <Typography variant="body1">{loan.course}</Typography>
                   </Box>
                 </Box2>
                 <Box2 className="down">
                   <Box className="par" display="flex">
                     <Room />
                     <Typography variant="body1" display="inline">
-                      {user.destination}
+                      {loan.destination}
                     </Typography>
                   </Box>
                   <Box className="par" display="flex" paddingLeft="5%">
                     <DAI />
                     <Typography variant="body1" display="inline">
-                      {user.requested_value_atto_dai / Math.pow(10, 18)}
+                      {loan.requested_value_atto_dai / Math.pow(10, 18)}
                     </Typography>
                   </Box>
                 </Box2>
               </Box>
               <BoxDescr className="description">
                 <Typography variant="body1" display="inline">
-                  {user.description}
+                  {loan.description}
                 </Typography>
               </BoxDescr>
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-                {user.state.toUpperCase() == "PENDING" && pending}
-                {user.state.toUpperCase() == "FUNDING" && funding}
+                {loan.state.toUpperCase() == "PENDING" && pending}
+                {loan.state.toUpperCase() == "REJECTED" && rejected}
+                {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
+                {loan.state.toUpperCase() == "FUNDING" && funding}
+                {loan.state.toUpperCase() == "ACTIVE" && active}
+                {loan.state.toUpperCase() == "FINALIZED" && finalized}
+                {loan.state.toUpperCase() == "EXPIRED" && expired}
+                {loan.state.toUpperCase() == "CANCELED" && canceled}
               </Grid>
             </Grid>
           </Grid>
@@ -264,7 +290,7 @@ function Student(props) {
   );
 }
 
-Student.propTypes = {
+Loan.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -272,4 +298,4 @@ Student.propTypes = {
   }),
 };
 
-export default Student;
+export default Loan;
