@@ -57,11 +57,7 @@ const App = (props) => {
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Header
-              auth={auth}
-              onLogout={handlerLogout}
-              wallet={wallet}
-            />
+            <Header auth={auth} onLogout={handlerLogout} wallet={wallet} />
             <Layout auth={auth}>
               <Switch>
                 <Route exact path="/">
