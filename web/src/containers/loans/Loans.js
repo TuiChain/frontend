@@ -12,7 +12,6 @@ import {
   Typography,
   Button,
   withWidth,
-  Link,
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import LoanCard from "../../components/StudentCard";
@@ -22,6 +21,7 @@ import TuneIcon from "@material-ui/icons/Tune";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
+import { Link } from "react-router-dom";
 
 const backgroundColor1 = "#EFF0F6";
 const backgroundColor2 = "#D7D8E7";
@@ -161,7 +161,7 @@ const LoansGridItem = ({ loanCard, width, loan_id }) => {
       md={width < 1060 ? 6 : 4}
       xl={3}
     >
-      <Link href={`/loans/${loan_id}`} underline="none">
+      <Link to={`/loans/${loan_id}`} underline="none">
         {loanCard}
       </Link>
     </Grid>

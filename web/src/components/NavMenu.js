@@ -1,5 +1,5 @@
 /* eslint react/prop-types: 0 */
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import {
   Button,
   Grid,
@@ -53,7 +53,11 @@ const NavMenu = (props) => {
 
   const mobile = props.width === "xs" || props.width === "sm";
 
-  WalletService.changeAccounts(setWallet);
+  useEffect(async () => {
+
+    await WalletService.changeAccounts(setWallet);
+
+  }, []);
 
   const handleLogout = () => {
     history.push("/");
