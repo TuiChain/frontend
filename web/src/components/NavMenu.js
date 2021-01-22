@@ -46,14 +46,12 @@ const useStyles = makeStyles((theme) => ({
 
 const NavMenu = (props) => {
   const classes = useStyles();
-  const { onLogout, wallet, setWallet } = props;
+  const { onLogout, wallet } = props;
 
   const history = useHistory();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const mobile = props.width === "xs" || props.width === "sm";
-
-  WalletService.changeAccounts(setWallet);
 
   const handleLogout = () => {
     history.push("/");
