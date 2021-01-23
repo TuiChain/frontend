@@ -19,7 +19,7 @@ import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
-import Investments from "./containers/Investments"
+import Investments from "./containers/Investments";
 import PersonalLoans from "./containers/loans/PersonalLoans";
 
 const styles = {

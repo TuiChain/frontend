@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DataGrid, GridOverlay } from '@material-ui/data-grid';
-import { withStyles } from '@material-ui/core';
+import React from "react";
+import PropTypes from "prop-types";
+import { DataGrid, GridOverlay } from "@material-ui/data-grid";
+import { withStyles } from "@material-ui/core";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     marginTop: theme.spacing(3),
-    overflowX: 'auto',
-    width:800
-  }
+    overflowX: "auto",
+    width: 800,
+  },
 });
 
 const CustomNoRowsOverlay = () => {
@@ -17,11 +17,11 @@ const CustomNoRowsOverlay = () => {
       <div>Sem investimentos</div>
     </GridOverlay>
   );
-}
+};
 
-
-const SimpleTable = (props) =>
+const SimpleTable = (props) => (
   <DataGrid
+    headerHeight={63}
     rows={props.rows}
     columns={props.columns}
     pageSize={10}
@@ -32,12 +32,13 @@ const SimpleTable = (props) =>
       noRowsOverlay: CustomNoRowsOverlay,
     }}
   />
+);
 
 SimpleTable.propTypes = {
   classes: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
-  onSelectionChange: PropTypes.func
+  onSelectionChange: PropTypes.func,
 };
 
 export default withStyles(styles)(SimpleTable);

@@ -27,9 +27,12 @@ instance.interceptors.request.use(
  */
 async function createSellPosition(loanIdentifier, amountTokens, price) {
   let post = {
-    price_atto_dai_per_token: (BigInt(Math.floor(price*100)) * BigInt(10) ** BigInt(16)).toString(),
+    price_atto_dai_per_token: (
+      BigInt(Math.floor(price * 100)) *
+      BigInt(10) ** BigInt(16)
+    ).toString(),
     loan_id: loanIdentifier,
-    amount_tokens: amountTokens.toString()
+    amount_tokens: amountTokens.toString(),
   };
 
   await walletTransaction("/create_sell_position/", post);
@@ -44,7 +47,7 @@ async function createSellPosition(loanIdentifier, amountTokens, price) {
 async function decreaseSellPositionAmount(loanIdentifier, decreaseAmount) {
   let post = {
     loan_id: loanIdentifier,
-    decrease_amount: decreaseAmount.toString()
+    decrease_amount: decreaseAmount.toString(),
   };
 
   await walletTransaction("/decrease_sell_position_amount/", post);
@@ -59,7 +62,7 @@ async function decreaseSellPositionAmount(loanIdentifier, decreaseAmount) {
 async function increaseSellPositionAmount(loanIdentifier, increaseAmount) {
   let post = {
     loan_id: loanIdentifier,
-    increase_amount: increaseAmount.toString()
+    increase_amount: increaseAmount.toString(),
   };
 
   await walletTransaction("/increase_sell_position_amount/", post);
@@ -73,7 +76,10 @@ async function increaseSellPositionAmount(loanIdentifier, increaseAmount) {
 async function updateSellPositionPrice(loanIdentifier, price) {
   let post = {
     loan_id: loanIdentifier,
-    new_price_atto_dai_per_token: (BigInt(Math.floor(price*100)) * BigInt(10) ** BigInt(16)).toString()
+    new_price_atto_dai_per_token: (
+      BigInt(Math.floor(price * 100)) *
+      BigInt(10) ** BigInt(16)
+    ).toString(),
   };
 
   await walletTransaction("/update_sell_position_price/", post);
@@ -105,7 +111,7 @@ async function walletTransaction(api_route, post_params) {
 }
 
 function priceAttoDaiToFloat(priceAttoDai) {
-  return Number(BigInt(priceAttoDai) / BigInt(10) ** BigInt(16)) / 100
+  return Number(BigInt(priceAttoDai) / BigInt(10) ** BigInt(16)) / 100;
 }
 
 export default {
@@ -114,5 +120,5 @@ export default {
   increaseSellPositionAmount,
   updateSellPositionPrice,
   removeSellPosition,
-  priceAttoDaiToFloat
+  priceAttoDaiToFloat,
 };

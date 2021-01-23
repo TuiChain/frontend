@@ -32,10 +32,13 @@ const getInvestmentInLoan = (loan_id, account_address) => {
 };
 
 // Investments for dashboard - limits 3
-const getDashboardInvestments = () => {
+const getDashboardInvestments = (accountAddress) => {
+  const account = Web3.utils.toChecksumAddress(accountAddress);
+
   return instance
-    .get(`/get_personal/`)
+    .get(`/get_personal/${account}/`)
     .then((response) => {
+      console.log(response);
       let investments = response.data.investments;
 
       investments = investments.slice(0, 3);
@@ -58,38 +61,6 @@ const getDashboardInvestments = () => {
     });
 };
 
-
-// const investmentsHardCoded = [
-//   { 
-//     id:0,
-//     loan:'Loan to Zé',
-//     tokens:142,
-//     phase:'active',
-//     inMarketplace:40
-//   },
-//   {
-//     id:1,
-//     loan:'Loan to Quim',
-//     tokens:22,
-//     phase:'funding',
-//     inMarketplace:0
-//   },
-//   {
-//     id:2,
-//     loan:'Loan to Manel',
-//     tokens:42,
-//     phase:'finalized',
-//     inMarketplace:0
-//   },
-//   {
-//     id:3,
-//     loan:'Loan to Ventura',
-//     tokens:422,
-//     phase:'expired',
-//     inMarketplace:0
-//   }
-// ]
-
 const getPersonal = (accountAddress) => {
   const account = Web3.utils.toChecksumAddress(accountAddress);
 
@@ -103,7 +74,6 @@ const getPersonal = (accountAddress) => {
       console.log(error);
       return false;
     });
-  //return investmentsHardCoded;
 };
 
 export default {
