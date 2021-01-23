@@ -7,7 +7,7 @@ import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
 import Loan from "./containers/loans/Loan";
-import Loans from "./containers/loans/Loans";
+import FundingLoans from "./containers/loans/Loans";
 import LoanRequest from "./containers/LoanRequest";
 import LoanRequests from "./containers/admin/LoanRequests";
 import Error from "./containers/Error";
@@ -79,7 +79,7 @@ const App = (props) => {
                   path="/loans/:id"
                   component={Loan}
                 />
-                <Route path="/loans" component={Loans} />
+                <Route path="/loans" component={FundingLoans} />
                 <ProtectedRoute
                   auth={auth}
                   path="/personal/loans/:id"
