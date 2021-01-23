@@ -109,18 +109,6 @@ const getLoan = (id) => {
         ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
         : 0;
 
-      // TODO
-      loan.documents = [
-        {
-          name: "teste",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-        {
-          name: "teste 2",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-      ];
-
       return loan;
     })
     .catch((error) => {
