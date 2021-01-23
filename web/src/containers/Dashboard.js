@@ -105,7 +105,7 @@ const ActiveLoan = ({ loan }) => {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to={`/students/${loan.id}`}
+            to={`/loans/${loan.id}`}
           >
             Open
           </Button>
@@ -188,7 +188,7 @@ const Investments = ({ investments }) => {
             variant="outlined"
             color="secondary"
             component={RouterLink}
-            to="/students"
+            to="/loans"
           >
             Start investing
           </Button>
@@ -220,7 +220,7 @@ const FeaturedLoans = ({ loans }) => {
                 key={l.id}
                 divider
                 component={RouterLink}
-                to={`/students/${l.id}`}
+                to={`/loans/${l.id}`}
               >
                 <ListItemAvatar>
                   <Avatar>{l.user_full_name ? l.user_full_name.charAt(0) : 'fjhsbsf shabhs'}</Avatar>
@@ -256,7 +256,7 @@ const FeaturedLoans = ({ loans }) => {
           color="secondary"
           slot="end"
           component={RouterLink}
-          to="/students"
+          to="/loans"
         >
           Explore
         </Button>

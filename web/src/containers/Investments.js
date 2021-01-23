@@ -114,6 +114,7 @@ const Investments = () => {
                 inMarketplace={selected.nrTokens_market}
                 loanId={selected.id}
                 tokensPriceMarket={selected.tokensPriceMarket}
+                redeemPrice={selected.current_value_atto_dai}
               />
           }
         </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, IconButton, TextField } from '@material-ui/core';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
@@ -12,6 +12,10 @@ const SpinnerInput = (props) => {
   const [value, setValue] = useState(props.defaultValue)
   const [isMinusEnable, setIsMinusEnable] = useState(props.defaultValue !== props.minValue)
   const [isPlusEnable, setIsPlusEnable] = useState(true)
+
+  useEffect(() => {
+    setValue(props.defaultValue)
+  }, [props.loanId])
 
   const handlePlusClick = () => {
     let nextValue = parseFloat(value + step)
@@ -88,6 +92,14 @@ const SpinnerInput = (props) => {
     }
   }
 
+  const onChageCurrency = value => {
+    setValue(value)
+
+    if(props.onNewValue){
+      props.onNewValue(value)
+    }
+  }
+
   const renderTextField = () =>{
     if(isPrice){
       return(
@@ -97,7 +109,7 @@ const SpinnerInput = (props) => {
           value={value}
           currencySymbol={<DAI />}
           outputFormat="number"
-          onChange={(event, value)=> setValue(value)}
+          onChange={(event, value) => onChageCurrency(value)}
           minimumValue={props.minValue.toString()}
           disabled={props.disabled}
         />

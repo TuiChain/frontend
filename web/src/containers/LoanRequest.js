@@ -19,6 +19,7 @@ import LoansService from "../services/loans.service";
 import { useHistory } from "react-router";
 import { countries } from "../util/countries";
 import DAI from "../components/DAI";
+import Web3 from "web3";
 
 const styles = (theme) => ({
   fullWidth: {
@@ -62,25 +63,31 @@ const LoanRequest = (props) => {
         recipient_address,
       } = values;
       console.log(school, course, amount, desc, destination, recipient_address);
-      const valid = await LoansService.createLoan(
-        school,
-        course,
-        amount,
-        desc,
-        destination,
-        recipient_address
-      );
 
-      if (valid) {
+      try {
+        await LoansService.createLoan(
+          school,
+          course,
+          amount,
+          desc,
+          destination,
+          recipient_address
+        );
+
         setSubmitting(false);
         history.replace("/");
-      } else {
+      } catch (e) {
+        const error = e.response.data.error;
+        let message = error.includes("cannot create Loan Requests")
+          ? "You can only have one loan request at a time."
+          : error.includes("Invalid address")
+          ? "Invalid Account Address checksum."
+          : error;
+
         setFieldValue(
           "error",
           <Grid item xs={12}>
-            <Alert severity="error">
-              You can only have one loan request at a time.
-            </Alert>
+            <Alert severity="error">{message}</Alert>
           </Grid>
         );
         setSubmitting(false);
@@ -92,9 +99,11 @@ const LoanRequest = (props) => {
       amount: Yup.number().min(1),
       desc: Yup.string().required("Description is required"),
       destination: Yup.string().required("Destination is required"),
-      recipient_address: Yup.string().required(
-        "An Account Address is required"
-      ),
+      recipient_address: Yup.string()
+        .required("An Account Address is required")
+        .test("checksum", "Invalid Account Address checksum", (value) =>
+          Web3.utils.isAddress(value)
+        ),
     }),
   });
 
@@ -223,12 +232,17 @@ const LoanRequest = (props) => {
                   ? "Account Address"
                   : recipient_touched == true
                   ? "Account Address"
-                  : "Selected Account Address: " + wallet
+                  : "Selected Account Address: " +
+                    Web3.utils.toChecksumAddress(wallet)
               }
               name="recipient_address"
               value={formik.values.recipient_address}
               onChange={formik.handleChange}
-              onBlur={() => setRecipientTouched(false)}
+              onBlur={() =>
+                formik.values.recipient_address == ""
+                  ? setRecipientTouched(false)
+                  : true
+              }
               onFocus={() => setRecipientTouched(true)}
               helperText={
                 formik.errors.recipient_address &&
