@@ -37,8 +37,8 @@ const createLoan = (
       destination,
       recipient_address,
     })
-    .then(() => {
-      return true;
+    .then((response) => {
+      return response.data.loan;
     });
 };
 
