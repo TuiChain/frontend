@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const instance = axios.create({
-  baseURL: `${API_URL}/loans`, // TODO
+  baseURL: `${API_URL}/loans/documents`,
 });
 
 instance.interceptors.request.use(
@@ -18,19 +18,14 @@ instance.interceptors.request.use(
 );
 
 const uploadDocument = (id, name, document, is_public) => {
-  console.log({
-    id,
-    document,
-    name,
-    is_public,
-  });
+  const data = new FormData();
+  data.append("id", id);
+  data.append("document", document);
+  data.append("name", name);
+  data.append("is_public", Number(is_public));
 
   return instance
-    .post(`${id}/documents/`, {
-      is_public,
-      document,
-      name,
-    })
+    .post(`/upload_document/${id}/`, data)
     .then(() => {
       return true;
     })
@@ -40,56 +35,33 @@ const uploadDocument = (id, name, document, is_public) => {
     });
 };
 
-const getPendingDocuments = () => {
-  console.log("GET PENDING");
-
+const getLoanPublicDocuments = (id) => {
   return instance
-    .get(`/documents/`)
-    .then(() => {
-      // todo
-      return [
-        {
-          id: 1,
-          student: "Pedro",
-          course: "MIEI",
-          name: "teste",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-        {
-          id: 2,
-          student: "Pedro 2",
-          course: "MIEI 2",
-          name: "teste",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-      ];
+    .get(`/get_approved_public_docs/${id}/`)
+    .then((response) => {
+      return response.data.documents;
     })
     .catch((error) => {
       console.log(error.response);
-      return [
-        {
-          id: 1,
-          student: "Pedro",
-          course: "MIEI",
-          name: "teste",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-        {
-          id: 2,
-          student: "Pedro 2",
-          course: "MIEI 2",
-          name: "teste",
-          url: "http://192.168.1.68:8080/copeland2015.pdf",
-        },
-      ];
+      return [];
+    });
+};
+
+const getPendingDocuments = () => {
+  return instance
+    .get(`/get_all_unevaluated/`)
+    .then((response) => {
+      return response.data.documents;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
     });
 };
 
 const validateDocument = (id) => {
-  console.log("accept", id);
-
   return instance
-    .put(`${id}/documents/`)
+    .put(`/approve_document/${id}/`)
     .then(() => {
       return true;
     })
@@ -100,10 +72,8 @@ const validateDocument = (id) => {
 };
 
 const rejectDocument = (id) => {
-  console.log("to cancel", id);
-
   return instance
-    .put(`${id}/documents/`)
+    .put(`/reject_document/${id}/`)
     .then(() => {
       return true;
     })
@@ -115,6 +85,7 @@ const rejectDocument = (id) => {
 
 export default {
   uploadDocument,
+  getLoanPublicDocuments,
   getPendingDocuments,
   validateDocument,
   rejectDocument,

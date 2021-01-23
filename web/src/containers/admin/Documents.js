@@ -118,8 +118,25 @@ const Documents = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "student", headerName: "Student", width: 250 },
-    { field: "course", headerName: "Course", width: 250 },
+    {
+      field: "school",
+      headerName: "School",
+      width: 250,
+      valueGetter: (params) => params.row.loan.school,
+    },
+    {
+      field: "course",
+      headerName: "Course",
+      width: 250,
+      valueGetter: (params) => params.row.loan.course,
+    },
+    {
+      field: "is_public",
+      headerName: "Public",
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) =>
+        props.row.is_public ? <>&#x2713;</> : <>&#10006;</>,
+    },
     {
       field: "document",
       headerName: "Document",
@@ -157,7 +174,7 @@ const Documents = (props) => {
   return (
     <Box>
       <Typography variant="h2" paragraph>
-        Documents uploaded
+        Documents
       </Typography>
 
       <Box className={classes.grid}>

@@ -26,8 +26,18 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
+import documentsService from "../../services/documents.service";
 
 const LoanActive = ({ loan }) => {
+  const [documents, setDocuments] = useState([]);
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      const docs = await documentsService.getLoanPublicDocuments(loan.id);
+      setDocuments(docs);
+    };
+    fetchDocuments();
+  }, []);
+
   return (
     <Box width="100%">
       <Box py={2}>
@@ -39,7 +49,7 @@ const LoanActive = ({ loan }) => {
       <Box>
         <Card style={{ width: "100%" }}>
           <List component="nav">
-            {loan.documents.map((d, index) => (
+            {documents.map((d, index) => (
               <Link href={d.url} target="_blank" key={index} underline="none">
                 <ListItem button>
                   <ListItemText primary={d.name} />
