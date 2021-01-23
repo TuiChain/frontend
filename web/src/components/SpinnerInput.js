@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, IconButton, TextField } from '@material-ui/core';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
@@ -13,44 +13,48 @@ const SpinnerInput = (props) => {
   const [isMinusEnable, setIsMinusEnable] = useState(props.defaultValue !== props.minValue)
   const [isPlusEnable, setIsPlusEnable] = useState(true)
 
-  useEffect(() => {
-    setValue(props.defaultValue)
-  },[props.loanId])
-
   const handlePlusClick = () => {
     let nextValue = parseFloat(value + step)
 
     if(isPrice){
-      nextValue = nextValue.toFixed(2)
+      console.log(nextValue, value, step)
+      nextValue = parseFloat(nextValue.toFixed(2))
     }
-
+    
     if(nextValue >= props.maxValue){
       setIsPlusEnable(false)
-      setValue(props.maxValue)
+      nextValue = props.maxValue
     }
+
     if(!isMinusEnable){
       setIsMinusEnable(true)
     }
 
-    setValue(parseFloat(nextValue))
+    console.log(nextValue)
+    setValue(nextValue)
+    props.onNewValue(nextValue)
   }
 
   const handleMinusClick = () => {
-    let nextValue = value - step
+    let nextValue = parseFloat(value - step)
 
     if(isPrice){
-      nextValue = nextValue.toFixed(2)
+      parseFloat(nextValue.toFixed(2))
     }
 
     if( nextValue <= props.minValue){
       setIsMinusEnable(false)
-      setValue(props.minValue)
-    }
+      nextValue = props.minValue
+    } 
+    
     if(!isPlusEnable){
       setIsPlusEnable(true)
     }
-
+    
     setValue(parseFloat(nextValue))
+    if (props.onNewValue) {
+      props.onNewValue(nextValue)
+    }
   }
 
   const onChangeHandler = (event) => {
@@ -60,18 +64,28 @@ const SpinnerInput = (props) => {
     if(newValue >= props.maxValue){
       setValue(props.maxValue)
       setIsPlusEnable(false)
+      if (props.onNewValue) {
+        props.onNewValue(newValue)
+      }
       return
     }
 
     if(newValue <= props.minValue){
       setValue(props.minValue)
       setIsMinusEnable(false)
+      if (props.onNewValue) {
+        props.onNewValue(newValue)
+      }
       return
     }
 
     setIsPlusEnable(true)
     setIsMinusEnable(true)
     setValue(newValue)
+    
+    if (props.onNewValue) {
+      props.onNewValue(newValue)
+    }
   }
 
   const renderTextField = () =>{
@@ -128,7 +142,8 @@ SpinnerInput.propTypes = {
   minValue: PropTypes.number,
   isPrice: PropTypes.bool,
   step: PropTypes.number,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  onNewValue: PropTypes.func,
 };
 
 export default (SpinnerInput);

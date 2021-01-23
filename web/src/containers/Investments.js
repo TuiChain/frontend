@@ -6,6 +6,7 @@ import { yellow } from '@material-ui/core/colors';
 import InvestmentCard from "../components/InvestmentCard";
 import investmentService from "../services/investment.service";
 import walletService from "../services/wallet.service";
+import marketTransactionsService from "../services/market-transactions.service";
 
 const columns = [
   { field: "student", 
@@ -36,7 +37,7 @@ const columns = [
     )
   },
   { field: "state", headerName: "Phase", headerClassName: 'data-grid-header'},
-  { field: "nrToken_market", headerName: "Listed in the Market", type: "number",  width: 180, headerClassName: 'data-grid-header'}
+  { field: "nrTokens_market", headerName: "Listed in the Market", type: "number",  width: 180, headerClassName: 'data-grid-header'}
 ]
 
 const Investments = () => {
@@ -46,17 +47,19 @@ const Investments = () => {
   useEffect(() => {
     async function getResponseFromAPI(account) {
      const resp = (await investmentService.getPersonal(account))
-     const loans = resp.data.loans
+     console.log(resp)
+     const investments = resp.data.investments
       .map(entry => { 
         const flatEntry =  {...entry.loan }
         flatEntry.nrTokens = entry.nrTokens
-        flatEntry.nrToken_market = entry.nrToken_market
-        
+        flatEntry.nrTokens_market = entry.nrTokens_market
+        flatEntry.tokensPriceMarket = marketTransactionsService.priceAttoDaiToFloat(entry.price_per_token_market)
+       
         return flatEntry
       })
-     setInvestments(loans)
-     setSelected(loans ? loans[0] : undefined)
-     console.log(resp)
+     setInvestments(investments)
+     setSelected(investments ? investments[0] : undefined)
+     
     }
     
     const account = walletService.checkAccount();
@@ -108,8 +111,9 @@ const Investments = () => {
                 loanName={selected.student.toString()}
                 phase={selected.state}
                 tokens={selected.nrTokens}
-                inMarketplace={selected.nrToken_market}
+                inMarketplace={selected.nrTokens_market}
                 loanId={selected.id}
+                tokensPriceMarket={selected.tokensPriceMarket}
               />
           }
         </Grid>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,6 +9,8 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import DAI from './DAI';
 import Status from './Status';
 import loansTransactionsService from '../services/loans-transactions.service';
+import marketTransactionsService from '../services/market-transactions.service';
+//import marketTransactionsService from '../services/market-transactions.service';
 
 const useStyles = makeStyles({
   root: {
@@ -64,99 +66,116 @@ const copy = {
 
 }
 
-const investmentCardHeader = (classes, phase, loanName) =>
-  <CardHeader
-    className={classes.headers}
-    action={
-      <Status state={phase} />
-    }
-    title={`Loan to ${loanName}`}
-  />
+/* eslint-disable react/jsx-no-duplicate-props */
+const SpinnerInputWithLabel = props =>
+    <Grid container justify='space-between'> 
+      <Grid item>
+        <Typography variant='body1'>{props.labelText}</Typography>
+      </Grid>
+      <Grid item>
+        <SpinnerInput 
+          defaultValue={props.spinnerDefaultValue} 
+          minValue={0}
+          maxValue={props.spinnerMaxValue}
+          loanId={props.spinnerLoanId}
+          isPrice={props.isPrice ? props.isPrice : false}
+          disabled={props.disabled ? props.disabled : false}
+          onNewValue={props.onNewValue}
+        />
+      </Grid>
+    </Grid>
 
-const SpinnerInputWithLabel = ({labelText, spinnerDefaultValue, spinnerMaxValue, spinnerLoanId, isPrice, disabled}) =>
+const InvestmentCard = props => {
+  const investmentCardHeader = (classes, phase, loanName) =>
+    <CardHeader
+      className={classes.headers}
+      action={
+        <Status state={phase} />
+      }
+      title={`Loan to ${loanName}`}
+    />
+
+  const CurrencyInputWithLabel = ({labelText, defaultValue}) =>
+    <Grid container justify='space-between'> 
+      <Grid item>
+        <Typography variant='body1'>{labelText}</Typography>
+      </Grid>
+      <Grid item>
+        <CurrencyTextField
+          style={{width: 100, marginRight: 30}}
+          variant="standard"
+          value={defaultValue}
+          currencySymbol={<DAI />}
+          outputFormat="number"
+          disabled
+        />
+      </Grid>
+    </Grid>
+
+  const InputWithLabel = ({labelText, defaultValue}) =>
   <Grid container justify='space-between'> 
     <Grid item>
       <Typography variant='body1'>{labelText}</Typography>
     </Grid>
     <Grid item>
-      <SpinnerInput 
-        defaultValue={spinnerDefaultValue} 
-        minValue={0}
-        maxValue={spinnerMaxValue}
-        loanId={spinnerLoanId}
-        isPrice={isPrice ? isPrice : false}
-        disabled={disabled ? disabled : false}
-      />
-    </Grid>
-  </Grid>
-
-const CurrencyInputWithLabel = ({labelText, defaultValue}) =>
-  <Grid container justify='space-between'> 
-    <Grid item>
-      <Typography variant='body1'>{labelText}</Typography>
-    </Grid>
-    <Grid item>
-      <CurrencyTextField
+      <TextField
         style={{width: 100, marginRight: 30}}
         variant="standard"
         value={defaultValue}
-        currencySymbol={<DAI />}
-        outputFormat="number"
         disabled
       />
     </Grid>
   </Grid>
 
-const InputWithLabel = ({labelText, defaultValue}) =>
-<Grid container justify='space-between'> 
-  <Grid item>
-    <Typography variant='body1'>{labelText}</Typography>
-  </Grid>
-  <Grid item>
-    <TextField
-      style={{width: 100, marginRight: 30}}
-      variant="standard"
-      value={defaultValue}
-      disabled
-    />
-  </Grid>
-</Grid>
-
-const activePhaseInputContent = (props) =>
-  <Grid style={{height: 80}} container direction='column' justify='space-between'>
-    <Grid container justify='space-between'> 
-      <SpinnerInputWithLabel
-        labelText="Quantity:"
-        spinnerDefaultValue={props.inMarketplace}
-        spinnerMaxValue={props.tokens}
-        spinnerLoanId={props.loanId}
-      />
+  const activePhaseInputContent = () =>
+    <Grid style={{height: 80}} container direction='column' justify='space-between'>
+      <Grid container justify='space-between'> 
+        <SpinnerInputWithLabel
+          labelText="Quantity:"
+          spinnerDefaultValue={props.inMarketplace}
+          spinnerMaxValue={props.tokens}
+          spinnerLoanId={props.loanId}
+          onNewValue={onNewQuantity}
+        />
+      </Grid>
+      <Grid container justify='space-between'>
+        <SpinnerInputWithLabel
+          labelText="Price per token:"
+          spinnerDefaultValue={props.tokensPriceMarket}
+          spinnerMaxValue={props.tokens}
+          spinnerLoanId={props.loanId}
+          isPrice={true }
+          onNewValue={onNewPrice}
+        />
+      </Grid>  
     </Grid>
-    <Grid container justify='space-between'>
-      <SpinnerInputWithLabel
-        labelText="Price:"
-        spinnerDefaultValue={props.inMarketplace}
-        spinnerMaxValue={props.tokens}
-        spinnerLoanId={props.loanId}
-        isPrice={true }
+      
+  const finalizedPhaseInputContent = () =>
+    <Grid style={{height: 80}} container direction='column' justify='space-between'>
+      <InputWithLabel
+        labelText="Quantity:"
+        defaultValue={props.tokens}
       />
-    </Grid>  
-  </Grid>
-    
-const finalizedPhaseInputContent = (props) =>
-  <Grid style={{height: 80}} container direction='column' justify='space-between'>
-    <InputWithLabel
-      labelText="Quantity:"
-      defaultValue={props.tokens}
-    />
-    <CurrencyInputWithLabel
-      labelText="Price:"
-      defaultValue={props.tokens}
-    />  
-  </Grid>
-    
+      <CurrencyInputWithLabel
+        labelText="Price per token:"
+        defaultValue={props.tokens}
+      />  
+    </Grid>
+      
 
-const fundingPhaseInputContent = (props) =>
+  const fundingPhaseInputContent = () =>
+    <Grid style={{height: 80}} container direction='column' justify='space-between'>
+      <InputWithLabel
+        labelText="Quantity:"
+        defaultValue={props.tokens}
+      />  
+      <CurrencyInputWithLabel
+        labelText="Payback:"
+        defaultValue={props.tokens}
+      />  
+    </Grid>
+
+  const expiredPhaseInputContent = () =>
   <Grid style={{height: 80}} container direction='column' justify='space-between'>
     <InputWithLabel
       labelText="Quantity:"
@@ -168,115 +187,159 @@ const fundingPhaseInputContent = (props) =>
     />  
   </Grid>
 
-const expiredPhaseInputContent = (props) =>
-<Grid style={{height: 80}} container direction='column' justify='space-between'>
-  <InputWithLabel
-    labelText="Quantity:"
-    defaultValue={props.tokens}
-  />  
-  <CurrencyInputWithLabel
-    labelText="Payback:"
-    defaultValue={props.tokens}
-  />  
-</Grid>
-
-const renderPhaseInputContent = props => {
-  console.log(props)
-  switch(props.phase) {
-    case 'ACTIVE':
-      return activePhaseInputContent(props)
-    case 'FUNDING':
-      return fundingPhaseInputContent(props)
-    case 'FINALIZED':
-      return finalizedPhaseInputContent(props)
-    case 'EXPIRED':
-      return expiredPhaseInputContent(props)
+  const renderPhaseInputContent = () => {
+    switch(props.phase) {
+      case 'ACTIVE':
+        return activePhaseInputContent()
+      case 'FUNDING':
+        return fundingPhaseInputContent()
+      case 'FINALIZED':
+        return finalizedPhaseInputContent()
+      case 'EXPIRED':
+        return expiredPhaseInputContent()
+    }
   }
-}
 
-const handleWithdrawClick = async (props) => {
-  try {
-    await loansTransactionsService.withdrawFunds(
-      props.loanId,
-      props.tokens
-    );
-  } catch (e) {
-    console.log(e);
+  const handleCancelClick = async () => {
+    try {
+      await loansTransactionsService.withdrawFunds(
+        props.loanId,
+        props.tokens
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleSellPositionQuantityChange = async () => {
+    if (props.inMarketplace > newQuantity) {
+      await marketTransactionsService.decreaseSellPositionAmount(
+        props.loanId,
+        props.inMarketplace - newQuantity
+      );
+    } else {
+      await marketTransactionsService.increaseSellPositionAmount(
+        props.loanId,
+        newQuantity - props.inMarketplace
+      );
+    }
   }
-};
 
-const handleButtonClick = (props) => {
-  switch(props.phase) {
-    //case 'ACTIVE':
-      //return activePhaseInputContent(props)
-    case 'FUNDING':
-      return handleWithdrawClick(props)
-    // /case 'FINALIZED':
-    //   return finalizedPhaseInputContent(props)
-    // case 'EXPIRED':
-    //   return expiredPhaseInputContent(props)
+  const handleSellPositionPriceChange = async () => {
+    if (props.tokensPriceMarket !== newPrice) {
+      await marketTransactionsService.updateSellPositionPrice(
+        props.loanId,
+        newPrice
+      );
+    }
   }
-}
 
-const renderPhaseContent = props => {
-  return (
-  <CardContent>
-  <Grid style={{height: 250}} container direction='column' justify='space-between'>
-    <Grid item>
-      <Typography variant='h6'>
-        {copy[props.phase].titleText}
-      </Typography>
-    </Grid>
-    <Grid style={{height: 80}} container direction='column' justify='space-between'>
-      {renderPhaseInputContent(props)}
-    </Grid>
-    <Grid container justify='flex-end'>
+  const handleMarketplaceListClick = async () => {
+    console.log(props.inMarketplace, newQuantity, newPrice)
+    try {
+      if (props.inMarketplace === 0 && newQuantity != 0 && newPrice != 0) {
+        await marketTransactionsService.createSellPosition(
+          props.loanId,
+          newQuantity,
+          newPrice
+        );
+      } else {
+        await handleSellPositionQuantityChange()
+        await handleSellPositionPriceChange()
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleButtonClick = () => {
+    console.log("Clicou")
+    switch(props.phase) {
+      case 'ACTIVE':
+        return handleMarketplaceListClick()
+      case 'FUNDING':
+        return handleCancelClick()
+      // /case 'FINALIZED':
+      //   return finalizedPhaseInputContent(props)
+      // case 'EXPIRED':
+      //   return expiredPhaseInputContent(props)
+    }
+  }
+
+  const renderPhaseContent = () => {
+    return (
+    <CardContent>
+    <Grid style={{height: 250}} container direction='column' justify='space-between'>
       <Grid item>
-        <Button onClick={() =>handleButtonClick(props)} style={{alignSelf: 'flex-end', width: 120}} variant="contained" size="medium" color="primary">
-          {copy[props.phase].buttonText}
-        </Button>
+        <Typography variant='h6'>
+          {copy[props.phase].titleText}
+        </Typography>
+      </Grid>
+      <Grid style={{height: 80}} container direction='column' justify='space-between'>
+        {renderPhaseInputContent(props)}
+      </Grid>
+      <Grid container justify='flex-end'>
+        <Grid item>
+          <Button onClick={() =>handleButtonClick(props)} style={{alignSelf: 'flex-end', width: 120}} variant="contained" size="medium" color="primary">
+            {copy[props.phase].buttonText}
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-  </CardContent>)
-}
+    </CardContent>)
+  }
 
-const InvestmentCard = props => {
-  const classes = useStyles()
+  InputWithLabel.propTypes = {
+    labelText: PropTypes.string.isRequired,
+    defaultValue: PropTypes.number.isRequired
+  };
+
+  CurrencyInputWithLabel.propTypes = {
+    labelText: PropTypes.string.isRequired,
+    defaultValue: PropTypes.number.isRequired
+  };
+
   
+
+  const classes = useStyles()
+  const [newQuantity, setNewQuantity] = useState(0)
+  const [newPrice, setNewPrice] = useState(0)
+
+  const onNewQuantity = (newQuantity) => {
+    setNewQuantity(newQuantity)
+  }
+
+  const onNewPrice = (newPrice) => {
+    setNewPrice(newPrice)
+  }
+
   return (
     <Card className={classes.root}>
       {investmentCardHeader(classes, props.phase, props.loanName)}
-      {renderPhaseContent(props)}
+      {renderPhaseContent()}
     </Card>
   );
 }
-
-InputWithLabel.propTypes = {
-  labelText: PropTypes.string.isRequired,
-  defaultValue: PropTypes.number.isRequired
-};
-
-CurrencyInputWithLabel.propTypes = {
-  labelText: PropTypes.string.isRequired,
-  defaultValue: PropTypes.number.isRequired
-};
-
-SpinnerInputWithLabel.propTypes = {
-  labelText: PropTypes.string.isRequired,
-  spinnerDefaultValue: PropTypes.number.isRequired,
-  spinnerMaxValue: PropTypes.number.isRequired,
-  spinnerLoanId: PropTypes.number.isRequired,
-  isPrice: PropTypes.bool,
-  disabled: PropTypes.bool
-};
 
 InvestmentCard.propTypes = {
   loanName: PropTypes.string.isRequired,
   phase: PropTypes.string.isRequired,
   tokens: PropTypes.number.isRequired,
   loanId: PropTypes.number.isRequired,
-  inMarketplace: PropTypes.number.isRequired
+  inMarketplace: PropTypes.number.isRequired,
+  tokensPriceMarket: PropTypes.number.isRequired,
+};
+
+
+SpinnerInputWithLabel.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  spinnerDefaultValue: PropTypes.number.isRequired,
+  spinnerMaxValue: PropTypes.number.isRequired,
+  spinnerLoanId: PropTypes.number.isRequired,
+  defaultValue: PropTypes.number,
+  isPrice: PropTypes.bool,
+  onNewValue: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 export default InvestmentCard;
