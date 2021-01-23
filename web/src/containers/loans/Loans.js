@@ -58,8 +58,8 @@ const FundingLoans = () => {
   });
 
   const handleFilters = (filteredLoans) => {
-    setFilteredLoans(filteredLoans)
-  }
+    setFilteredLoans(filteredLoans);
+  };
 
   useEffect(() => {
     LoansService.getFundingLoans().then((loanList) => {
@@ -113,7 +113,6 @@ const FundingLoans = () => {
 };
 
 export default withWidth()(FundingLoans);
-
 
 LoansGridItem.propTypes = {
   loanCard: PropTypes.object,

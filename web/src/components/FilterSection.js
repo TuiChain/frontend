@@ -92,13 +92,7 @@ const FilterBox = styled(Box)(({ mobile }) => ({
 
 // Checkbox filter
 
-const CheckboxFilter = ({
-  name,
-  status,
-  onChange,
-  parallel,
-  mobile,
-}) => {
+const CheckboxFilter = ({ name, status, onChange, parallel, mobile }) => {
   return (
     <FilterBox mobile={mobile}>
       <FilterTitle title={name} mobile={mobile} />
@@ -338,11 +332,7 @@ const FilterSection = ({ loans, onChange, ...props }) => {
       justify="space-between"
     >
       <SearchBox mobile={mobile}>
-        <SearchBar
-          mobile={mobile}
-          input={searchInput}
-          onChange={updateInput}
-        />
+        <SearchBar mobile={mobile} input={searchInput} onChange={updateInput} />
         <DisplayFiltersButton
           mobile={mobile}
           startIcon={<TuneIcon />}
