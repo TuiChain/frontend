@@ -24,7 +24,7 @@ const getInvestmentInLoan = (loan_id, account_address) => {
   return instance
     .get("/get/" + loan_id + "/" + account + "/")
     .then((response) => {
-      return response.data.loan;
+      return response.data.investment;
     })
     .catch((error) => {
       console.log(error);

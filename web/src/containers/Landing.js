@@ -412,7 +412,7 @@ const Landing = () => {
                   viewBox="0 0 320 512"
                   icon={Ethereum}
                   name="Crypto friendly"
-                  desc="Invest your idle assets in supporting good cause"
+                  desc="Invest your idle assets while supporting a good cause"
                 />
               </Box>
             </Grid>
@@ -461,7 +461,7 @@ const Landing = () => {
       </Panel>
 
       <Panel
-        title="How it works?"
+        title="How does it work?"
         subtitle="Choose your use case and see how simple it is to start"
         color="secondary.dark"
       >

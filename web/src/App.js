@@ -49,18 +49,16 @@ const App = (props) => {
   };
 
   const [wallet, setWallet] = useState(WalletService.checkAccount);
+  useEffect(async () => {
+    await WalletService.changeAccounts(setWallet);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Header
-              auth={auth}
-              onLogout={handlerLogout}
-              wallet={wallet}
-              setWallet={setWallet}
-            />
+            <Header auth={auth} onLogout={handlerLogout} wallet={wallet} />
             <Layout auth={auth}>
               <Switch>
                 <Route exact path="/">

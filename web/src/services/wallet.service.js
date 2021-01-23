@@ -62,13 +62,23 @@ async function changeAccounts(setWallet) {
     const ethereum = checkConnection();
     const tuichain_info = await requestBlockchainInfo();
 
+    let suggestions = new Map();
+
     ethereum.on("accountsChanged", (accounts) => {
-      setWallet(accounts[0]);
-      suggestDAI(ethereum, tuichain_info);
+      const account = accounts[0];
+      setWallet(account);
+      if (!suggestions.get(account)) {
+        suggestDAI(ethereum, tuichain_info);
+        suggestions.set(account, true);
+      }
     });
 
     ethereum.on("chainChanged", () => {
-      suggestDAI(ethereum, tuichain_info);
+      const account = checkAccount();
+      if (!suggestions.get(account)) {
+        suggestDAI(ethereum, tuichain_info);
+        suggestions.set(account, true);
+      }
     });
   } catch (error) {
     return;
