@@ -15,10 +15,10 @@ import {
 import { Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import LoansService from "../services/loans.service";
+import LoansService from "../../services/loans.service";
 import { useHistory } from "react-router";
-import { countries } from "../util/countries";
-import DAI from "../components/DAI";
+import { countries } from "../../util/countries";
+import DAI from "../../components/DAI";
 import Web3 from "web3";
 
 const styles = (theme) => ({
@@ -39,6 +39,7 @@ const styles = (theme) => ({
 
 const LoanRequest = (props) => {
   const { classes, wallet } = props;
+
   const history = useHistory();
 
   const [recipient_touched, setRecipientTouched] = useState(false);
@@ -62,10 +63,9 @@ const LoanRequest = (props) => {
         destination,
         recipient_address,
       } = values;
-      console.log(school, course, amount, desc, destination, recipient_address);
 
       try {
-        await LoansService.createLoan(
+        const loan_id = await LoansService.createLoan(
           school,
           course,
           amount,
@@ -75,7 +75,7 @@ const LoanRequest = (props) => {
         );
 
         setSubmitting(false);
-        history.replace("/");
+        history.replace("/personal/loans/" + loan_id);
       } catch (e) {
         const error = e.response.data.error;
         let message = error.includes("cannot create Loan Requests")
@@ -228,12 +228,12 @@ const LoanRequest = (props) => {
                 formik.touched.recipient_address
               }
               label={
-                wallet == null
-                  ? "Account Address"
-                  : recipient_touched == true
-                  ? "Account Address"
-                  : "Selected Account Address: " +
-                    Web3.utils.toChecksumAddress(wallet)
+                wallet
+                  ? recipient_touched
+                    ? "Account Address"
+                    : "Selected Account Address: " +
+                      Web3.utils.toChecksumAddress(wallet)
+                  : "You need to install Metamask in order to proceed"
               }
               name="recipient_address"
               value={formik.values.recipient_address}
@@ -243,13 +243,21 @@ const LoanRequest = (props) => {
                   ? setRecipientTouched(false)
                   : true
               }
-              onFocus={() => setRecipientTouched(true)}
+              onFocus={() => {
+                setRecipientTouched(true);
+                if (formik.getFieldProps("recipient_address").value == "")
+                  formik.setFieldValue(
+                    "recipient_address",
+                    Web3.utils.toChecksumAddress(wallet)
+                  );
+              }}
               helperText={
                 formik.errors.recipient_address &&
                 formik.touched.recipient_address &&
                 formik.errors.recipient_address
               }
               variant="outlined"
+              disabled={!wallet}
               fullWidth
             />
           </Grid>
@@ -270,7 +278,7 @@ const LoanRequest = (props) => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={formik.isSubmitting}
+              disabled={!wallet || formik.isSubmitting}
             >
               {formik.isSubmitting ? (
                 <CircularProgress color="secondary" size={20} />
@@ -287,7 +295,10 @@ const LoanRequest = (props) => {
 
 LoanRequest.propTypes = {
   classes: PropTypes.object,
-  wallet: PropTypes.string,
+  wallet: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number, // 0 - uninstalled
+  ]),
 };
 
 export default withStyles(styles)(LoanRequest);

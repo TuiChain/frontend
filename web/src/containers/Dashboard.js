@@ -150,7 +150,7 @@ const Investments = ({ investments }) => {
                 to="/investments"
               >
                 <ListItemAvatar>
-                  <Avatar>{i.name.charAt(0)}</Avatar>
+                  <Avatar>{i.name?.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={i.name} secondary={i.loan.course} />
@@ -224,7 +224,7 @@ const FeaturedLoans = ({ loans }) => {
                 to={`/loans/${l.id}`}
               >
                 <ListItemAvatar>
-                  <Avatar>{l.user_full_name.charAt(0)}</Avatar>
+                  <Avatar>{l.user_full_name?.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={l.course} secondary={l.school} />

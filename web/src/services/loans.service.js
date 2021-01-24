@@ -37,8 +37,8 @@ const createLoan = (
       destination,
       recipient_address,
     })
-    .then(() => {
-      return true;
+    .then((response) => {
+      return response.data.loan;
     });
 };
 
@@ -153,7 +153,7 @@ const getFundingLoans = () => {
     })
     .catch((error) => {
       console.log(error);
-      return false;
+      return [];
     });
 };
 
@@ -236,6 +236,20 @@ const getStudentLoans = () => {
     });
 };
 
+const cancelLoan = (id) => {
+  return instance.put(`/cancel/${id}/`).then((response) => {
+    console.log("Canceled: ", response.data.message);
+    return true;
+  });
+};
+
+const withdrawLoanRequest = (id) => {
+  return instance.put(`/user_withdraw/${id}/`).then((response) => {
+    console.log("Withdrawn: ", response.data.message);
+    return true;
+  });
+};
+
 export default {
   createLoan,
   getPendingLoans,
@@ -247,4 +261,6 @@ export default {
   getFundingLoans,
   getActiveLoans,
   getStudentLoans,
+  cancelLoan,
+  withdrawLoanRequest,
 };

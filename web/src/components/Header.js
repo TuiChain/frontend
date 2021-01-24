@@ -69,7 +69,10 @@ Header.propTypes = {
     PropTypes.bool, // no auth token (false)
   ]),
   onLogout: PropTypes.func,
-  wallet: PropTypes.string,
+  wallet: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number, // 0 - uninstalled
+  ]),
   setWallet: PropTypes.func,
 };
 
