@@ -224,11 +224,7 @@ const FeaturedLoans = ({ loans }) => {
                 to={`/loans/${l.id}`}
               >
                 <ListItemAvatar>
-                  <Avatar>
-                    {l.user_full_name
-                      ? l.user_full_name.charAt(0)
-                      : "fjhsbsf shabhs"}
-                  </Avatar>
+                  <Avatar>{l.user_full_name?.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={l.course} secondary={l.school} />
