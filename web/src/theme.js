@@ -38,6 +38,32 @@ const theme = createMuiTheme({
       rejected: "#ED2E50",
     },
   },
+  typography: {
+    h1: {
+      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontWeight: 500,
+    },
+    h2: {
+      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontWeight: 500,
+    },
+    h3: {
+      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontWeight: 300,
+    },
+    h4: {
+      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontWeight: 300,
+    },
+    h5: {
+      fontFamily: ["Archivo", "sans-serif"].join(","),
+      fontWeight: 500,
+    },
+    body1: {
+      fontFamily: ["Open Sans'", "sans-serif"].join(","),
+      fontWeight: 300,
+    },
+  },
   overrides: {
     MuiButton: {
       root: {
