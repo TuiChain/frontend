@@ -153,7 +153,7 @@ const getFundingLoans = () => {
     })
     .catch((error) => {
       console.log(error);
-      return false;
+      return [];
     });
 };
 
