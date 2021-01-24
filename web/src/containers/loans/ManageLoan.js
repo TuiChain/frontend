@@ -15,10 +15,10 @@ import { Create, School, Room, CloudUpload, Today } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import ProgressBar from "../../components/Progress";
 import Status from "../../components/Status";
-import { Redirect } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Toast from "../../components/Toast";
+import { Redirect, useHistory } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
   root: {
@@ -102,6 +102,8 @@ const ManageLoan = (props) => {
   const public_docs_form = createForm(loanID, true, setToast, setOpen);
   const private_docs_form = createForm(loanID, false, setToast, setOpen);
 
+  const history = useHistory();
+
   useEffect(() => {
     async function fetchLoan() {
       const data = await LoansService.getLoan(loanID);
@@ -117,6 +119,28 @@ const ManageLoan = (props) => {
 
   const canSubmitDocuments = (status) => {
     return ["ACTIVE", "FINALIZED"].includes(status.toUpperCase());
+  };
+
+  const clickCancel = async (state, id) => {
+    try {
+      switch (state) {
+        case "PENDING":
+          await LoansService.withdrawLoanRequest(id);
+          break;
+
+        case "FUNDING":
+          await LoansService.cancelLoan(id);
+          break;
+      }
+
+      history.replace("/personal/loans");
+    } catch (error) {
+      setToast({
+        message: error.response.data.error,
+        severity: "error",
+      });
+      setOpen(true);
+    }
   };
 
   return loan ? (
@@ -341,7 +365,11 @@ const ManageLoan = (props) => {
           <Typography variant="body1" color="textSecondary" paragraph>
             WARNING: you can&apos;t go back!
           </Typography>
-          <ErrorButton variant="contained" disabled={!canCancel(loan.state)}>
+          <ErrorButton
+            variant="contained"
+            disabled={!canCancel(loan.state)}
+            onClick={() => clickCancel(loan.state, loan.id)}
+          >
             Cancel
           </ErrorButton>
         </Panel>

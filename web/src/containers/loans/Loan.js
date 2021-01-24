@@ -78,9 +78,7 @@ function Loan(props) {
     setLoan(loan);
     console.log("loan:", loan);
 
-    let percentage =
-      (loan.funded_value_atto_dai / loan.requested_value_atto_dai) * 100;
-    percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
+    let percentage = (loan.funded_value / loan.requested_value) * 100;
     setPercentage(percentage);
     console.log("percentage:", percentage);
 
