@@ -65,7 +65,15 @@ const LoanInfo = ({ name, course, school, tuition, destination }) => {
   );
 };
 
-const LoanCard = ({ name, photo, course, school, tuition, destination }) => {
+const LoanCard = ({
+  name,
+  photo,
+  course,
+  school,
+  tuition,
+  destination,
+  fundedPercentage,
+}) => {
   const styles = useWideCardMediaStyles();
 
   return (
@@ -83,7 +91,7 @@ const LoanCard = ({ name, photo, course, school, tuition, destination }) => {
         </CardContent>
       </StyledCard>
       <Box style={{ width: "100%" }}>
-        <Progress completed={10} slim />
+        <Progress completed={fundedPercentage} slim />
       </Box>
     </StyledCardActionArea>
   );
@@ -98,6 +106,7 @@ LoanCard.propTypes = {
   destination: PropTypes.string.isRequired,
   school: PropTypes.string.isRequired,
   tuition: PropTypes.number.isRequired,
+  fundedPercentage: PropTypes.number,
 };
 
 LoanInfo.propTypes = {

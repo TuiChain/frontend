@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 const ProgressBar = ({ completed, visible, slim }) => {
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    const percentage =
+      completed > 0 && completed < 1 ? 1 : Math.floor(completed);
+    setPercentage(percentage);
+  }, []);
+
   const Box3 = withStyles({
     root: {
       height: slim ? 12 : 25,
@@ -39,7 +47,7 @@ const ProgressBar = ({ completed, visible, slim }) => {
         <Box marginLeft="5px">
           {slim || (
             <WhiteTextTypography color="inherit" variant="button">
-              {`${completed}%`}
+              {`${percentage}%`}
             </WhiteTextTypography>
           )}
         </Box>
