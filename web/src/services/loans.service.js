@@ -147,7 +147,7 @@ const getActiveLoan = () => {
 
 const getFundingLoans = () => {
   return instance
-    .get("/get_state/FUNDING/1")
+    .get("/get_state/FUNDING/1/")
     .then((response) => {
       return response.data.loans;
     })
