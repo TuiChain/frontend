@@ -32,6 +32,14 @@ const NavMenuAdmin = (props) => {
         variant="contained"
         color="secondary"
         component={RouterLink}
+        to="/admin/documents"
+      >
+        Documents
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={RouterLink}
         to="/admin/requests"
       >
         Pending

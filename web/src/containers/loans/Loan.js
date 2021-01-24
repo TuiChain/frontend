@@ -1,3 +1,4 @@
+/* eslint react/prop-types: 0 */
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import ProgressBar from "../../components/Progress";
@@ -16,10 +17,51 @@ import {
   Grid,
   Box,
   useMediaQuery,
+  List,
+  ListItem,
+  ListItemText,
+  Card,
+  Link,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
+import documentsService from "../../services/documents.service";
+
+const LoanActive = ({ loan }) => {
+  const [documents, setDocuments] = useState([]);
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      const docs = await documentsService.getLoanPublicDocuments(loan.id);
+      setDocuments(docs);
+    };
+    fetchDocuments();
+  }, []);
+
+  return (
+    <Box width="100%">
+      <Box py={2}>
+        <Typography variant="h3">Documents</Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          Documents uploaded by the student
+        </Typography>
+      </Box>
+      <Box>
+        <Card style={{ width: "100%" }}>
+          <List component="nav">
+            {documents.map((d, index) => (
+              <Link href={d.url} target="_blank" key={index} underline="none">
+                <ListItem button>
+                  <ListItemText primary={d.name} />
+                </ListItem>
+              </Link>
+            ))}
+          </List>
+        </Card>
+      </Box>
+    </Box>
+  );
+};
 
 function Loan(props) {
   const [loan, setLoan] = useState({});
@@ -36,9 +78,7 @@ function Loan(props) {
     setLoan(loan);
     console.log("loan:", loan);
 
-    let percentage =
-      (loan.funded_value_atto_dai / loan.requested_value_atto_dai) * 100;
-    percentage = percentage > 0 && percentage < 1 ? 1 : Math.floor(percentage);
+    let percentage = (loan.funded_value / loan.requested_value) * 100;
     setPercentage(percentage);
     console.log("percentage:", percentage);
 
@@ -145,11 +185,11 @@ function Loan(props) {
   const withdrawn = message("This loan request was rejected by the student");
 
   const funding = (
-    <Box className="left-tok" width="fit-content" mx="auto">
+    <Box width="fit-content">
       <Box py="10%">
-        <Typography variant="h3">{"Tokens"}</Typography>
+        <Typography variant="h3">Tokens</Typography>
       </Box>
-      <Box className="token">
+      <Box>
         <TextField
           type={"number"}
           label="Tokens"
@@ -194,14 +234,11 @@ function Loan(props) {
           </Typography>
         </Box>
       )}
-      <Box className="barra" paddingTop="5%">
+      <Box paddingTop="5%">
         <ProgressBar completed={percentage} />
       </Box>
     </Box>
   );
-
-  const active = message("This loan is active");
-  // show docs and stuff
 
   const finalized = message("This loan is active");
   // redeem token
@@ -221,40 +258,40 @@ function Loan(props) {
           <LoadingPageAnimation />
         </Box>
       ) : (
-        <Box className="student" component="span" m={1}>
-          <Grid container spacing={2} className="container">
-            <Grid className="left-cont" item xs={12} md={6}>
+        <Box m={1}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
               <Box>
                 <img src={user.profile_image} />
               </Box>
             </Grid>
-            <Grid className="right-cont" item xs={12} md={6}>
-              <Box className="right">
-                <Box2 alignItems="baseline" className="header">
+            <Grid item xs={12} md={6}>
+              <Box>
+                <Box2 alignItems="baseline">
                   <Typography variant="h2" display="inline">
-                    {user.username}
+                    {user.full_name}
                   </Typography>
                 </Box2>
-                <Box2 className="up">
-                  <Box className="par-init" display="flex">
+                <Box2>
+                  <Box display="flex">
                     <School />
                     <Typography variant="body1" display="inline">
                       {loan.school}
                     </Typography>
                   </Box>
-                  <Box className="par" display="flex" paddingLeft="5%">
+                  <Box display="flex" paddingLeft="5%">
                     <Create />
                     <Typography variant="body1">{loan.course}</Typography>
                   </Box>
                 </Box2>
-                <Box2 className="down">
-                  <Box className="par" display="flex">
+                <Box2>
+                  <Box display="flex">
                     <Room />
                     <Typography variant="body1" display="inline">
                       {loan.destination}
                     </Typography>
                   </Box>
-                  <Box className="par" display="flex" paddingLeft="5%">
+                  <Box display="flex" paddingLeft="5%">
                     <DAI />
                     <Typography variant="body1" display="inline">
                       {loan.requested_value_atto_dai / Math.pow(10, 18)}
@@ -262,24 +299,22 @@ function Loan(props) {
                   </Box>
                 </Box2>
               </Box>
-              <BoxDescr className="description">
+              <BoxDescr>
                 <Typography variant="body1" display="inline">
                   {loan.description}
                 </Typography>
               </BoxDescr>
             </Grid>
-            <Grid container spacing={2} className="container">
-              <Grid item xs={12} md={6}>
-                {loan.state.toUpperCase() == "PENDING" && pending}
-                {loan.state.toUpperCase() == "REJECTED" && rejected}
-                {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
-                {loan.state.toUpperCase() == "FUNDING" && funding}
-                {loan.state.toUpperCase() == "ACTIVE" && active}
-                {loan.state.toUpperCase() == "FINALIZED" && finalized}
-                {loan.state.toUpperCase() == "EXPIRED" && expired}
-                {loan.state.toUpperCase() == "CANCELED" && canceled}
-              </Grid>
-            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            {loan.state.toUpperCase() == "PENDING" && pending}
+            {loan.state.toUpperCase() == "REJECTED" && rejected}
+            {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
+            {loan.state.toUpperCase() == "FUNDING" && funding}
+            {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
+            {loan.state.toUpperCase() == "FINALIZED" && finalized}
+            {loan.state.toUpperCase() == "EXPIRED" && expired}
+            {loan.state.toUpperCase() == "CANCELED" && canceled}
           </Grid>
           <Toast open={open} onClose={handleClose} severity={toast.severity}>
             {toast.message}

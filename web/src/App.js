@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
 import PersonalLoans from "./containers/loans/PersonalLoans";
+import Documents from "./containers/admin/Documents";
 
 const styles = {
   back: {
@@ -122,6 +123,12 @@ const App = (props) => {
                   type="admin"
                   path="/admin/requests"
                   component={LoanRequests}
+                />
+                <ProtectedRoute
+                  auth={auth}
+                  type="admin"
+                  path="/admin/documents"
+                  component={Documents}
                 />
                 <Route component={Error} />
               </Switch>
