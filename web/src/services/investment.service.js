@@ -32,10 +32,13 @@ const getInvestmentInLoan = (loan_id, account_address) => {
 };
 
 // Investments for dashboard - limits 3
-const getDashboardInvestments = () => {
+const getDashboardInvestments = (accountAddress) => {
+  const account = Web3.utils.toChecksumAddress(accountAddress);
+
   return instance
-    .get(`/get_personal/`)
+    .get(`/get_personal/${account}/`)
     .then((response) => {
+      console.log(response);
       let investments = response.data.investments;
 
       investments = investments.slice(0, 3);
@@ -58,7 +61,23 @@ const getDashboardInvestments = () => {
     });
 };
 
+const getPersonal = (accountAddress) => {
+  const account = Web3.utils.toChecksumAddress(accountAddress);
+
+  return instance
+    .get(`/get_personal/${account}/`)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      // TODO : why is error overwritten in browser? we need to catch a specific error
+      console.log(error);
+      return false;
+    });
+};
+
 export default {
+  getPersonal,
   getInvestmentInLoan,
   getDashboardInvestments,
 };

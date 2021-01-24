@@ -19,6 +19,7 @@ import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
+import Investments from "./containers/Investments";
 import PersonalLoans from "./containers/loans/PersonalLoans";
 import Documents from "./containers/admin/Documents";
 
@@ -93,6 +94,12 @@ const App = (props) => {
                   auth={auth}
                   path="/request"
                   component={LoanRequest}
+                  wallet={wallet}
+                />
+                <ProtectedRoute
+                  auth={auth}
+                  path="/investments"
+                  component={Investments}
                   wallet={wallet}
                 />
                 <Route path="/login">

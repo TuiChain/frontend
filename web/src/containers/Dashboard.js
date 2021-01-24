@@ -25,6 +25,7 @@ import loansService from "../services/loans.service";
 import userService from "../services/user.service";
 import Status from "../components/Status";
 import { Link as RouterLink } from "react-router-dom";
+import walletService from "../services/wallet.service";
 
 const useStyles = makeStyles({
   card: {
@@ -149,7 +150,7 @@ const Investments = ({ investments }) => {
                 to="/investments"
               >
                 <ListItemAvatar>
-                  <Avatar>{i.name.charAt(0)}</Avatar>
+                  <Avatar>{i.name?.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={i.name} secondary={i.loan.course} />
@@ -223,7 +224,7 @@ const FeaturedLoans = ({ loans }) => {
                 to={`/loans/${l.id}`}
               >
                 <ListItemAvatar>
-                  <Avatar>{l.user_full_name.charAt(0)}</Avatar>
+                  <Avatar>{l.user_full_name?.charAt(0)}</Avatar>
                 </ListItemAvatar>
 
                 <ListItemText primary={l.course} secondary={l.school} />
@@ -295,8 +296,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchInvestiments = async () => {
-      const investments = await investmentService.getDashboardInvestments();
-      setInvestments(investments);
+      const account = walletService.checkAccount();
+      if (account != null) {
+        const investments = await investmentService.getDashboardInvestments(
+          account
+        );
+        setInvestments(investments);
+      }
     };
     fetchInvestiments();
   }, []);
