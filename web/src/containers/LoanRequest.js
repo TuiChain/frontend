@@ -65,7 +65,7 @@ const LoanRequest = (props) => {
       console.log(school, course, amount, desc, destination, recipient_address);
 
       try {
-        await LoansService.createLoan(
+        const loan_id = await LoansService.createLoan(
           school,
           course,
           amount,
@@ -75,7 +75,7 @@ const LoanRequest = (props) => {
         );
 
         setSubmitting(false);
-        history.replace("/");
+        history.replace("/personal/loans/" + loan_id);
       } catch (e) {
         const error = e.response.data.error;
         let message = error.includes("cannot create Loan Requests")
