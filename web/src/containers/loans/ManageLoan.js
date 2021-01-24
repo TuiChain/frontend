@@ -6,14 +6,19 @@ import {
   TextField,
   Typography,
   withStyles,
+  Grid,
   styled,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
+import DocumentsService from "../../services/documents.service";
 import { Create, School, Room, CloudUpload, Today } from "@material-ui/icons";
 import DAI from "../../components/DAI";
 import ProgressBar from "../../components/Progress";
 import Status from "../../components/Status";
-import { Redirect } from "react-router";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Toast from "../../components/Toast";
+import { Redirect, useHistory } from "react-router";
 
 const ErrorButton = withStyles((theme) => ({
   root: {
@@ -36,10 +41,68 @@ const Panel = styled(Box)({
   padding: "15px 0",
 });
 
+const createForm = (loan_id, is_public, setToast, setOpen) => {
+  return useFormik({
+    initialValues: {
+      name: "",
+      document: "",
+    },
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      const { name, document } = values;
+      const valid = await DocumentsService.uploadDocument(
+        loan_id,
+        name,
+        document,
+        is_public
+      );
+
+      if (valid) {
+        setToast({
+          message: "Document uploaded!",
+          severity: "success",
+        });
+      } else {
+        setToast({
+          message: "Something went wrong!",
+          severity: "error",
+        });
+      }
+      resetForm({});
+      setOpen(true);
+      setSubmitting(false);
+    },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required("Name is required"),
+      document: Yup.mixed()
+        .required("A file is required")
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value) => value && ["application/pdf"].includes(value.type)
+        ),
+    }),
+  });
+};
+
 const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
   const [isLoading, setLoading] = useState(true);
+
+  // Toast
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const public_docs_form = createForm(loanID, true, setToast, setOpen);
+  const private_docs_form = createForm(loanID, false, setToast, setOpen);
+
+  const history = useHistory();
 
   useEffect(() => {
     async function fetchLoan() {
@@ -56,6 +119,28 @@ const ManageLoan = (props) => {
 
   const canSubmitDocuments = (status) => {
     return ["ACTIVE", "FINALIZED"].includes(status.toUpperCase());
+  };
+
+  const clickCancel = async (state, id) => {
+    try {
+      switch (state) {
+        case "PENDING":
+          await LoansService.withdrawLoanRequest(id);
+          break;
+
+        case "FUNDING":
+          await LoansService.cancelLoan(id);
+          break;
+      }
+
+      history.replace("/personal/loans");
+    } catch (error) {
+      setToast({
+        message: error.response.data.error,
+        severity: "error",
+      });
+      setOpen(true);
+    }
   };
 
   return loan ? (
@@ -116,24 +201,159 @@ const ManageLoan = (props) => {
           </Box>
         </Panel>
         <hr />
-        <Panel>
-          <Typography variant="h5" color="secondary">
-            Documents
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Submit documents relative to your academic achievements, income,
-            etc.
-          </Typography>
-          <TextField type="file" variant="outlined" />
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<CloudUpload />}
-            disabled={!canSubmitDocuments(loan.state)}
-          >
-            Upload
-          </Button>
-        </Panel>
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={6}>
+            <Panel>
+              <Typography variant="h5" color="secondary">
+                Public Documents
+              </Typography>
+              <Typography variant="body1" color="textSecondary" paragraph>
+                Submit documents relative to your academic achievements,
+                diplomas and other documents to valorize yourself. These
+                documents will be public for investors.
+              </Typography>
+              <form onSubmit={public_docs_form.handleSubmit}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      label="File name"
+                      name="name"
+                      value={public_docs_form.values.name}
+                      onChange={public_docs_form.handleChange}
+                      onBlur={public_docs_form.handleBlur}
+                      error={
+                        public_docs_form.errors.name &&
+                        public_docs_form.touched.name
+                      }
+                      helperText={
+                        public_docs_form.errors.name &&
+                        public_docs_form.touched.name &&
+                        public_docs_form.errors.name
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      type="file"
+                      variant="outlined"
+                      name="document"
+                      inputProps={{
+                        accept: "application/pdf",
+                      }}
+                      onChange={(event) => {
+                        public_docs_form.setFieldValue(
+                          "document",
+                          event.currentTarget.files[0]
+                        );
+                      }}
+                      error={
+                        public_docs_form.errors.document &&
+                        public_docs_form.touched.document
+                      }
+                      helperText={
+                        public_docs_form.errors.document &&
+                        public_docs_form.touched.document &&
+                        public_docs_form.errors.document
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CloudUpload />}
+                        disabled={!canSubmitDocuments(loan.state)}
+                      >
+                        Upload
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </form>
+            </Panel>
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <Panel>
+              <Typography variant="h5" color="secondary">
+                Private Documents
+              </Typography>
+              <Typography variant="body1" color="textSecondary" paragraph>
+                Submit documents relative to your incomes, current job and other
+                documents relative to your professional status. These documents
+                will be private for invertors.
+              </Typography>
+              <form onSubmit={private_docs_form.handleSubmit}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      label="File name"
+                      name="name"
+                      value={private_docs_form.values.name}
+                      onChange={private_docs_form.handleChange}
+                      onBlur={private_docs_form.handleBlur}
+                      error={
+                        private_docs_form.errors.name &&
+                        private_docs_form.touched.name
+                      }
+                      helperText={
+                        private_docs_form.errors.name &&
+                        private_docs_form.touched.name &&
+                        private_docs_form.errors.name
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      type="file"
+                      variant="outlined"
+                      name="document"
+                      inputProps={{
+                        accept: "application/pdf",
+                      }}
+                      onChange={(event) => {
+                        private_docs_form.setFieldValue(
+                          "document",
+                          event.currentTarget.files[0]
+                        );
+                      }}
+                      error={
+                        private_docs_form.errors.document &&
+                        private_docs_form.touched.document
+                      }
+                      helperText={
+                        private_docs_form.errors.document &&
+                        private_docs_form.touched.document &&
+                        private_docs_form.errors.document
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CloudUpload />}
+                        disabled={!canSubmitDocuments(loan.state)}
+                      >
+                        Upload
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </form>
+            </Panel>
+          </Grid>
+        </Grid>
+
         <hr />
         <Panel>
           <Typography variant="h5" color="secondary">
@@ -145,10 +365,18 @@ const ManageLoan = (props) => {
           <Typography variant="body1" color="textSecondary" paragraph>
             WARNING: you can&apos;t go back!
           </Typography>
-          <ErrorButton variant="contained" disabled={!canCancel(loan.state)}>
+          <ErrorButton
+            variant="contained"
+            disabled={!canCancel(loan.state)}
+            onClick={() => clickCancel(loan.state, loan.id)}
+          >
             Cancel
           </ErrorButton>
         </Panel>
+
+        <Toast open={open} onClose={handleClose} severity={toast.severity}>
+          {toast.message}
+        </Toast>
       </>
     )
   ) : (

@@ -4,7 +4,7 @@ import { Button, Grid } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import MenuIcon from "@material-ui/icons/Menu";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -32,6 +32,14 @@ const NavMenuAdmin = (props) => {
         variant="contained"
         color="secondary"
         component={RouterLink}
+        to="/admin/documents"
+      >
+        Documents
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={RouterLink}
         to="/admin/requests"
       >
         Pending
@@ -49,7 +57,7 @@ const NavMenuAdmin = (props) => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <MenuIcon />
+        <AccountCircle />
       </IconButton>
       <Menu
         id="simple-menu"

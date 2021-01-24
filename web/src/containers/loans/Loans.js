@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import FilterSection from "../../components/FilterSection";
 import HorizontalSeparator from "../../components/HorizontalSeparator";
+import { Link as RouterLink } from "react-router-dom";
 
 const LoansGrid = styled(Grid)({
   paddingTop: "5rem",
@@ -28,7 +29,7 @@ const LoansGridItem = ({ loanCard, width, loanId }) => {
       md={width < 1060 ? 6 : 4}
       xl={3}
     >
-      <Link href={`/loans/${loanId}`} underline="none">
+      <Link to={`/loans/${loanId}`} component={RouterLink} underline="none">
         {loanCard}
       </Link>
     </Grid>
@@ -96,6 +97,10 @@ const FundingLoans = () => {
                     destination={l.destination}
                     tuition={Number(
                       BigInt(l.requested_value_atto_dai) / BigInt(10 ** 18)
+                    )}
+                    fundedPercentage={Number(
+                      BigInt(l.funded_value_atto_dai * 100) /
+                        BigInt(l.requested_value_atto_dai)
                     )}
                   />
                 }
