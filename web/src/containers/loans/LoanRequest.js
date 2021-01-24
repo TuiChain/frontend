@@ -39,7 +39,7 @@ const styles = (theme) => ({
 
 const LoanRequest = (props) => {
   const { classes, wallet } = props;
-  console.log("walled", wallet);
+
   const history = useHistory();
 
   const [recipient_touched, setRecipientTouched] = useState(false);
@@ -63,7 +63,6 @@ const LoanRequest = (props) => {
         destination,
         recipient_address,
       } = values;
-      console.log(school, course, amount, desc, destination, recipient_address);
 
       try {
         await LoansService.createLoan(
@@ -246,7 +245,6 @@ const LoanRequest = (props) => {
               }
               onFocus={() => {
                 setRecipientTouched(true);
-                console.log(formik.getFieldProps("recipient_address"));
                 if (formik.getFieldProps("recipient_address").value == "")
                   formik.setFieldValue(
                     "recipient_address",
