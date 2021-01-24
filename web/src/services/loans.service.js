@@ -185,6 +185,18 @@ const getFeaturedLoans = () => {
     });
 };
 
+const getActiveLoans = () => {
+  return instance
+    .get(`/get_state/ACTIVE/1/`)
+    .then((response) => {
+      return response.data.loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return [];
+    });
+};
+
 const getStudentLoans = () => {
   return instance
     .get(`/get_personal/`)
@@ -208,17 +220,42 @@ const getStudentLoans = () => {
 };
 
 const cancelLoan = (id) => {
-  return instance.put(`/cancel/${id}/`).then((response) => {
-    console.log("Canceled: ", response.data.message);
-    return true;
-  });
+  return instance
+    .put(`/cancel/${id}/`)
+    .then((response) => {
+      console.log("Canceled: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
 };
 
 const withdrawLoanRequest = (id) => {
-  return instance.put(`/user_withdraw/${id}/`).then((response) => {
-    console.log("Withdrawn: ", response.data.message);
-    return true;
-  });
+  return instance
+    .put(`/user_withdraw/${id}/`)
+    .then((response) => {
+      console.log("Withdrawn: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
+};
+
+const finalizeLoan = (id) => {
+  return instance
+    .put(`/finalize/${id}/`)
+    .then((response) => {
+      console.log("Finalized: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
 };
 
 export default {
@@ -229,8 +266,10 @@ export default {
   getLoan,
   getActiveLoan,
   getFeaturedLoans,
+  getActiveLoans,
   getFundingLoans,
   getStudentLoans,
   cancelLoan,
   withdrawLoanRequest,
+  finalizeLoan,
 };

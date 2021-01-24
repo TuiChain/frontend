@@ -22,6 +22,7 @@ import ManageLoan from "./containers/loans/ManageLoan";
 import Investments from "./containers/Investments";
 import PersonalLoans from "./containers/loans/PersonalLoans";
 import Documents from "./containers/admin/Documents";
+import ActiveLoans from "./containers/admin/ActiveLoans";
 
 const styles = {
   back: {
@@ -136,6 +137,12 @@ const App = (props) => {
                   type="admin"
                   path="/admin/documents"
                   component={Documents}
+                />
+                <ProtectedRoute
+                  auth={auth}
+                  type="admin"
+                  path="/admin/active"
+                  component={ActiveLoans}
                 />
                 <Route component={Error} />
               </Switch>
