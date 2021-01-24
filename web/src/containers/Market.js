@@ -23,6 +23,7 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import LoadingPageAnimation from "../components/LoadingPageAnimation";
 import { DataGrid } from "@material-ui/data-grid";
 import { useHistory } from "react-router";
+import DAI from "../components/DAI";
 
 const backgroundColor1 = "#EFF0F6";
 const backgroundColor2 = "#D7D8E7";
@@ -362,19 +363,52 @@ const Market = (props) => {
       headerName: " ",
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
-        <Avatar>{("TODO" + props.row.user_full_name).charAt(0)}</Avatar>
+        <Avatar>{props.row.user_full_name.charAt(0)}</Avatar>
       ),
       width: 70,
     },
     {
       field: "school",
       headerName: "School",
-      width: 240,
+      width: 220,
     },
     {
       field: "course",
       headerName: "Course",
       width: 240,
+    },
+    {
+      field: "destination",
+      headerName: "Destination",
+      width: 200,
+    },
+    {
+      field: "current_value",
+      headerName: "Price",
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Box display="flex" alignContent="center" alignItems="center" pr={2}>
+          {props.row.current_value ? (
+            <>
+              <Box pr={1}>{props.row.current_value}</Box>
+              <DAI />
+            </>
+          ) : (
+            <>-</>
+          )}
+        </Box>
+      ),
+    },
+    {
+      field: "requested_value",
+      headerName: "Requested",
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Box display="flex" alignContent="center" alignItems="center" pr={2}>
+          <Box pr={1}>{props.row.requested_value}</Box>
+          <DAI />
+        </Box>
+      ),
     },
   ];
 

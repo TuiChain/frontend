@@ -164,9 +164,6 @@ const getActiveLoans = () => {
     .then((response) => {
       let loans = response.data.loans;
 
-      // Get top 3
-      loans = loans.slice(0, 3);
-
       loans.forEach((loan) => {
         loan.requested_value = Number(
           BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
@@ -174,6 +171,10 @@ const getActiveLoans = () => {
 
         loan.funded_value = loan.funded_value_atto_dai
           ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+
+        loan.current_value = loan.current_value_atto_dai
+          ? Number(BigInt(loan.current_value_atto_dai) / BigInt(10 ** 18))
           : 0;
       });
 
