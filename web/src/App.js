@@ -8,7 +8,7 @@ import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
 import Loan from "./containers/loans/Loan";
 import Loans from "./containers/loans/Loans";
-import LoanRequest from "./containers/LoanRequest";
+import LoanRequest from "./containers/loans/LoanRequest";
 import LoanRequests from "./containers/admin/LoanRequests";
 import Error from "./containers/Error";
 import { ThemeProvider, withStyles } from "@material-ui/core/styles";
