@@ -147,12 +147,42 @@ const getActiveLoan = () => {
 
 const getFundingLoans = () => {
   return instance
-    .get("/get_state/FUNDING/1")
+    .get("/get_state/FUNDING/1/")
     .then((response) => {
+      console.log(response)
       return response.data.loans;
     })
     .catch((error) => {
       console.log(error);
+      return [];
+    });
+};
+
+// TODO
+const getActiveLoans = () => {
+  return instance
+    .get(`/get_state/ACTIVE/1/`)
+    .then((response) => {
+      let loans = response.data.loans;
+
+      loans.forEach((loan) => {
+        loan.requested_value = Number(
+          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        );
+
+        loan.funded_value = loan.funded_value_atto_dai
+          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+
+        loan.current_value = loan.current_value_atto_dai
+          ? Number(BigInt(loan.current_value_atto_dai) / BigInt(10 ** 18))
+          : 0;
+      });
+
+      return loans;
+    })
+    .catch((error) => {
+      console.log(error.response);
       return [];
     });
 };
@@ -268,6 +298,7 @@ export default {
   getFeaturedLoans,
   getActiveLoans,
   getFundingLoans,
+  getActiveLoans,
   getStudentLoans,
   cancelLoan,
   withdrawLoanRequest,

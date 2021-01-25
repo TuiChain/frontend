@@ -95,7 +95,7 @@ const SpinnerInput = (props) => {
     }
   };
 
-  const onChageCurrency = (value) => {
+  const onChangeCurrency = (value) => {
     setValue(value);
 
     if (props.onNewValue) {
@@ -112,7 +112,7 @@ const SpinnerInput = (props) => {
           value={value}
           currencySymbol={<DAI />}
           outputFormat="number"
-          onChange={(event, value) => onChageCurrency(value)}
+          onChange={(event, value) => onChangeCurrency(value)}
           minimumValue={props.minValue.toString()}
           disabled={props.disabled}
         />

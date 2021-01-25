@@ -105,6 +105,17 @@ const NavMenu = (props) => {
     </Button>
   );
 
+  const marketButton = (
+    <Button
+      variant="contained"
+      color="secondary"
+      component={RouterLink}
+      to="/market"
+    >
+      Market
+    </Button>
+  );
+
   const dashboardButton = (
     <Button
       variant="contained"
@@ -129,8 +140,9 @@ const NavMenu = (props) => {
 
   const nav_items = (
     <>
-      {loansButton}
       {dashboardButton}
+      {loansButton}
+      {marketButton}
       {loanRequestButton}
       {connect_button}
     </>
