@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoansService from "../../services/loans.service";
 import { Box, Grid, Typography, withWidth, Link } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import LoanCard from "../../components/StudentCard";
+import LoanCard from "../../components/LoanCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
