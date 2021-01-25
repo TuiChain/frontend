@@ -42,21 +42,30 @@ const LoanActive = ({ loan }) => {
     <Box width="100%">
       <Box py={2}>
         <Typography variant="h3">Documents</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          Documents uploaded by the student
-        </Typography>
+        {documents.length != 0 && (
+          <Typography variant="subtitle1" color="textSecondary">
+            Documents uploaded by the student
+          </Typography>
+        )}
+        {documents.length == 0 && (
+          <Typography variant="subtitle1" color="textSecondary">
+            The student did not upload any documents
+          </Typography>
+        )}
       </Box>
       <Box>
         <Card style={{ width: "100%" }}>
-          <List component="nav">
-            {documents.map((d, index) => (
-              <Link href={d.url} target="_blank" key={index} underline="none">
-                <ListItem button>
-                  <ListItemText primary={d.name} />
-                </ListItem>
-              </Link>
-            ))}
-          </List>
+          {documents.length != 0 && (
+            <List component="nav">
+              {documents.map((d, index) => (
+                <Link href={d.url} target="_blank" key={index} underline="none">
+                  <ListItem button>
+                    <ListItemText primary={d.name} />
+                  </ListItem>
+                </Link>
+              ))}
+            </List>
+          )}
         </Card>
       </Box>
     </Box>
