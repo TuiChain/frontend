@@ -268,7 +268,7 @@ function Loan(props) {
         <Box m={1}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-            {matches === true && (
+            {matches === true ? (
                 <Box>
                   <img
                     height="300px"
@@ -276,8 +276,8 @@ function Loan(props) {
                     src={user.profile_pic}
                   />
                 </Box>
-              )}
-              {matches === false && (
+              ):
+              (
                 <Box>
                   <img style={style} src={user.profile_pic} />
                 </Box>
