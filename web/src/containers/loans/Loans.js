@@ -65,6 +65,7 @@ const FundingLoans = () => {
   useEffect(() => {
     LoansService.getFundingLoans().then((loanList) => {
       setLoans(loanList);
+      setFilteredLoans(loanList);
       setFetching(false);
     });
   }, []);
@@ -87,7 +88,7 @@ const FundingLoans = () => {
               <LoansGridItem
                 key={l.id}
                 width={width}
-                loan_id={l.id}
+                loanId={l.id}
                 loanCard={
                   <LoanCard
                     name={l.user_full_name}

@@ -32,8 +32,8 @@ const getInvestmentInLoan = (loan_id, account_address) => {
 };
 
 // Investments for dashboard - limits 3
-const getDashboardInvestments = (accountAddress) => {
-  const account = Web3.utils.toChecksumAddress(accountAddress);
+const getDashboardInvestments = (account_address) => {
+  const account = Web3.utils.toChecksumAddress(account_address);
 
   return instance
     .get(`/get_personal/${account}/`)
@@ -41,6 +41,7 @@ const getDashboardInvestments = (accountAddress) => {
       console.log(response);
       let investments = response.data.investments;
 
+      // TODO WAIT BACKEND TO CHANGE NAME
       investments = investments.slice(0, 3);
 
       investments.forEach((investment) => {
@@ -49,14 +50,16 @@ const getDashboardInvestments = (accountAddress) => {
         );
 
         investment.loan.funded_value = investment.loan.funded_value_atto_dai
-          ? parseInt(investment.loan.funded_value_atto_dai) / 10 ** 18
+          ? Number(
+              BigInt(investment.loan.funded_value_atto_dai) / BigInt(10 ** 18)
+            )
           : 0;
       });
 
       return investments;
     })
     .catch((error) => {
-      console.log(error.response);
+      console.error(error);
       return [];
     });
 };
