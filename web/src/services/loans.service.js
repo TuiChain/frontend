@@ -149,7 +149,7 @@ const getFundingLoans = () => {
   return instance
     .get("/get_state/FUNDING/1/")
     .then((response) => {
-      console.log(response)
+      console.log(response);
       return response.data.loans;
     })
     .catch((error) => {
@@ -208,18 +208,6 @@ const getFeaturedLoans = () => {
       });
 
       return loans;
-    })
-    .catch((error) => {
-      console.log(error.response);
-      return [];
-    });
-};
-
-const getActiveLoans = () => {
-  return instance
-    .get(`/get_state/ACTIVE/1/`)
-    .then((response) => {
-      return response.data.loans;
     })
     .catch((error) => {
       console.log(error.response);
@@ -298,7 +286,6 @@ export default {
   getFeaturedLoans,
   getActiveLoans,
   getFundingLoans,
-  getActiveLoans,
   getStudentLoans,
   cancelLoan,
   withdrawLoanRequest,
