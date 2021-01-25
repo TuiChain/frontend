@@ -57,16 +57,19 @@ const NavMenu = (props) => {
     history.push("/personal/profile");
   };
 
-  const handleLogout = () => {
-    history.push("/");
-    onLogout();
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
   };
 
   const handleAction = (path) => {
     history.push(path);
     setDrawerOpen(false);
   };
-
+  
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
   };

@@ -73,30 +73,35 @@ function Loan(props) {
   const [toast, setToast] = React.useState({});
   const [open, setOpen] = React.useState(false);
 
-  useEffect(async () => {
-    const loan = await LoansService.getLoan(props.match.params.id);
-    setLoan(loan);
-    console.log("loan:", loan);
+  useEffect(() => {
+    const fetchLoan = async () => {
+      const loan = await LoansService.getLoan(props.match.params.id);
+      setLoan(loan);
 
-    let percentage = (loan.funded_value / loan.requested_value) * 100;
-    setPercentage(percentage);
-    console.log("percentage:", percentage);
+      let percentage = (loan.funded_value / loan.requested_value) * 100;
+      setPercentage(percentage);
 
-    const Info = await UserService.getUserInfo(loan.student);
-    setUser(Info.user);
-    console.log("user:", Info.user);
+      const Info = await UserService.getUserInfo(loan.student);
+      setUser(Info.user);
 
-    const account = walletService.checkAccount();
-    if (loan && loan.state.toUpperCase() == "FUNDING" && account != null) {
-      const investment = await InvestmentsService.getInvestmentInLoan(
-        loan.id,
-        account
-      );
-      setInvestment(investment.nrTokens);
-      console.log("investment:", investment);
-    }
+      const account = walletService.checkAccount();
+      if (loan && loan.state.toUpperCase() == "FUNDING" && account != null) {
+        const investment = await InvestmentsService.getInvestmentInLoan(
+          loan.id,
+          account
+        );
+        setInvestment(investment.nrTokens);
+      }
+      setFetching(false);
+    };
 
-    setFetching(false);
+    fetchLoan();
+
+    const timer = setInterval(() => {
+      fetchLoan();
+    }, 10000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
