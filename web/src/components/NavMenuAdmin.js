@@ -65,7 +65,7 @@ const NavMenuAdmin = (props) => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <AccountCircle />
+        <AccountCircle style={{ fontSize: 32 }} />
       </IconButton>
       <Menu
         id="simple-menu"
