@@ -65,6 +65,7 @@ const FundingLoans = () => {
   useEffect(() => {
     LoansService.getFundingLoans().then((loanList) => {
       setLoans(loanList);
+      setFilteredLoans(loanList);
       setFetching(false);
     });
   }, []);
