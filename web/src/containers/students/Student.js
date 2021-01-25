@@ -32,7 +32,9 @@ function Student(props) {
     const temp = await LoansService.getLoan(props.match.params.id);
     setUser(temp);
     console.log(temp);
-    setPercentage((temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100);
+    setPercentage(
+      (temp.funded_value_atto_dai / temp.requested_value_atto_dai) * 100
+    );
     console.log(percentage);
     const Info = await UserService.getUserInfo(temp.student);
     setUserInfo(Info.user);
@@ -96,12 +98,12 @@ function Student(props) {
     }
     setOpen(false);
   };
-  const style={
+  const style = {
     display: "block",
-    margin:"auto",
-    height:"100%",
-    width:"100%"
-}
+    margin: "auto",
+    height: "100%",
+    width: "100%",
+  };
   return (
     <>
       {fetching ? (
@@ -112,12 +114,20 @@ function Student(props) {
         <Box className="student" component="span" m={1}>
           <Grid container spacing={2} className="container">
             <Grid className="left-cont" item xs={12} md={6}>
-              {matches===true && (<Box>
-                <img height="300px" width="300px" src={userInfo.profile_pic} />
-              </Box>)}
-              {matches===false && (<Box >
-                <img style={style} src={userInfo.profile_pic} />
-              </Box>)}
+              {matches === true && (
+                <Box>
+                  <img
+                    height="300px"
+                    width="300px"
+                    src={userInfo.profile_pic}
+                  />
+                </Box>
+              )}
+              {matches === false && (
+                <Box>
+                  <img style={style} src={userInfo.profile_pic} />
+                </Box>
+              )}
             </Grid>
             <Grid className="right-cont" item xs={12} md={6}>
               <Box className="right">
@@ -148,7 +158,7 @@ function Student(props) {
                   <Box className="par" display="flex" paddingLeft="5%">
                     <DAI />
                     <Typography variant="body1" display="inline">
-                    {user.requested_value_atto_dai/Math.pow(10,18)}
+                      {user.requested_value_atto_dai / Math.pow(10, 18)}
                     </Typography>
                   </Box>
                 </Box2>
@@ -161,46 +171,51 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-              {user.state==="PENDING" && (<Box paddingTop="6%">
-              <Typography variant="h3">Request waiting for approval</Typography>
-            </Box>)
-            }
-              {user.state!="PENDING" && (<Box
-                  className="left-tok"
-                  width="fit-content"
-                  marginLeft="auto"
-                  marginRight="auto"
-                >
-                  <Box pt="10%" marginBottom="10%">
-                    <Typography variant="h3">{"Tokens"}</Typography>
+                {user.state === "PENDING" && (
+                  <Box paddingTop="6%">
+                    <Typography variant="h3">
+                      Request waiting for approval
+                    </Typography>
                   </Box>
-                  <Box className="token">
-                    <TextField
-                      type={"number"}
-                      label="Tokens"
-                      name="tokens"
-                      variant="outlined"
-                      InputProps={{ inputProps: { min: 0} }}
-                      onChange={(e) => {
-                        e.target.value = !Number.isInteger(e.target.value)
-                          ? Math.floor(e.target.value)
-                          : e.target.value;
-                        setTokens(e.target.value);
-                      }}
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      onClick={handleButtonClick}
-                    >
-                      Buy
-                    </Button>
+                )}
+                {user.state != "PENDING" && (
+                  <Box
+                    className="left-tok"
+                    width="fit-content"
+                    marginLeft="auto"
+                    marginRight="auto"
+                  >
+                    <Box pt="10%" marginBottom="10%">
+                      <Typography variant="h3">{"Tokens"}</Typography>
+                    </Box>
+                    <Box className="token">
+                      <TextField
+                        type={"number"}
+                        label="Tokens"
+                        name="tokens"
+                        variant="outlined"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        onChange={(e) => {
+                          e.target.value = !Number.isInteger(e.target.value)
+                            ? Math.floor(e.target.value)
+                            : e.target.value;
+                          setTokens(e.target.value);
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        onClick={handleButtonClick}
+                      >
+                        Buy
+                      </Button>
+                    </Box>
+                    <Box className="barra" paddingTop="5%">
+                      <ProgressBar completed={percentage} />
+                    </Box>
                   </Box>
-                  <Box className="barra" paddingTop="5%">
-                    <ProgressBar completed={percentage} />
-                  </Box>
-                </Box>)}
+                )}
               </Grid>
             </Grid>
           </Grid>
