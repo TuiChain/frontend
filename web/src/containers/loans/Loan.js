@@ -42,14 +42,14 @@ const LoanActive = ({ loan }) => {
     <Box width="100%">
       <Box py={2}>
         <Typography variant="h3">Documents</Typography>
-        {documents.length != 0 && (
+
+        {documents.length != 0 ? (
           <Typography variant="subtitle1" color="textSecondary">
             Documents uploaded by the student
           </Typography>
-        )}
-        {documents.length == 0 && (
+        ) : (
           <Typography variant="subtitle1" color="textSecondary">
-            The student did not upload any documents
+            There are no documents
           </Typography>
         )}
       </Box>
@@ -156,7 +156,7 @@ function Loan(props) {
     }
   };
 
-  const handleWithdrawFundsRedeem = async () => {
+  const handleWithdrawFundsRedeemClick = async () => {
     try {
       if (loan.state.toUpperCase() == "FINALIZED") {
         await LoansTransactionsService.redeemTokens(
@@ -230,7 +230,7 @@ function Loan(props) {
         color="primary"
         type="submit"
         disabled={tokens == 0}
-        onClick={handleWithdrawClick}
+        onClick={handleWithdrawFundsRedeemClick}
       >
         {loan.state.toUpperCase() != "FINALIZED" && "Withdraw"}
         {loan.state.toUpperCase() == "FINALIZED" && "Redeem"}
@@ -313,21 +313,21 @@ function Loan(props) {
   const finalized = (
     <Box width="fit-content">
       {message("This loan is finalized!")}
-      {withdraw_funds}
+      {withdraw_funds_redeem}
     </Box>
   );
 
   const expired = (
     <Box width="fit-content">
       {message("This loan has expired!")}
-      {withdraw_funds}
+      {withdraw_funds_redeem}
     </Box>
   );
 
   const canceled = (
     <Box width="fit-content">
       {message("This loan is canceled!")}
-      {withdraw_funds}
+      {withdraw_funds_redeem}
     </Box>
   );
 
