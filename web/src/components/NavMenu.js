@@ -52,24 +52,21 @@ const NavMenu = (props) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const mobile = props.width === "xs" || props.width === "sm";
-  
+
+  const handleLogout = () => {
+    history.push("/");
+    onLogout();
+  };
+
   const handleProfile = () => {
     history.push("/personal/profile");
-  };
-
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
   };
 
   const handleAction = (path) => {
     history.push(path);
     setDrawerOpen(false);
   };
-  
+
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
   };
