@@ -191,7 +191,7 @@ function UserProfile() {
         </Typography>
         <Typography variant="body1" color="textSecondary" paragraph>
           Click the button below and follow the steps to verify your identity.
-          If you do&apos;t complete this process you can&apos;t request loans.
+          If you don&apos;t complete this process you can&apos;t receive loans.
         </Typography>
         <KycButton />
       </Grid>
