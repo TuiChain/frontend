@@ -1,5 +1,7 @@
 import axios from "axios";
+
 const API_URL = process.env.REACT_APP_API_URL;
+
 const instance = axios.create({
   baseURL: `${API_URL}/users`,
 });
@@ -26,20 +28,22 @@ const getUserInfo = (id) => {
       return false;
     });
 };
-const getPersonalInfo = () => {
+
+const getCurrentUserInfo = () => {
   return instance
     .get("/get/")
     .then((response) => {
-      return response.data;
+      return response.data.user;
     })
     .catch((error) => {
       console.log(error);
       return false;
     });
 };
+
 const updateInfo = (info) => {
   return instance
-    .put("/update_profile/", info)
+    .put("/update_profile/",info)
     .then((response) => {
       console.log(response);
     })
@@ -50,6 +54,6 @@ const updateInfo = (info) => {
 
 export default {
   getUserInfo,
-  getPersonalInfo,
-  updateInfo,
+  getCurrentUserInfo,
+  updateInfo
 };

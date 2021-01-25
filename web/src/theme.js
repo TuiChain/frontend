@@ -1,4 +1,7 @@
-import { unstable_createMuiStrictModeTheme as createMuiTheme } from "@material-ui/core";
+import {
+  unstable_createMuiStrictModeTheme as createMuiTheme,
+  responsiveFontSizes,
+} from "@material-ui/core";
 
 const theme = createMuiTheme({
   palette: {
@@ -72,7 +75,25 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          backgroundColor: "transparent",
+        },
+      },
+    },
+    MuiCheckbox: {
+      root: {
+        color: "#D7D8E7",
+      },
+    },
+    MuiSvgIcon: {
+      root: {
+        width: "0.8em",
+        height: "0.8em",
+      },
+    },
   },
 });
 
-export default theme;
+export default responsiveFontSizes(theme);

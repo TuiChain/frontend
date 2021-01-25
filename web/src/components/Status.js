@@ -5,7 +5,7 @@ import theme from "./../theme";
 
 const Status = ({ state }) => {
   const matchState = (state) => {
-    switch (state.toUpperCase()) {
+    switch (state?.toUpperCase()) {
       case "FUNDING":
         return theme.palette.phase.funding;
       case "EXPIRED":

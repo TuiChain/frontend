@@ -1,195 +1,127 @@
-/* eslint-disable no-unused-vars */
-/* eslint react/prop-types: 0 */
-
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
-import {
-  Tabs,
-  Tab,
-  Typography,
-  Grid,
-  Box,
-  useMediaQuery,
-  withWidth,
-} from "@material-ui/core";
-import { DataGrid, GridOverlay } from "@material-ui/data-grid";
 import LoansService from "../../services/loans.service";
-import DAI from "../../components/DAI";
+import { Box, Grid, Typography, withWidth, Link } from "@material-ui/core";
+import { styled } from "@material-ui/core/styles";
+import LoanCard from "../../components/LoanCard";
+import theme from "../../theme";
+import PropTypes from "prop-types";
+import LoadingPageAnimation from "../../components/LoadingPageAnimation";
+import FilterSection from "../../components/FilterSection";
+import HorizontalSeparator from "../../components/HorizontalSeparator";
+import { Link as RouterLink } from "react-router-dom";
 
-const NoRowOverlay = () => {
+const LoansGrid = styled(Grid)({
+  paddingTop: "5rem",
+  [theme.breakpoints.only("xs")]: {
+    paddingLeft: "15%",
+    paddingRight: "15%",
+  },
+});
+
+const LoansGridItem = ({ loanCard, width, loanId }) => {
+  const slim = width > 600 && width < 700;
   return (
-    <GridOverlay>
-      <span>No loans matching your criteria</span>
-    </GridOverlay>
+    <Grid
+      style={{ paddingLeft: slim && "6rem", paddingRight: slim && "6rem" }}
+      item
+      xs={12}
+      sm={width < 700 ? 12 : 6}
+      md={width < 1060 ? 6 : 4}
+      xl={3}
+    >
+      <Link to={`/loans/${loanId}`} component={RouterLink} underline="none">
+        {loanCard}
+      </Link>
+    </Grid>
   );
 };
 
-function LoansList({ loans, loading }) {
-  const history = useHistory();
+const MessageContainer = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: 200,
+  color: "#6D6E7B",
+});
 
-  loans = loans ? loans : [];
+const Message = styled(Typography)({
+  flex: "0 0 200px",
+});
 
-  const handleRowClick = (rowParams) => {
-    const id = rowParams.row.id;
-    history.push(`/personal/loans/${id}`);
+const FundingLoans = () => {
+  const [loans, setLoans] = useState([]);
+  const [filteredLoans, setFilteredLoans] = useState([]);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [fetching, setFetching] = useState(true);
+
+  window.addEventListener("resize", () => {
+    setWidth(window.innerWidth);
+  });
+
+  const handleFilters = (filteredLoans) => {
+    setFilteredLoans(filteredLoans);
   };
 
-  const columns = [
-    { field: "id", headerName: "ID" },
-    {
-      field: "request_date",
-      headerName: "Request Date",
-      valueGetter: (params) =>
-        new Date(params.row.request_date).toLocaleString(),
-      width: 210,
-    },
-    {
-      field: "destination",
-      headerName: "Country",
-      width: 110,
-    },
-    {
-      field: "school",
-      headerName: "School",
-      width: 240,
-    },
-    {
-      field: "course",
-      headerName: "Course",
-      width: 240,
-    },
-    {
-      field: "requested_value",
-      headerName: "Requested",
-      width: 170,
-      // eslint-disable-next-line react/display-name
-      renderCell: (props) => {
-        return (
-          <Box display="flex" alignItems="center">
-            <Box paddingRight={1}>{props.value}</Box>
-            <DAI size={16} />
-          </Box>
-        );
-      },
-    },
-  ];
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        height: 300,
-        width: "100%",
-        flexGrow: 1,
-      }}
-    >
-      <DataGrid
-        rows={loans}
-        columns={columns}
-        pageSize={5}
-        loading={loading}
-        onRowClick={handleRowClick}
-        autoHeight
-        components={{
-          noRowsOverlay: NoRowOverlay,
-        }}
-      />
-    </div>
-  );
-}
-
-const Loans = () => {
-  const [tab, setTab] = useState(0);
-  const [loans, setLoans] = useState({});
-
-  const orientation = useMediaQuery("(min-width:1280px)", { noSsr: true })
-    ? "vertical"
-    : "horizontal";
-
-  const handleChange = (event, value) => {
-    setTab(value);
-  };
-
-  const groupBy = (xs, key) => {
-    return xs.reduce(function (rv, x) {
-      (rv[x[key].toUpperCase()] = rv[x[key].toUpperCase()] || []).push(x);
-      return rv;
-    }, {});
-  };
-
-  const getTabSize = (tab) => {
-    return loans[tab] ? loans[tab].length : 0;
-  };
-
-  const getTabState = (tab) => {
-    switch (tab) {
-      case 0:
-        return "ALL";
-      case 1:
-        return "PENDING";
-      case 2:
-        return "WITHDRAWN";
-      case 3:
-        return "REJECTED";
-      case 4:
-        return "FUNDING";
-      case 5:
-        return "CANCELED";
-      case 6:
-        return "EXPIRED";
-      case 7:
-        return "ACTIVE";
-      case 8:
-        return "FINALIZED";
-    }
-  };
-
-  // Student Loans
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    async function fetchLoans() {
-      const data = await LoansService.getStudentLoans();
-      const groups = groupBy(data, "state");
-      groups["ALL"] = data;
-      console.log("Groups", groups);
-      setLoans(groups);
-      setLoading(false);
-    }
-    fetchLoans();
+    LoansService.getFundingLoans().then((loanList) => {
+      setLoans(loanList);
+      setFilteredLoans(loanList);
+      setFetching(false);
+    });
   }, []);
 
   return (
-    <Box>
+    <>
       <Typography variant="h2" paragraph>
         Loans
       </Typography>
-      <Grid container>
-        <Grid item xs={12} lg={2}>
-          <Tabs
-            orientation={orientation}
-            variant="scrollable"
-            value={tab}
-            onChange={handleChange}
-            aria-label="Vertical tabs example"
-          >
-            <Tab label={"All (" + getTabSize("ALL") + ")"} />
-            <Tab label={"Pending (" + getTabSize("PENDING") + ")"} />
-            <Tab label={"Withdrawn (" + getTabSize("WITHDRAWN") + ")"} />
-            <Tab label={"Rejected (" + getTabSize("REJECTED") + ")"} />
-            <Tab label={"Funding (" + getTabSize("FUNDING") + ")"} />
-            <Tab label={"Canceled (" + getTabSize("CANCELED") + ")"} />
-            <Tab label={"Expired (" + getTabSize("EXPIRED") + ")"} />
-            <Tab label={"Active (" + getTabSize("ACTIVE") + ")"} />
-            <Tab label={"Finalized (" + getTabSize("FINALIZED") + ")"} />
-          </Tabs>
-        </Grid>
-        <Grid item xs={12} lg={10}>
-          <LoansList loans={loans[getTabState(tab)]} loading={loading} />
-        </Grid>
-      </Grid>
-    </Box>
+      <FilterSection loans={loans} onChange={handleFilters} />
+      <HorizontalSeparator />
+      {fetching ? (
+        <Box style={{ height: "50vh" }}>
+          <LoadingPageAnimation />
+        </Box>
+      ) : filteredLoans.length >= 1 ? (
+        <LoansGrid container direction="row" alignItems="center" spacing={10}>
+          {filteredLoans.map((l) => {
+            return (
+              <LoansGridItem
+                key={l.id}
+                width={width}
+                loanId={l.id}
+                loanCard={
+                  <LoanCard
+                    name={l.user_full_name}
+                    photo={l.photo}
+                    school={l.school}
+                    course={l.course}
+                    destination={l.destination}
+                    tuition={Number(
+                      BigInt(l.requested_value_atto_dai) / BigInt(10 ** 18)
+                    )}
+                    fundedPercentage={Number(
+                      BigInt(l.funded_value_atto_dai * 100) /
+                        BigInt(l.requested_value_atto_dai)
+                    )}
+                  />
+                }
+              />
+            );
+          })}
+        </LoansGrid>
+      ) : (
+        <MessageContainer>
+          <Message variant="h6">No results were found</Message>
+        </MessageContainer>
+      )}
+    </>
   );
 };
 
-export default Loans;
+export default withWidth()(FundingLoans);
+
+LoansGridItem.propTypes = {
+  loanCard: PropTypes.object,
+  width: PropTypes.number,
+  loanId: PropTypes.number,
+};
