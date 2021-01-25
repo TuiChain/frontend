@@ -96,7 +96,12 @@ function Student(props) {
     }
     setOpen(false);
   };
-
+  const style={
+    display: "block",
+    margin:"auto",
+    height:"100%",
+    width:"100%"
+}
   return (
     <>
       {fetching ? (
@@ -107,9 +112,12 @@ function Student(props) {
         <Box className="student" component="span" m={1}>
           <Grid container spacing={2} className="container">
             <Grid className="left-cont" item xs={12} md={6}>
-              <Box>
-                <img src={userInfo.profile_image} />
-              </Box>
+              {matches===true && (<Box>
+                <img height="300px" width="300px" src={userInfo.profile_pic} />
+              </Box>)}
+              {matches===false && (<Box >
+                <img style={style} src={userInfo.profile_pic} />
+              </Box>)}
             </Grid>
             <Grid className="right-cont" item xs={12} md={6}>
               <Box className="right">
@@ -153,7 +161,7 @@ function Student(props) {
             </Grid>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} md={6}>
-              {user.state==="PENDING" && (<Box>
+              {user.state==="PENDING" && (<Box paddingTop="6%">
               <Typography variant="h3">Request waiting for approval</Typography>
             </Box>)
             }

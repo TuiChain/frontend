@@ -37,8 +37,20 @@ const getPersonalInfo = () => {
       return false;
     });
 };
+const updateInfo = (info) => {
+  return instance
+    .put("/update_profile/",info)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 
 export default {
   getUserInfo,
-  getPersonalInfo
+  getPersonalInfo,
+  updateInfo
 };
