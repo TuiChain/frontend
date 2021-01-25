@@ -14,11 +14,11 @@ import {
 import { CloudUpload } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { countries } from "../util/countries";
-import KycButton from "./KycButton";
+import KycButton from "../components/KycButton";
 function UserProfile() {
   useEffect(async () => {
-    const tempUser = await UserService.getPersonalInfo();
-    formik.setValues(tempUser.user);
+    const tempUser = await UserService.getCurrentUserInfo();
+    formik.setValues(tempUser);
     console.log(tempUser);
   }, []);
   var formPic = new FormData();
