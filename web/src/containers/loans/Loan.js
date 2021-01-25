@@ -96,7 +96,13 @@ function Loan(props) {
     console.log("user:", Info.user);
 
     const account = walletService.checkAccount();
-    if (loan && loan.state.toUpperCase() == "FUNDING" && account != null) {
+    if (
+      loan &&
+      loan.state.toUpperCase() != "PENDING" &&
+      loan.state.toUpperCase() != "WITHDRAWN" &&
+      loan.state.toUpperCase() != "REJECTED" &&
+      account != null
+    ) {
       const investment = await InvestmentsService.getInvestmentInLoan(
         loan.id,
         account
@@ -150,6 +156,24 @@ function Loan(props) {
     }
   };
 
+  const handleWithdrawFundsRedeem = async () => {
+    try {
+      if (loan.state.toUpperCase() == "FINALIZED") {
+        await LoansTransactionsService.redeemTokens(
+          props.match.params.id,
+          tokens
+        );
+      } else {
+        await LoansTransactionsService.withdrawFunds(
+          props.match.params.id,
+          tokens
+        );
+      }
+    } catch (e) {
+      buttonErrorTreatment(e);
+    }
+  };
+
   const buttonErrorTreatment = (e) => {
     switch (e.message) {
       case "Invalid parameters: must provide an Ethereum address.":
@@ -185,13 +209,50 @@ function Loan(props) {
     </Box>
   );
 
-  const pending = message("Request waiting for approval");
-
-  const rejected = message(
-    "This loan request was rejected by Tuichain Administration"
+  const withdraw_funds_redeem = investment != 0 && (
+    <Box py="10%">
+      <TextField
+        type={"number"}
+        label="Tokens"
+        name="tokens"
+        variant="outlined"
+        InputProps={{ inputProps: { min: 1, max: investment } }}
+        onChange={(e) => {
+          e.target.value = !Number.isInteger(e.target.value)
+            ? Math.floor(e.target.value)
+            : e.target.value;
+          setTokens(e.target.value);
+        }}
+      />
+      <Button
+        disableElevation
+        variant="contained"
+        color="primary"
+        type="submit"
+        disabled={tokens == 0}
+        onClick={handleWithdrawClick}
+      >
+        {loan.state.toUpperCase() != "FINALIZED" && "Withdraw"}
+        {loan.state.toUpperCase() == "FINALIZED" && "Redeem"}
+      </Button>
+      <Box paddingTop="5%">
+        <Typography variant="body1" display="inline">
+          You still got {investment} tokens{" "}
+          {loan.state.toUpperCase() == "FINALIZED" && "to redeem"}!!
+        </Typography>
+      </Box>
+    </Box>
   );
 
-  const withdrawn = message("This loan request was rejected by the student");
+  /* -------------------------------------------------------------------------- */
+
+  const pending = message("Request waiting for approval!");
+
+  const rejected = message(
+    "This loan request was rejected by Tuichain Administration!"
+  );
+
+  const withdrawn = message("This loan request was rejected by the student!");
 
   const funding = (
     <Box width="fit-content">
@@ -249,14 +310,26 @@ function Loan(props) {
     </Box>
   );
 
-  const finalized = message("This loan is active");
-  // redeem token
+  const finalized = (
+    <Box width="fit-content">
+      {message("This loan is finalized!")}
+      {withdraw_funds}
+    </Box>
+  );
 
-  const expired = message("This loan has expired");
-  // withdraw funds
+  const expired = (
+    <Box width="fit-content">
+      {message("This loan has expired!")}
+      {withdraw_funds}
+    </Box>
+  );
 
-  const canceled = message("This loan is canceled");
-  // withdraw funds
+  const canceled = (
+    <Box width="fit-content">
+      {message("This loan is canceled!")}
+      {withdraw_funds}
+    </Box>
+  );
 
   /* -------------------------------------------------------------------------- */
 
