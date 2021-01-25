@@ -19,6 +19,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Toast from "../../components/Toast";
 import { Redirect, useHistory } from "react-router";
+import loansTransactionsService from "../../services/loans-transactions.service";
 
 const ErrorButton = withStyles((theme) => ({
   root: {
@@ -121,6 +122,10 @@ const ManageLoan = (props) => {
     return ["ACTIVE", "FINALIZED"].includes(status.toUpperCase());
   };
 
+  const canPayback = (status) => {
+    return ["ACTIVE"].includes(status.toUpperCase());
+  };
+
   const clickCancel = async (state, id) => {
     try {
       switch (state) {
@@ -134,6 +139,18 @@ const ManageLoan = (props) => {
       }
 
       history.replace("/personal/loans");
+    } catch (error) {
+      setToast({
+        message: error.response.data.error,
+        severity: "error",
+      });
+      setOpen(true);
+    }
+  };
+
+  const clickPayback = async (id) => {
+    try {
+      loansTransactionsService.makePayment(id, 250);
     } catch (error) {
       setToast({
         message: error.response.data.error,
@@ -354,6 +371,24 @@ const ManageLoan = (props) => {
           </Grid>
         </Grid>
 
+        <hr />
+
+        <Panel>
+          <Typography variant="h5" color="secondary">
+            Payback
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Payback your monthly fee (this depends on your current salary)
+          </Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={!canPayback(loan.state)}
+            onClick={() => clickPayback(loan.id)}
+          >
+            Payback
+          </Button>
+        </Panel>
         <hr />
         <Panel>
           <Typography variant="h5" color="secondary">
