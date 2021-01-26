@@ -28,8 +28,128 @@ import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import documentsService from "../../services/documents.service";
 
+const fetchInvestments = async (loan, setInvestment) => {
+  const account = walletService.checkAccount();
+  if (loan && account != null) {
+    const investment = await InvestmentsService.getInvestmentInLoan(
+      loan.id,
+      account
+    );
+    console.log("investment:", investment);
+    setInvestment(investment.nrTokens);
+  }
+};
+
+const buttonErrorTreatment = (e, setToast, setOpen) => {
+  switch (e.message) {
+    case "Invalid parameters: must provide an Ethereum address.":
+      setToast({
+        message: "Your account is not connected!",
+        severity: "error",
+      });
+      setOpen(true);
+      break;
+
+    case "Incorrect chain ID":
+      setToast({
+        message: "You're not in the correct network!",
+        severity: "error",
+      });
+      setOpen(true);
+      break;
+  }
+};
+
+const LoanFunding = ({ loan }) => {
+  const [investment, setInvestment] = useState(0);
+  const [tokens, setTokens] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    const percentage = (loan.funded_value / loan.requested_value) * 100;
+    setPercentage(percentage);
+
+    fetchInvestments(loan, setInvestment);
+  }, []);
+
+  const handleBuyClick = async () => {
+    try {
+      await LoansTransactionsService.provideFunds(loan.id, tokens);
+
+      await walletService.suggestStudentToken(loan.token_address);
+    } catch (e) {
+      buttonErrorTreatment(e);
+    }
+  };
+
+  const handleWithdrawClick = async () => {
+    try {
+      await LoansTransactionsService.withdrawFunds(loan.id, tokens);
+    } catch (e) {
+      buttonErrorTreatment(e);
+    }
+  };
+
+  return (
+    <Box width="fit-content">
+      <Box py="10%">
+        <Typography variant="h3">Tokens</Typography>
+      </Box>
+      <Box>
+        <TextField
+          type={"number"}
+          label="Tokens"
+          name="tokens"
+          variant="outlined"
+          InputProps={{ inputProps: { min: 1 } }}
+          onChange={(e) => {
+            e.target.value = !Number.isInteger(e.target.value)
+              ? Math.floor(e.target.value)
+              : e.target.value;
+            setTokens(e.target.value);
+          }}
+        />
+        <ButtonGroup
+          disableElevation
+          variant="contained"
+          color="primary"
+          style={{ padding: "8px" }}
+        >
+          <Button
+            type="submit"
+            disabled={tokens == 0}
+            onClick={handleBuyClick}
+            style={{ margin: 0 }}
+          >
+            Buy
+          </Button>
+          <Button
+            type="submit"
+            disabled={investment == 0 || tokens == 0}
+            onClick={handleWithdrawClick}
+            style={{ margin: 0 }}
+          >
+            Withdraw
+          </Button>
+        </ButtonGroup>
+      </Box>
+      {investment > 0 && (
+        <Box paddingTop="5%">
+          <Typography variant="body1" display="inline">
+            You&apos;ve already bought {investment} tokens!!
+          </Typography>
+        </Box>
+      )}
+      <Box paddingTop="5%">
+        <ProgressBar completed={percentage} />
+      </Box>
+    </Box>
+  );
+};
+
 const LoanActive = ({ loan }) => {
   const [documents, setDocuments] = useState([]);
+
   useEffect(() => {
     const fetchDocuments = async () => {
       const docs = await documentsService.getLoanPublicDocuments(loan.id);
@@ -72,12 +192,123 @@ const LoanActive = ({ loan }) => {
   );
 };
 
+const LoanCanceledExpired = ({ loan, setToast, setOpen, message }) => {
+  const [investment, setInvestment] = useState(0);
+  const [tokens, setTokens] = useState(0);
+
+  useEffect(() => {
+    fetchInvestments(loan, setInvestment);
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      await LoansTransactionsService.withdrawFunds(loan.id, tokens);
+    } catch (e) {
+      buttonErrorTreatment(e, setToast, setOpen);
+    }
+  };
+
+  return (
+    <Box width="fit-content">
+      <Box>
+        <Typography variant="h4">{message}</Typography>
+      </Box>
+      {investment != 0 && (
+        <Box py="10%">
+          <TextField
+            type={"number"}
+            label="Tokens"
+            name="tokens"
+            variant="outlined"
+            InputProps={{ inputProps: { min: 1, max: investment } }}
+            onChange={(e) => {
+              e.target.value = !Number.isInteger(e.target.value)
+                ? Math.floor(e.target.value)
+                : e.target.value;
+              setTokens(e.target.value);
+            }}
+          />
+          <Button
+            disableElevation
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={tokens == 0}
+            onClick={handleClick}
+          >
+            Withdraw
+          </Button>
+          <Box paddingTop="5%">
+            <Typography variant="body1" display="inline">
+              You still got {investment} tokens!!
+            </Typography>
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+const LoanFinalized = ({ loan, setToast, setOpen }) => {
+  const [investment, setInvestment] = useState(0);
+  const [tokens, setTokens] = useState(0);
+
+  useEffect(() => {
+    fetchInvestments(loan, setInvestment);
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      await LoansTransactionsService.redeemTokens(loan.id, tokens);
+    } catch (e) {
+      buttonErrorTreatment(e, setToast, setOpen);
+    }
+  };
+
+  return (
+    <Box width="fit-content">
+      <Box>
+        <Typography variant="h4">This loan is finalized!</Typography>
+      </Box>
+      {investment != 0 && (
+        <Box py="10%">
+          <TextField
+            type={"number"}
+            label="Tokens"
+            name="tokens"
+            variant="outlined"
+            InputProps={{ inputProps: { min: 1, max: investment } }}
+            onChange={(e) => {
+              e.target.value = !Number.isInteger(e.target.value)
+                ? Math.floor(e.target.value)
+                : e.target.value;
+              setTokens(e.target.value);
+            }}
+          />
+          <Button
+            disableElevation
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={tokens == 0}
+            onClick={handleClick}
+          >
+            Redeem
+          </Button>
+          <Box paddingTop="5%">
+            <Typography variant="body1" display="inline">
+              You still got {investment} tokens to redeem!!
+            </Typography>
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 function Loan(props) {
   const [loan, setLoan] = useState({});
   const [user, setUser] = useState({});
-  const [percentage, setPercentage] = useState(0);
-  const [tokens, setTokens] = useState(0);
-  const [investment, setInvestment] = useState(0);
   const [fetching, setFetching] = useState(true);
   const [toast, setToast] = React.useState({});
   const [open, setOpen] = React.useState(false);
@@ -87,29 +318,9 @@ function Loan(props) {
     setLoan(loan);
     console.log("loan:", loan);
 
-    let percentage = (loan.funded_value / loan.requested_value) * 100;
-    setPercentage(percentage);
-    console.log("percentage:", percentage);
-
     const Info = await UserService.getUserInfo(loan.student);
     setUser(Info.user);
     console.log("user:", Info.user);
-
-    const account = walletService.checkAccount();
-    if (
-      loan &&
-      loan.state.toUpperCase() != "PENDING" &&
-      loan.state.toUpperCase() != "WITHDRAWN" &&
-      loan.state.toUpperCase() != "REJECTED" &&
-      account != null
-    ) {
-      const investment = await InvestmentsService.getInvestmentInLoan(
-        loan.id,
-        account
-      );
-      setInvestment(investment.nrTokens);
-      console.log("investment:", investment);
-    }
 
     setFetching(false);
   }, []);
@@ -132,68 +343,6 @@ function Loan(props) {
     },
   })(Box);
 
-  const handleBuyClick = async () => {
-    try {
-      await LoansTransactionsService.provideFunds(
-        props.match.params.id,
-        tokens
-      );
-
-      await walletService.suggestStudentToken(loan.token_address);
-    } catch (e) {
-      buttonErrorTreatment(e);
-    }
-  };
-
-  const handleWithdrawClick = async () => {
-    try {
-      await LoansTransactionsService.withdrawFunds(
-        props.match.params.id,
-        tokens
-      );
-    } catch (e) {
-      buttonErrorTreatment(e);
-    }
-  };
-
-  const handleWithdrawFundsRedeemClick = async () => {
-    try {
-      if (loan.state.toUpperCase() == "FINALIZED") {
-        await LoansTransactionsService.redeemTokens(
-          props.match.params.id,
-          tokens
-        );
-      } else {
-        await LoansTransactionsService.withdrawFunds(
-          props.match.params.id,
-          tokens
-        );
-      }
-    } catch (e) {
-      buttonErrorTreatment(e);
-    }
-  };
-
-  const buttonErrorTreatment = (e) => {
-    switch (e.message) {
-      case "Invalid parameters: must provide an Ethereum address.":
-        setToast({
-          message: "Your account is not connected!",
-          severity: "error",
-        });
-        setOpen(true);
-        break;
-
-      case "Incorrect chain ID":
-        setToast({
-          message: "You're not in the correct network!",
-          severity: "error",
-        });
-        setOpen(true);
-        break;
-    }
-  };
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -209,43 +358,6 @@ function Loan(props) {
     </Box>
   );
 
-  const withdraw_funds_redeem = investment != 0 && (
-    <Box py="10%">
-      <TextField
-        type={"number"}
-        label="Tokens"
-        name="tokens"
-        variant="outlined"
-        InputProps={{ inputProps: { min: 1, max: investment } }}
-        onChange={(e) => {
-          e.target.value = !Number.isInteger(e.target.value)
-            ? Math.floor(e.target.value)
-            : e.target.value;
-          setTokens(e.target.value);
-        }}
-      />
-      <Button
-        disableElevation
-        variant="contained"
-        color="primary"
-        type="submit"
-        disabled={tokens == 0}
-        onClick={handleWithdrawFundsRedeemClick}
-      >
-        {loan.state.toUpperCase() != "FINALIZED" && "Withdraw"}
-        {loan.state.toUpperCase() == "FINALIZED" && "Redeem"}
-      </Button>
-      <Box paddingTop="5%">
-        <Typography variant="body1" display="inline">
-          You still got {investment} tokens{" "}
-          {loan.state.toUpperCase() == "FINALIZED" && "to redeem"}!!
-        </Typography>
-      </Box>
-    </Box>
-  );
-
-  /* -------------------------------------------------------------------------- */
-
   const pending = message("Request waiting for approval!");
 
   const rejected = message(
@@ -253,83 +365,6 @@ function Loan(props) {
   );
 
   const withdrawn = message("This loan request was rejected by the student!");
-
-  const funding = (
-    <Box width="fit-content">
-      <Box py="10%">
-        <Typography variant="h3">Tokens</Typography>
-      </Box>
-      <Box>
-        <TextField
-          type={"number"}
-          label="Tokens"
-          name="tokens"
-          variant="outlined"
-          InputProps={{ inputProps: { min: 1 } }}
-          onChange={(e) => {
-            e.target.value = !Number.isInteger(e.target.value)
-              ? Math.floor(e.target.value)
-              : e.target.value;
-            setTokens(e.target.value);
-          }}
-        />
-        <ButtonGroup
-          disableElevation
-          variant="contained"
-          color="primary"
-          style={{ padding: "8px" }}
-        >
-          <Button
-            type="submit"
-            disabled={tokens == 0}
-            onClick={handleBuyClick}
-            style={{ margin: 0 }}
-          >
-            Buy
-          </Button>
-          <Button
-            type="submit"
-            disabled={investment == 0}
-            onClick={handleWithdrawClick}
-            style={{ margin: 0 }}
-          >
-            Withdraw
-          </Button>
-        </ButtonGroup>
-      </Box>
-      {investment > 0 && (
-        <Box paddingTop="5%">
-          <Typography variant="body1" display="inline">
-            You&apos;ve already bought {investment} tokens!!
-          </Typography>
-        </Box>
-      )}
-      <Box paddingTop="5%">
-        <ProgressBar completed={percentage} />
-      </Box>
-    </Box>
-  );
-
-  const finalized = (
-    <Box width="fit-content">
-      {message("This loan is finalized!")}
-      {withdraw_funds_redeem}
-    </Box>
-  );
-
-  const expired = (
-    <Box width="fit-content">
-      {message("This loan has expired!")}
-      {withdraw_funds_redeem}
-    </Box>
-  );
-
-  const canceled = (
-    <Box width="fit-content">
-      {message("This loan is canceled!")}
-      {withdraw_funds_redeem}
-    </Box>
-  );
 
   /* -------------------------------------------------------------------------- */
 
@@ -392,11 +427,33 @@ function Loan(props) {
             {loan.state.toUpperCase() == "PENDING" && pending}
             {loan.state.toUpperCase() == "REJECTED" && rejected}
             {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
-            {loan.state.toUpperCase() == "FUNDING" && funding}
+            {loan.state.toUpperCase() == "FUNDING" && (
+              <LoanFunding loan={loan} />
+            )}
             {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
-            {loan.state.toUpperCase() == "FINALIZED" && finalized}
-            {loan.state.toUpperCase() == "EXPIRED" && expired}
-            {loan.state.toUpperCase() == "CANCELED" && canceled}
+            {loan.state.toUpperCase() == "FINALIZED" && (
+              <LoanFinalized
+                loan={loan}
+                setToast={setToast}
+                setOpen={setOpen}
+              />
+            )}
+            {loan.state.toUpperCase() == "EXPIRED" && (
+              <LoanCanceledExpired
+                loan={loan}
+                setToast={setToast}
+                setOpen={setOpen}
+                message={"This loan has expired!"}
+              />
+            )}
+            {loan.state.toUpperCase() == "CANCELED" && (
+              <LoanCanceledExpired
+                loan={loan}
+                setToast={setToast}
+                setOpen={setOpen}
+                message={"This loan is canceled!"}
+              />
+            )}
           </Grid>
           <Toast open={open} onClose={handleClose} severity={toast.severity}>
             {toast.message}
