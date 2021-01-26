@@ -149,7 +149,7 @@ const getFundingLoans = () => {
   return instance
     .get("/get_state/FUNDING/1/")
     .then((response) => {
-      console.log(response)
+      console.log(response);
       return response.data.loans;
     })
     .catch((error) => {
@@ -251,6 +251,19 @@ const withdrawLoanRequest = (id) => {
   });
 };
 
+const finalizeLoan = (id) => {
+  return instance
+    .put(`/finalize/${id}/`)
+    .then((response) => {
+      console.log("Finalized: ", response.data.message);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response);
+      return false;
+    });
+};
+
 export default {
   createLoan,
   getPendingLoans,
@@ -259,9 +272,10 @@ export default {
   getLoan,
   getActiveLoan,
   getFeaturedLoans,
-  getFundingLoans,
   getActiveLoans,
+  getFundingLoans,
   getStudentLoans,
   cancelLoan,
   withdrawLoanRequest,
+  finalizeLoan,
 };
