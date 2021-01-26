@@ -145,6 +145,14 @@ const LoanFunding = ({ loan }) => {
           </Button>
         </ButtonGroup>
       </Box>
+      {tokens > 0 && (
+        <Box paddingTop="5%">
+          <Typography variant="body1" display="inline">
+            Buying {tokens} token{tokens > 1 && "s"}, will cost you{" "}
+            {(tokens * (1 + loan.funding_fee)).toFixed(2)} <DAI /> !
+          </Typography>
+        </Box>
+      )}
       {investment > 0 && (
         <Box paddingTop="5%">
           <Typography variant="body1" display="inline">
