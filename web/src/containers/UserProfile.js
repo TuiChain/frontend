@@ -16,7 +16,7 @@ import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
 function UserProfile() {
-  useEffect(async () => {
+  const fetchUser=async () =>{
     const tempUser = await UserService.getCurrentUserInfo();
     tempUser.full_name==="null"?formik.setFieldValue("full_name",""):formik.setFieldValue("full_name",tempUser.full_name);
     tempUser.full_name==="null"?formik.setFieldValue("short_bio",""):formik.setFieldValue("short_bio",tempUser.short_bio);
@@ -25,6 +25,9 @@ function UserProfile() {
     tempUser.full_name==="null"?formik.setFieldValue("address",""):formik.setFieldValue("address",tempUser.address);
     tempUser.full_name==="null"?formik.setFieldValue("country",""):formik.setFieldValue("country",tempUser.country);
     console.log(tempUser);
+  };
+  useEffect(() => {
+    fetchUser();
   }, []);
   var formPic = new FormData();
   const changeImg = (e) => {
@@ -56,8 +59,15 @@ function UserProfile() {
       city: "",
       error: null,
     },
-    onSubmit: async (values, { setFieldValue }) => {
-      setFieldValue("error", null);
+    onSubmit: async (values) => {
+      var formData = new FormData();
+      formData.append("full_name", values.full_name);
+      formData.append("address", values.address);
+      formData.append("zip_code", values.zip_code);
+      formData.append("short_bio", values.short_bio);
+      formData.append("city", values.city);
+      formData.append("country", values.country);
+      UserService.updateInfo(formData);
     },
   });
   return (
