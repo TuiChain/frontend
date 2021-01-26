@@ -1,80 +1,79 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { AppBar, Toolbar, Button, Grid } from "@material-ui/core";
+import { AppBar, Toolbar, Button, Grid, IconButton } from "@material-ui/core";
 import NavMenu from "../components/NavMenu";
 import { Link as RouterLink } from "react-router-dom";
+import NavMenuAdmin from "./NavMenuAdmin";
+import Logo from "./Logo";
 
 const Header = (props) => {
-  const { auth, onLogout } = props;
+  const { auth, onLogout, wallet, setWallet } = props;
 
-  const nav_items = auth ? (
+  const account_btns = (
     <>
       <Grid item>
         <Button
           variant="contained"
           color="secondary"
           component={RouterLink}
-          to="/request"
+          to="/signup"
         >
-          Loan Request
+          Sign Up
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/login"
+        >
+          Login
         </Button>
       </Grid>
-      <Grid item>
-        <NavMenu onLogout={onLogout} />
-      </Grid>
     </>
-  ) : (
-    <Grid item>
-      <Button
-        variant="contained"
-        color="secondary"
-        component={RouterLink}
-        to="/signup"
-      >
-        Sign Up
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        component={RouterLink}
-        to="/login"
-      >
-        Login
-      </Button>
-    </Grid>
   );
 
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container justify="flex-start">
-            <Grid item>
-              <Button
-                variant="contained"
-                color="secondary"
-                component={RouterLink}
-                to="/"
-              >
-                Home
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid container justify="flex-end">
-            {nav_items}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="sticky">
+      <Toolbar>
+        <IconButton
+          variant="contained"
+          color="secondary"
+          component={RouterLink}
+          to="/"
+        >
+          <Logo />
+        </IconButton>
+        <Grid container justify="flex-end">
+          {auth ? (
+            auth.is_admin ? (
+              <NavMenuAdmin onLogout={onLogout} />
+            ) : (
+              <NavMenu
+                onLogout={onLogout}
+                wallet={wallet}
+                setWallet={setWallet}
+              />
+            )
+          ) : (
+            auth !== null && account_btns
+          )}
+        </Grid>
+      </Toolbar>
+    </AppBar>
   );
 };
 
 Header.propTypes = {
   auth: PropTypes.oneOfType([
-    PropTypes.string, // auth token
+    PropTypes.object, // user token & type
     PropTypes.bool, // no auth token (false)
   ]),
   onLogout: PropTypes.func,
+  wallet: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number, // 0 - uninstalled
+  ]),
+  setWallet: PropTypes.func,
 };
 
 export default Header;

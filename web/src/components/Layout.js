@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
 import Box from "@material-ui/core/Box";
 import theme from "./../theme";
+import { withRouter } from "react-router";
 
 const Content = styled(Box)({
   minHeight: "calc(100vh - 112px)",
@@ -19,14 +20,23 @@ const Inside = styled(Box)({
   },
 });
 
-const Layout = ({ children }) => (
-  <Content>
-    <Inside>{children}</Inside>
-  </Content>
-);
+const Layout = ({ children, match }) => {
+  const is_home_page = match.isExact; // "/" is the only exact path
+
+  return is_home_page ? (
+    <Content>{children}</Content>
+  ) : (
+    <Content>
+      <Inside>{children}</Inside>
+    </Content>
+  );
+};
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
+  match: PropTypes.shape({
+    isExact: PropTypes.bool,
+  }),
 };
 
-export default Layout;
+export default withRouter(Layout);

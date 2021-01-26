@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const instance = axios.create({
-  baseURL: "https://tuichain-backend.herokuapp.com/api/loanrequests",
+  baseURL: `${API_URL}/users`,
 });
 
 instance.interceptors.request.use(
@@ -15,36 +17,43 @@ instance.interceptors.request.use(
   }
 );
 
-const createLoanRequest = (school, course, amount) => {
+const getUserInfo = (id) => {
   return instance
-    .post("/new/", {
-      school,
-      course,
-      amount,
-    })
-    .then(() => {
-      return true;
+    .get("/get/" + id + "/")
+    .then((response) => {
+      return response.data;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
       console.log(error);
       return false;
     });
 };
 
-const getLoanRequests = () => {
+const getCurrentUserInfo = () => {
   return instance
-    .get("/get_all/")
+    .get("/get/")
     .then((response) => {
-      return response.data.loanrequest;
+      return response.data.user;
     })
     .catch((error) => {
       console.log(error);
       return false;
+    });
+};
+
+const updateInfo = (info) => {
+  return instance
+    .put("/update_profile/",info)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 };
 
 export default {
-  createLoanRequest,
-  getLoanRequests,
+  getUserInfo,
+  getCurrentUserInfo,
+  updateInfo
 };
