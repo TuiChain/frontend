@@ -395,7 +395,6 @@ function Loan(props) {
   const withdrawn = message("This loan request was rejected by the student!");
 
   /* -------------------------------------------------------------------------- */
-
   return (
     <>
       {fetching ? (
@@ -406,9 +405,23 @@ function Loan(props) {
         <Box m={1}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Box>
-                <img src={user.profile_image} />
-              </Box>
+              {matches === true ? (
+                <Box>
+                  <img height="300px" width="300px" src={user.profile_pic} />
+                </Box>
+              ) : (
+                <Box>
+                  <img
+                    style={{
+                      display: "block",
+                      margin: "auto",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                    src={user.profile_pic}
+                  />
+                </Box>
+              )}
             </Grid>
             <Grid item xs={12} md={6}>
               <Box>

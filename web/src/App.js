@@ -23,6 +23,7 @@ import Market from "./containers/Market";
 import Investments from "./containers/Investments";
 import PersonalLoans from "./containers/loans/PersonalLoans";
 import Documents from "./containers/admin/Documents";
+import Profile from "./containers/UserProfile";
 import ActiveLoans from "./containers/admin/ActiveLoans";
 
 const styles = {
@@ -92,6 +93,11 @@ const App = (props) => {
                   path="/personal/loans"
                   component={PersonalLoans}
                 />
+                <ProtectedRoute
+                auth={auth}
+                path="/personal/profile/"
+                component={Profile}
+              />
                 <ProtectedRoute
                   auth={auth}
                   path="/request"

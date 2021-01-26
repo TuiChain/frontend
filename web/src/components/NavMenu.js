@@ -58,6 +58,10 @@ const NavMenu = (props) => {
     onLogout();
   };
 
+  const handleProfile = () => {
+    history.push("/personal/profile");
+  };
+
   const handleAction = (path) => {
     history.push(path);
     setDrawerOpen(false);
@@ -183,7 +187,7 @@ const NavMenu = (props) => {
     },
     {
       text: "My Account",
-      handler: handleDrawerClose,
+      handler: handleProfile,
       icon: <AccountBoxIcon />,
     },
     {
