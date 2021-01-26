@@ -84,31 +84,6 @@ const LoanFunding = ({ loan }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const matches = useMediaQuery("(min-width:600px)");
-
-  const Box2 = withStyles({
-    root: {
-      justifyContent: matches === false ? "center" : "inherit",
-      display: "flex",
-      paddingBottom: "5%",
-    },
-  })(Box);
-
-  const BoxDescr = withStyles({
-    root: {
-      paddingLeft: matches === false ? "12%" : "inherit",
-      paddingRight: matches === false ? "12%" : "inherit",
-      paddingBottom: matches === false ? "10%" : "inherit",
-    },
-  })(Box);
-
-  const style = {
-    display: "block",
-    margin: "auto",
-    height: "100%",
-    width: "100%",
-  };
-
   const handleBuyClick = async () => {
     try {
       await LoansTransactionsService.provideFunds(loan.id, tokens);
@@ -420,7 +395,6 @@ function Loan(props) {
   const withdrawn = message("This loan request was rejected by the student!");
 
   /* -------------------------------------------------------------------------- */
-
   return (
     <>
       {fetching ? (
@@ -431,18 +405,21 @@ function Loan(props) {
         <Box m={1}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-            {matches === true ? (
+              {matches === true ? (
+                <Box>
+                  <img height="300px" width="300px" src={user.profile_pic} />
+                </Box>
+              ) : (
                 <Box>
                   <img
-                    height="300px"
-                    width="300px"
+                    style={{
+                      display: "block",
+                      margin: "auto",
+                      height: "100%",
+                      width: "100%",
+                    }}
                     src={user.profile_pic}
                   />
-                </Box>
-              ):
-              (
-                <Box>
-                  <img style={style} src={user.profile_pic} />
                 </Box>
               )}
             </Grid>
