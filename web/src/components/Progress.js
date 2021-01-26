@@ -10,7 +10,7 @@ const ProgressBar = ({ completed, visible, slim }) => {
     const percentage =
       completed > 0 && completed < 1 ? 1 : Math.floor(completed);
     setPercentage(percentage);
-  }, []);
+  }, [completed]);
 
   const Box3 = withStyles({
     root: {

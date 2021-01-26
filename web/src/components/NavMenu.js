@@ -207,7 +207,7 @@ const NavMenu = (props) => {
         aria-haspopup="true"
         onClick={handleDrawerOpen}
       >
-        <MenuIcon />
+        <MenuIcon style={{ fontSize: 32 }} />
       </IconButton>
       <Drawer
         className={classes.drawer}
