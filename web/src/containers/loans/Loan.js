@@ -66,10 +66,22 @@ const LoanFunding = ({ loan }) => {
   const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
-    const percentage = (loan.funded_value / loan.requested_value) * 100;
-    setPercentage(percentage);
+    const fetchInfo = async () => {
+      const loaninfo = await LoansService.getLoan(loan.id);
+      const percentage =
+        (loaninfo.funded_value / loaninfo.requested_value) * 100;
+      setPercentage(percentage);
 
-    fetchInvestments(loan, setInvestment);
+      fetchInvestments(loan, setInvestment);
+    };
+
+    fetchInfo();
+
+    const timer = setInterval(() => {
+      fetchInfo();
+    }, 10000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const handleBuyClick = async () => {
@@ -198,6 +210,12 @@ const LoanCanceledExpired = ({ loan, setToast, setOpen, message }) => {
 
   useEffect(() => {
     fetchInvestments(loan, setInvestment);
+
+    const timer = setInterval(() => {
+      fetchInvestments(loan, setInvestment);
+    }, 10000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const handleClick = async () => {
@@ -255,6 +273,12 @@ const LoanFinalized = ({ loan, setToast, setOpen }) => {
 
   useEffect(() => {
     fetchInvestments(loan, setInvestment);
+
+    const timer = setInterval(() => {
+      fetchInvestments(loan, setInvestment);
+    }, 10000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const handleClick = async () => {
@@ -313,16 +337,20 @@ function Loan(props) {
   const [toast, setToast] = React.useState({});
   const [open, setOpen] = React.useState(false);
 
-  useEffect(async () => {
-    const loan = await LoansService.getLoan(props.match.params.id);
-    setLoan(loan);
-    console.log("loan:", loan);
+  useEffect(() => {
+    const fetchLoan = async () => {
+      const loan = await LoansService.getLoan(props.match.params.id);
+      setLoan(loan);
+      console.log("loan:", loan);
 
-    const Info = await UserService.getUserInfo(loan.student);
-    setUser(Info.user);
-    console.log("user:", Info.user);
+      const Info = await UserService.getUserInfo(loan.student);
+      setUser(Info.user);
+      console.log("user:", Info.user);
 
-    setFetching(false);
+      setFetching(false);
+    };
+
+    fetchLoan();
   }, []);
 
   const matches = useMediaQuery("(min-width:600px)");
