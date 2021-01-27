@@ -24,6 +24,8 @@ import ViewComfyIcon from "@material-ui/icons/ViewComfy";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import MuseumIcon from "@material-ui/icons/Museum";
+import ShowChartIcon from "@material-ui/icons/ShowChart";
 
 const drawerWidth = 240;
 
@@ -131,23 +133,11 @@ const NavMenu = (props) => {
     </Button>
   );
 
-  const loanRequestButton = (
-    <Button
-      variant="contained"
-      color="secondary"
-      component={RouterLink}
-      to="/request"
-    >
-      Request a Loan
-    </Button>
-  );
-
   const nav_items = (
     <>
       {dashboardButton}
       {loansButton}
       {marketButton}
-      {loanRequestButton}
       {connect_button}
     </>
   );
@@ -163,14 +153,19 @@ const NavMenu = (props) => {
 
   const actionsDrawerDivision = [
     {
+      text: "Dashboard",
+      handler: () => handleAction("/dashboard"),
+      icon: <ViewComfyIcon />,
+    },
+    {
       text: "Loans",
       handler: () => handleAction("/loans"),
       icon: <MonetizationOnIcon />,
     },
     {
-      text: "Dashboard",
-      handler: () => handleAction("/dashboard"),
-      icon: <ViewComfyIcon />,
+      text: "Market",
+      handler: () => handleAction("/market"),
+      icon: <MuseumIcon />,
     },
     {
       text: "Request a Loan",
@@ -181,9 +176,14 @@ const NavMenu = (props) => {
 
   const profileDrawerDivision = [
     {
-      text: "My loans",
+      text: "My Loans",
       handler: () => handleAction("/personal/loans"),
       icon: <AccountBalanceIcon />,
+    },
+    {
+      text: "My Investments",
+      handler: () => handleAction("/investments"),
+      icon: <ShowChartIcon />,
     },
     {
       text: "My Account",
