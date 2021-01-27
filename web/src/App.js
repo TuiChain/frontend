@@ -17,9 +17,6 @@ import AuthService from "./services/auth.service";
 import WalletService from "./services/wallet.service";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
-<<<<<<< HEAD
-import Investments from "./containers/Investments";
-=======
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
 import Market from "./containers/Market";
@@ -28,7 +25,6 @@ import PersonalLoans from "./containers/loans/PersonalLoans";
 import Documents from "./containers/admin/Documents";
 import Profile from "./containers/UserProfile";
 import ActiveLoans from "./containers/admin/ActiveLoans";
->>>>>>> fa0f09397cc86e0e64e2a7cd1be20fe5bb4e34a5
 
 const styles = {
   back: {
@@ -98,33 +94,10 @@ const App = (props) => {
                   component={PersonalLoans}
                 />
                 <ProtectedRoute
-                auth={auth}
-                path="/personal/profile/"
-                component={Profile}
-              />
-<<<<<<< HEAD
-              <ProtectedRoute
-                auth={auth}
-                path="/investments"
-                component={Investments}
-              />
-              <Route path="/login">
-                {auth ? <Redirect to="/" /> : <Login onLogin={handlerLogin} />}
-              </Route>
-              <Route path="/signup">
-                {auth ? (
-                  <Redirect to="/" />
-                ) : (
-                  <Signup onSignUp={handlerLogin} />
-                )}
-              </Route>
-              <Route component={Error} />
-            </Switch>
-          </Layout>
-          <Footer />
-        </BrowserRouter>
-      </div>
-=======
+                  auth={auth}
+                  path="/personal/profile/"
+                  component={Profile}
+                />
                 <ProtectedRoute
                   auth={auth}
                   path="/request"
@@ -186,7 +159,6 @@ const App = (props) => {
           </BrowserRouter>
         </div>
       )}
->>>>>>> fa0f09397cc86e0e64e2a7cd1be20fe5bb4e34a5
     </ThemeProvider>
   );
 };

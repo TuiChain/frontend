@@ -16,28 +16,28 @@ instance.interceptors.request.use(
 );
 
 const investmentsHardCoded = [
-  { 
-    id:0,
-    loan:'Loan to Zé',
-    tokens:142,
-    phase:'active',
-    inMarketplace:40
+  {
+    id: 0,
+    loan: "Loan to Zé",
+    tokens: 142,
+    phase: "active",
+    inMarketplace: 40,
   },
   {
-    id:1,
-    loan:'Loan to Quim',
-    tokens:22,
-    phase:'funding',
-    inMarketplace:0
+    id: 1,
+    loan: "Loan to Quim",
+    tokens: 22,
+    phase: "funding",
+    inMarketplace: 0,
   },
   {
-    id:2,
-    loan:'Loan to Manel',
-    tokens:42,
-    phase:'completed',
-    inMarketplace:0
-  }
-]
+    id: 2,
+    loan: "Loan to Manel",
+    tokens: 42,
+    phase: "completed",
+    inMarketplace: 0,
+  },
+];
 
 const getPersonal = () => {
   // return instance
@@ -54,5 +54,5 @@ const getPersonal = () => {
 };
 
 export default {
-  getPersonal
+  getPersonal,
 };

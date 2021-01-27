@@ -30,10 +30,11 @@ const KycButton = (props) => {
   const [intentId, setIntentId] = useState(props.intentId);
 
   useEffect(() => {
+    seti(props.intentId);
     if (props.intentId !== undefined && !verificationStatus) {
-      isVerified(intentId);
+      isVerified(props.intentId);
     }
-  }, []);
+  }, [props.intentId]);
 
   useEffect(() => {
     if ((intentId !== undefined, url != undefined)) {
@@ -47,8 +48,7 @@ const KycButton = (props) => {
       const resp = await kycService.getVerificationResult(intentId);
       setVerificationStatus(resp.data.data.status);
     }
-
-    fetch();
+    if (intentId) fetch();
   };
 
   const handleStripeResponse = (event) => {
