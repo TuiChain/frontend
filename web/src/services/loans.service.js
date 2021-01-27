@@ -109,13 +109,15 @@ const getLoan = (id) => {
         ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
         : 0;
 
-      loan.funding_fee =
-        1 /
-        Number(BigInt(loan.funding_fee_atto_dai_per_dai) / BigInt(10 ** 16));
+      loan.funding_fee = loan.funding_fee_atto_dai_per_dai
+        ? Number(BigInt(loan.funding_fee_atto_dai_per_dai) / BigInt(10 ** 16)) /
+          100
+        : 0;
 
-      loan.payment_fee =
-        1 /
-        Number(BigInt(loan.payment_fee_atto_dai_per_dai) / BigInt(10 ** 16));
+      loan.payment_fee = loan.payment_fee_atto_dai_per_dai
+        ? Number(BigInt(loan.payment_fee_atto_dai_per_dai) / BigInt(10 ** 16)) /
+          100
+        : 0;
 
       return loan;
     })
