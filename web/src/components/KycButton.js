@@ -30,7 +30,7 @@ const KycButton = (props) => {
   const [intentId, setIntentId] = useState(props.intentId);
 
   useEffect(() => {
-    seti(props.intentId);
+    setIntentId(props.intentId);
     if (props.intentId !== undefined && !verificationStatus) {
       isVerified(props.intentId);
     }
