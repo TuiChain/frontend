@@ -16,14 +16,26 @@ import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
 function UserProfile() {
-  const fetchUser=async () =>{
+  const fetchUser = async () => {
     const tempUser = await UserService.getCurrentUserInfo();
-    tempUser.full_name==="null"?formik.setFieldValue("full_name",""):formik.setFieldValue("full_name",tempUser.full_name);
-    tempUser.full_name==="null"?formik.setFieldValue("short_bio",""):formik.setFieldValue("short_bio",tempUser.short_bio);
-    tempUser.full_name==="null"?formik.setFieldValue("city",""):formik.setFieldValue("city",tempUser.city);
-    tempUser.full_name==="null"?formik.setFieldValue("zip_code",""):formik.setFieldValue("zip_code",tempUser.zip_code);
-    tempUser.full_name==="null"?formik.setFieldValue("address",""):formik.setFieldValue("address",tempUser.address);
-    tempUser.full_name==="null"?formik.setFieldValue("country",""):formik.setFieldValue("country",tempUser.country);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("full_name", "")
+      : formik.setFieldValue("full_name", tempUser.full_name);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("short_bio", "")
+      : formik.setFieldValue("short_bio", tempUser.short_bio);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("city", "")
+      : formik.setFieldValue("city", tempUser.city);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("zip_code", "")
+      : formik.setFieldValue("zip_code", tempUser.zip_code);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("address", "")
+      : formik.setFieldValue("address", tempUser.address);
+    tempUser.full_name === "null"
+      ? formik.setFieldValue("country", "")
+      : formik.setFieldValue("country", tempUser.country);
     console.log(tempUser);
   };
   useEffect(() => {

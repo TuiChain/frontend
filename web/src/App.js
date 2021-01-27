@@ -94,10 +94,10 @@ const App = (props) => {
                   component={PersonalLoans}
                 />
                 <ProtectedRoute
-                auth={auth}
-                path="/personal/profile/"
-                component={Profile}
-              />
+                  auth={auth}
+                  path="/personal/profile/"
+                  component={Profile}
+                />
                 <ProtectedRoute
                   auth={auth}
                   path="/request"
