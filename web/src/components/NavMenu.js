@@ -177,7 +177,7 @@ const NavMenu = (props) => {
 
   const profileDrawerDivision = [
     {
-      text: "My loans",
+      text: "My Loans",
       handler: () => handleAction("/personal/loans"),
       icon: <AccountBalanceIcon />,
     },

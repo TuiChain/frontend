@@ -8,6 +8,7 @@ import {
   withStyles,
   Grid,
   styled,
+  InputAdornment,
 } from "@material-ui/core";
 import LoansService from "../../services/loans.service";
 import DocumentsService from "../../services/documents.service";
@@ -89,6 +90,7 @@ const ManageLoan = (props) => {
   const loanID = props.match.params.id;
   const [loan, setLoan] = useState({});
   const [isLoading, setLoading] = useState(true);
+  const [payback, setPayback] = useState(0);
 
   // Toast
   const [toast, setToast] = React.useState({});
@@ -150,7 +152,13 @@ const ManageLoan = (props) => {
 
   const clickPayback = async (id) => {
     try {
-      loansTransactionsService.makePayment(id, 250);
+      await loansTransactionsService.makePayment(id, payback);
+      setToast({
+        message: "Payment successful",
+        severity: "success",
+      });
+      setOpen(true);
+      setPayback("");
     } catch (error) {
       setToast({
         message: error.response.data.error,
@@ -167,7 +175,9 @@ const ManageLoan = (props) => {
           <Typography variant="h3">
             <Box color="secondary.dark">Loan #{loan.id}</Box>
           </Typography>
-          <Status state={loan.state} />
+          <Box pl={2}>
+            <Status state={loan.state} />
+          </Box>
         </Box>
         <hr />
         <Panel>
@@ -380,14 +390,39 @@ const ManageLoan = (props) => {
           <Typography variant="body1" color="textSecondary">
             Payback your monthly fee (this depends on your current salary)
           </Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            disabled={!canPayback(loan.state)}
-            onClick={() => clickPayback(loan.id)}
-          >
-            Payback
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Box display="flex" pt={2}>
+                <TextField
+                  type="number"
+                  label="Payback"
+                  name="payback"
+                  variant="outlined"
+                  fullWidth
+                  InputProps={{
+                    inputProps: { min: 1 },
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <DAI />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={(e) => {
+                    setPayback(e.target.value);
+                  }}
+                  value={payback}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disabled={!canPayback(loan.state)}
+                  onClick={() => clickPayback(loan.id)}
+                >
+                  Payback
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </Panel>
         <hr />
         <Panel>
