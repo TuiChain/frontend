@@ -1,59 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Icon, makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Typography, Box } from "@material-ui/core";
 import SimpleTable from "../components/SimpleTable";
-import MonetizationOnTwoToneIcon from "@material-ui/icons/MonetizationOnTwoTone";
-import { yellow } from "@material-ui/core/colors";
+import Status from "../components/Status";
 import InvestmentCard from "../components/InvestmentCard";
 import investmentService from "../services/investment.service";
 import walletService from "../services/wallet.service";
 import marketTransactionsService from "../services/market-transactions.service";
+import DAI from "../components/DAI";
 
 const columns = [
   {
     field: "name",
     headerName: "Loan",
-    width: 160,
-    headerClassName: "data-grid-header",
+    width: 210,
     // eslint-disable-next-line react/display-name
-    renderCell: (params) => (
-      <div>Loan to {params.value ? params.value : "Nelson"}</div>
-    ),
+    renderCell: (params) => <div>{params.value ? params.value : "Nelson"}</div>,
   },
   {
     field: "nrTokens",
     headerName: "Tokens",
     type: "number",
     width: 100,
-    headerClassName: "data-grid-header",
-    // eslint-disable-next-line react/display-name
-    renderCell: (params) => (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        {params.value}
-        <Icon style={{ marginLeft: 4, fontSize: 20 }}>
-          <MonetizationOnTwoToneIcon style={{ color: yellow[700] }} />
-        </Icon>
-      </div>
-    ),
   },
   {
     field: "state",
     headerName: "Phase",
-    headerClassName: "data-grid-header",
     width: 120,
+    // eslint-disable-next-line react/display-name
+    renderCell: (params) => <Status state={params.value} size="small" />,
   },
   {
     field: "nrTokens_market",
     headerName: "On the Market",
     type: "number",
     width: 150,
-    headerClassName: "data-grid-header",
   },
   {
     field: "tokensPriceMarket",
     headerName: "Listed Price",
     type: "number",
+    width: 150,
+    // eslint-disable-next-line react/display-name
+    renderCell: (params) => (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Box pr={1}>
+          <Typography>{params.value}</Typography>
+        </Box>
+        <DAI />
+      </div>
+    ),
+  },
+  {
+    field: "_",
+    headerName: "Total",
+    type: "number",
     width: 130,
-    headerClassName: "data-grid-header",
+    // eslint-disable-next-line react/display-name
+    renderCell: (params) => (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Box pr={1}>
+          <Typography>
+            {params.row.tokensPriceMarket * params.row.nrTokens_market}
+          </Typography>
+        </Box>
+        <DAI />
+      </div>
+    ),
   },
 ];
 
@@ -102,6 +114,7 @@ const Investments = () => {
         justifyContent: "flex-end",
       },
       "& .MuiDataGrid-root": {
+        backgroundColor: "white",
         borderRadius: 4,
         boxShadow:
           "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
@@ -118,7 +131,7 @@ const Investments = () => {
       </Typography>
       <Grid container spacing={4}>
         <Grid item xs={8}>
-          <div
+          <Box
             style={{ display: "flex", width: "100%" }}
             className={classes.root}
           >
@@ -132,7 +145,7 @@ const Investments = () => {
                 setSelected(investments[index]);
               }}
             />
-          </div>
+          </Box>
         </Grid>
         <Grid item xs={4}>
           {selected != undefined && (

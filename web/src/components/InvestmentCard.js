@@ -12,7 +12,6 @@ import {
 import theme from "../theme";
 import SpinnerInputWithLabel from "./SpinnerInputWithLabel";
 import InputWithLabel from "./InputWithLabel";
-import Status from "./Status";
 import loansTransactionsService from "../services/loans-transactions.service";
 import marketTransactionsService from "../services/market-transactions.service";
 
@@ -72,7 +71,6 @@ const InvestmentCard = (props) => {
   const investmentCardHeader = (classes, phase, loanName) => (
     <CardHeader
       className={classes.headers}
-      action={<Status state={phase} />}
       title={`Loan to ${loanName ? loanName : "Nelson"}`}
     />
   );
@@ -273,9 +271,9 @@ const InvestmentCard = (props) => {
               <Button
                 onClick={() => handleButtonClick(props)}
                 style={{ alignSelf: "flex-end", width: 120 }}
-                variant="contained"
+                variant="outlined"
                 size="medium"
-                color="primary"
+                color="secondary"
               >
                 {copy[props.phase].buttonText}
               </Button>
