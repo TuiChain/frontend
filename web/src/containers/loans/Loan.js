@@ -61,7 +61,7 @@ const buttonErrorTreatment = (e, setToast, setOpen) => {
   }
 };
 
-const LoanFunding = ({ loan }) => {
+const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
   const [investment, setInvestment] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [percentage, setPercentage] = useState(0);
@@ -69,6 +69,7 @@ const LoanFunding = ({ loan }) => {
   useEffect(() => {
     const fetchInfo = async () => {
       const loaninfo = await LoansService.getLoan(loan.id);
+      setLoan(loaninfo);
       const percentage =
         (loaninfo.funded_value / loaninfo.requested_value) * 100;
       setPercentage(percentage);
@@ -91,7 +92,7 @@ const LoanFunding = ({ loan }) => {
 
       await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
-      buttonErrorTreatment(e);
+      buttonErrorTreatment(e, setToast, setOpen);
     }
   };
 
@@ -99,7 +100,7 @@ const LoanFunding = ({ loan }) => {
     try {
       await LoansTransactionsService.withdrawFunds(loan.id, tokens);
     } catch (e) {
-      buttonErrorTreatment(e);
+      buttonErrorTreatment(e, setToast, setOpen);
     }
   };
 
@@ -557,7 +558,12 @@ function Loan(props) {
             {loan.state.toUpperCase() == "REJECTED" && rejected}
             {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
             {loan.state.toUpperCase() == "FUNDING" && (
-              <LoanFunding loan={loan} />
+              <LoanFunding
+                loan={loan}
+                setToast={setToast}
+                setOpen={setOpen}
+                setLoan={setLoan}
+              />
             )}
             {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
             {loan.state.toUpperCase() == "FINALIZED" && (
