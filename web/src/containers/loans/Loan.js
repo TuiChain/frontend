@@ -27,6 +27,7 @@ import { withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import documentsService from "../../services/documents.service";
+import { Alert } from "@material-ui/lab";
 
 const fetchInvestments = async (loan, setInvestment) => {
   const account = walletService.checkAccount();
@@ -35,7 +36,6 @@ const fetchInvestments = async (loan, setInvestment) => {
       loan.id,
       account
     );
-    console.log("investment:", investment);
     setInvestment(investment.nrTokens);
   }
 };
@@ -60,7 +60,7 @@ const buttonErrorTreatment = (e, setToast, setOpen) => {
   }
 };
 
-const LoanFunding = ({ loan, setLoan }) => {
+const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
   const [investment, setInvestment] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [percentage, setPercentage] = useState(0);
@@ -91,7 +91,7 @@ const LoanFunding = ({ loan, setLoan }) => {
 
       await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
-      buttonErrorTreatment(e);
+      buttonErrorTreatment(e, setToast, setOpen);
     }
   };
 
@@ -99,7 +99,7 @@ const LoanFunding = ({ loan, setLoan }) => {
     try {
       await LoansTransactionsService.withdrawFunds(loan.id, tokens);
     } catch (e) {
-      buttonErrorTreatment(e);
+      buttonErrorTreatment(e, setToast, setOpen);
     }
   };
 
@@ -157,7 +157,7 @@ const LoanFunding = ({ loan, setLoan }) => {
       {investment > 0 && (
         <Box paddingTop="5%">
           <Typography variant="body1" display="inline">
-            You&apos;ve already bought {investment} tokens!!
+            You&apos;ve already bought {investment} tokens!
           </Typography>
         </Box>
       )}
@@ -183,20 +183,13 @@ const LoanActive = ({ loan }) => {
     <Box width="100%">
       <Box py={2}>
         <Typography variant="h3">Documents</Typography>
-
-        {documents.length != 0 ? (
-          <Typography variant="subtitle1" color="textSecondary">
-            Documents uploaded by the student
-          </Typography>
-        ) : (
-          <Typography variant="subtitle1" color="textSecondary">
-            There are no documents
-          </Typography>
-        )}
+        <Typography variant="subtitle1" color="textSecondary">
+          Documents uploaded by the student
+        </Typography>
       </Box>
       <Box>
         <Card style={{ width: "100%" }}>
-          {documents.length != 0 && (
+          {documents.length ? (
             <List component="nav">
               {documents.map((d, index) => (
                 <Link href={d.url} target="_blank" key={index} underline="none">
@@ -206,6 +199,10 @@ const LoanActive = ({ loan }) => {
                 </Link>
               ))}
             </List>
+          ) : (
+            <ListItem>
+              <ListItemText primary="There are no documents uploaded." />
+            </ListItem>
           )}
         </Card>
       </Box>
@@ -236,47 +233,50 @@ const LoanCanceledExpired = ({ loan, setToast, setOpen, message }) => {
   };
 
   return (
-    <Box width="fit-content">
-      <Box>
-        <Typography variant="h4">{message}</Typography>
-      </Box>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Alert severity="error">{message}</Alert>
+      </Grid>
       {investment != 0 && (
-        <Box py="10%">
-          <TextField
-            type={"number"}
-            label="Tokens"
-            name="tokens"
-            variant="outlined"
-            InputProps={{ inputProps: { min: 1, max: investment } }}
-            onChange={(e) => {
-              e.target.value = !Number.isInteger(e.target.value)
-                ? Math.floor(e.target.value)
-                : e.target.value;
-              setTokens(e.target.value);
-            }}
-          />
-          <Button
-            disableElevation
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={tokens == 0}
-            onClick={handleClick}
-          >
-            Withdraw
-          </Button>
-          <Box paddingTop="5%">
+        <Grid item xs={12} sm={6}>
+          <Box display="flex">
+            <TextField
+              type={"number"}
+              fullWidth
+              label="Tokens"
+              name="tokens"
+              variant="outlined"
+              InputProps={{ inputProps: { min: 1, max: investment } }}
+              onChange={(e) => {
+                e.target.value = !Number.isInteger(e.target.value)
+                  ? Math.floor(e.target.value)
+                  : e.target.value;
+                setTokens(e.target.value);
+              }}
+            />
+            <Button
+              disableElevation
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={tokens == 0}
+              onClick={handleClick}
+            >
+              Withdraw
+            </Button>
+          </Box>
+          <Box paddingTop="2%">
             <Typography variant="body1" display="inline">
-              You still got {investment} tokens!!
+              You still have {investment} tokens!
             </Typography>
           </Box>
-        </Box>
+        </Grid>
       )}
-    </Box>
+    </Grid>
   );
 };
 
-const LoanFinalized = ({ loan, setToast, setOpen }) => {
+const LoanFinalized = ({ loan, setToast, setOpen, message }) => {
   const [investment, setInvestment] = useState(0);
   const [tokens, setTokens] = useState(0);
 
@@ -299,12 +299,12 @@ const LoanFinalized = ({ loan, setToast, setOpen }) => {
   };
 
   return (
-    <Box width="fit-content">
-      <Box>
-        <Typography variant="h4">This loan is finalized!</Typography>
-      </Box>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Alert severity="info">{message}</Alert>
+      </Grid>
       {investment != 0 && (
-        <Box py="10%">
+        <Grid item xs={12} sm={6}>
           <TextField
             type={"number"}
             label="Tokens"
@@ -333,9 +333,9 @@ const LoanFinalized = ({ loan, setToast, setOpen }) => {
               You still got {investment} tokens to redeem!!
             </Typography>
           </Box>
-        </Box>
+        </Grid>
       )}
-    </Box>
+    </Grid>
   );
 };
 
@@ -374,6 +374,7 @@ function Loan(props) {
 
   const BoxDescr = withStyles({
     root: {
+      paddingTop: "20px",
       paddingLeft: matches === false ? "12%" : "inherit",
       paddingRight: matches === false ? "12%" : "inherit",
       paddingBottom: matches === false ? "10%" : "inherit",
@@ -390,8 +391,8 @@ function Loan(props) {
   /* -------------------------------------------------------------------------- */
 
   const message = (message) => (
-    <Box>
-      <Typography variant="h4">{message}</Typography>
+    <Box width="100%">
+      <Alert severity="error">{message}</Alert>
     </Box>
   );
 
@@ -401,7 +402,7 @@ function Loan(props) {
     "This loan request was rejected by Tuichain Administration!"
   );
 
-  const withdrawn = message("This loan request was rejected by the student!");
+  const withdrawn = message("This loan request was withdrawn by the student!");
 
   /* -------------------------------------------------------------------------- */
   return (
@@ -415,7 +416,7 @@ function Loan(props) {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               {matches === true ? (
-                <Box>
+                <Box display="flex" justifyContent="center">
                   <img height="300px" width="300px" src={user.profile_pic} />
                 </Box>
               ) : (
@@ -435,50 +436,89 @@ function Loan(props) {
             <Grid item xs={12} md={6}>
               <Box>
                 <Box2 alignItems="baseline">
-                  <Typography variant="h2" display="inline">
+                  <Typography variant="h3" display="inline">
                     {user.full_name}
                   </Typography>
                 </Box2>
-                <Box2>
-                  <Box display="flex">
-                    <School />
-                    <Typography variant="body1" display="inline">
-                      {loan.school}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" paddingLeft="5%">
-                    <Create />
-                    <Typography variant="body1">{loan.course}</Typography>
-                  </Box>
-                </Box2>
-                <Box2>
-                  <Box display="flex">
-                    <Room />
-                    <Typography variant="body1" display="inline">
-                      {loan.destination}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" paddingLeft="5%">
-                    <DAI />
-                    <Typography variant="body1" display="inline">
-                      {loan.requested_value_atto_dai / Math.pow(10, 18)}
-                    </Typography>
-                  </Box>
-                </Box2>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      alignContent="center"
+                      alignItems="center"
+                    >
+                      <School style={{ fontSize: 32 }} color="secondary" />
+                      <Typography
+                        variant="body1"
+                        style={{ paddingLeft: "10px" }}
+                      >
+                        {loan.school}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      alignContent="center"
+                      alignItems="center"
+                    >
+                      <Create style={{ fontSize: 32 }} color="secondary" />
+                      <Typography
+                        variant="body1"
+                        style={{ paddingLeft: "10px" }}
+                      >
+                        {loan.course}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      alignContent="center"
+                      alignItems="center"
+                    >
+                      <Room style={{ fontSize: 32 }} color="secondary" />
+                      <Typography
+                        variant="body1"
+                        style={{ paddingLeft: "10px" }}
+                      >
+                        {loan.destination}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      alignContent="center"
+                      alignItems="center"
+                    >
+                      <DAI size={32} />
+                      <Typography
+                        variant="body1"
+                        style={{ paddingLeft: "10px" }}
+                      >
+                        {loan.requested_value_atto_dai / Math.pow(10, 18)}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
               </Box>
               <BoxDescr>
-                <Typography variant="body1" display="inline">
+                <Typography variant="body1">
+                  <b>Description</b>
+                </Typography>
+                <Typography variant="body1" color="secondary">
                   {loan.description}
                 </Typography>
               </BoxDescr>
             </Grid>
           </Grid>
-          <Grid container spacing={2}>
+          <Box pt={3}>
             {loan.state.toUpperCase() == "PENDING" && pending}
             {loan.state.toUpperCase() == "REJECTED" && rejected}
             {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
             {loan.state.toUpperCase() == "FUNDING" && (
-              <LoanFunding loan={loan} setLoan={setLoan} />
+              <LoanFunding loan={loan} setToast={setToast} setOpen={setOpen} setLoan={setLoan} />
             )}
             {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
             {loan.state.toUpperCase() == "FINALIZED" && (
@@ -486,6 +526,7 @@ function Loan(props) {
                 loan={loan}
                 setToast={setToast}
                 setOpen={setOpen}
+                message="This loan is finalized!"
               />
             )}
             {loan.state.toUpperCase() == "EXPIRED" && (
@@ -493,7 +534,7 @@ function Loan(props) {
                 loan={loan}
                 setToast={setToast}
                 setOpen={setOpen}
-                message={"This loan has expired!"}
+                message="This loan has expired!"
               />
             )}
             {loan.state.toUpperCase() == "CANCELED" && (
@@ -504,7 +545,7 @@ function Loan(props) {
                 message={"This loan is canceled!"}
               />
             )}
-          </Grid>
+          </Box>
           <Toast open={open} onClose={handleClose} severity={toast.severity}>
             {toast.message}
           </Toast>
