@@ -15,7 +15,19 @@ import { CloudUpload } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
+import Toast from "../components/Toast";
+
 function UserProfile() {
+    // Toast
+    const [toast, setToast] = React.useState({});
+    const [open, setOpen] = React.useState(false);
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      setOpen(false);
+    };
+
   const fetchUser = async () => {
     const tempUser = await UserService.getCurrentUserInfo();
     tempUser.full_name === "null"
@@ -46,8 +58,14 @@ function UserProfile() {
     const file = e.target.files[0];
     formPic.append("profile_pic", file);
   };
+
   const submitImg = () => {
     UserService.updateInfo(formPic);
+    setToast({
+      message: "Photo uploaded!",
+      severity: "success",
+    });
+    setOpen(true);
   };
 
   const onSubmit = () => {
@@ -83,141 +101,147 @@ function UserProfile() {
     },
   });
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Box paddingBottom="2%">
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box paddingBottom="2%">
+            <Typography variant="h5" color="secondary">
+              Personal Info
+            </Typography>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              Fill in the fields below with your personal information and then
+              click save.
+            </Typography>
+            <TextField
+              fullWidth
+              label="Full name"
+              value={formik.values.full_name}
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
+              id="reddit-input"
+              onChange={formik.handleChange("full_name")}
+            />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Bio"
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.short_bio}
+              variant="outlined"
+              id="reddit-input"
+              onChange={formik.handleChange("short_bio")}
+            />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="City"
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.city}
+              variant="outlined"
+              id="reddit-input"
+              onChange={formik.handleChange("city")}
+            />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Zip-Code"
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.zip_code}
+              variant="outlined"
+              id="reddit-input"
+              onChange={formik.handleChange("zip_code")}
+            />
+          </Box>
+          <Box display="block" paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Address"
+              InputLabelProps={{ shrink: true }}
+              value={formik.values.address}
+              variant="outlined"
+              id="reddit-input"
+              onChange={formik.handleChange("address")}
+            />
+          </Box>
+          <FormControl variant="outlined" fullWidth name="destination">
+            <InputLabel shrink htmlFor="outlined-age-native-simple">
+              Country
+            </InputLabel>
+            <Select
+              native
+              value={formik.values.country}
+              onChange={formik.handleChange("country")}
+              label="Country"
+              InputLabelProps={{ shrink: true }}
+              name="country"
+              inputProps={{
+                name: "country",
+                id: "outlined-age-native-simple",
+              }}
+            >
+              <option aria-label="None" value="" />
+              {countries.map((n) => (
+                <option key={n.name} value={n.name}>
+                  {n.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={formik.isSubmitting}
+            onClick={onSubmit}
+          >
+            Save
+          </Button>
+          <hr />
           <Typography variant="h5" color="secondary">
-            Personal Info
+            Profile Photo
           </Typography>
           <Typography variant="body1" color="textSecondary" paragraph>
-            Fill in the fields below with your personal information and then
-            click save.
+            Submit a photo of yourself that will be used as your identification
+            photo on your loans.
           </Typography>
-          <TextField
-            fullWidth
-            label="Full name"
-            value={formik.values.full_name}
-            variant="outlined"
-            InputLabelProps={{ shrink: true }}
-            id="reddit-input"
-            onChange={formik.handleChange("full_name")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Bio"
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.short_bio}
-            variant="outlined"
-            id="reddit-input"
-            onChange={formik.handleChange("short_bio")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="City"
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.city}
-            variant="outlined"
-            id="reddit-input"
-            onChange={formik.handleChange("city")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Zip-Code"
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.zip_code}
-            variant="outlined"
-            id="reddit-input"
-            onChange={formik.handleChange("zip_code")}
-          />
-        </Box>
-        <Box display="block" paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Address"
-            InputLabelProps={{ shrink: true }}
-            value={formik.values.address}
-            variant="outlined"
-            id="reddit-input"
-            onChange={formik.handleChange("address")}
-          />
-        </Box>
-        <FormControl variant="outlined" fullWidth name="destination">
-          <InputLabel shrink htmlFor="outlined-age-native-simple">
-            Country
-          </InputLabel>
-          <Select
-            native
-            value={formik.values.country}
-            onChange={formik.handleChange("country")}
-            label="Country"
-            InputLabelProps={{ shrink: true }}
-            name="country"
-            inputProps={{
-              name: "country",
-              id: "outlined-age-native-simple",
-            }}
+          <Button
+            variant="contained"
+            component="label"
+            type="submit"
+            color="primary"
           >
-            <option aria-label="None" value="" />
-            {countries.map((n) => (
-              <option key={n.name} value={n.name}>
-                {n.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={formik.isSubmitting}
-          onClick={onSubmit}
-        >
-          Save
-        </Button>
-        <hr />
-        <Typography variant="h5" color="secondary">
-          Profile Photo
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Submit a photo of yourself that will be used as your identification
-          photo on your loans.
-        </Typography>
-        <Button
-          variant="contained"
-          component="label"
-          type="submit"
-          color="primary"
-        >
-          Upload Photo
-          <input type="file" onChange={changeImg} />
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="secondary"
-          disabled={formik.isSubmitting}
-          startIcon={<CloudUpload />}
-          onClick={submitImg}
-        >
-          Submit
-        </Button>
-        <hr />
-        <Typography variant="h5" color="secondary">
-          Identity Verification
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Click the button below and follow the steps to verify your identity.
-          If you don&apos;t complete this process you can&apos;t receive loans.
-        </Typography>
-        <KycButton />
+            Upload Photo
+            <input type="file" onChange={changeImg} />
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={formik.isSubmitting}
+            startIcon={<CloudUpload />}
+            onClick={submitImg}
+          >
+            Submit
+          </Button>
+          <hr />
+          <Typography variant="h5" color="secondary">
+            Identity Verification
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Click the button below and follow the steps to verify your identity.
+            If you don&apos;t complete this process you can&apos;t receive
+            loans.
+          </Typography>
+          <KycButton />
+        </Grid>
       </Grid>
-    </Grid>
+      <Toast open={open} onClose={handleClose} severity={toast.severity}>
+        {toast.message}
+      </Toast>
+    </>
   );
 }
 
