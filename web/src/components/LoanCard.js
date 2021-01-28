@@ -79,7 +79,7 @@ const LoanCard = ({
   return (
     <StyledCardActionArea>
       <StyledCard>
-        <CardMedia classes={styles} image={photo} component="img" />
+        <CardMedia image={photo} classes={styles} />
         <CardContent>
           <LoanInfo
             name={name}
