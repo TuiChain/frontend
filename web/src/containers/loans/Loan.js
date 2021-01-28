@@ -28,6 +28,7 @@ import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import documentsService from "../../services/documents.service";
 import { Alert } from "@material-ui/lab";
+import investmentService from "../../services/investment.service";
 
 const fetchInvestments = async (loan, setInvestment) => {
   const account = walletService.checkAccount();
@@ -169,7 +170,8 @@ const LoanFunding = ({ loan }) => {
 
 const LoanActive = ({ loan }) => {
   const [documents, setDocuments] = useState([]);
-
+  const [sell_positions, setSellPositions] = useState([]);
+  console.log(sell_positions);
   useEffect(() => {
     const fetchDocuments = async () => {
       const docs = await documentsService.getLoanPublicDocuments(loan.id);
@@ -178,34 +180,72 @@ const LoanActive = ({ loan }) => {
     fetchDocuments();
   }, []);
 
+  useEffect(() => {
+    const fetchSellPositions = async () => {
+      const positions = await investmentService.getLoanSellPositions(loan.id);
+      setSellPositions(positions);
+    };
+    fetchSellPositions();
+  }, []);
+
   return (
-    <Box width="100%">
-      <Box py={2}>
-        <Typography variant="h3">Documents</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          Documents uploaded by the student
-        </Typography>
+    <>
+      <Box width="100%">
+        <Box py={2}>
+          <Typography variant="h3">Market</Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            Tokens available to buy
+          </Typography>
+        </Box>
+        <Box>
+          <Card style={{ width: "100%" }}>
+            {sell_positions.length ? (
+              <List component="nav">
+                {sell_positions.map((p, index) => (
+                  <div key={index}>{p.amount_tokens}</div>
+                ))}
+              </List>
+            ) : (
+              <ListItem>
+                <ListItemText primary="There are no tokens for sale." />
+              </ListItem>
+            )}
+          </Card>
+        </Box>
       </Box>
-      <Box>
-        <Card style={{ width: "100%" }}>
-          {documents.length ? (
-            <List component="nav">
-              {documents.map((d, index) => (
-                <Link href={d.url} target="_blank" key={index} underline="none">
-                  <ListItem button>
-                    <ListItemText primary={d.name} />
-                  </ListItem>
-                </Link>
-              ))}
-            </List>
-          ) : (
-            <ListItem>
-              <ListItemText primary="There are no documents uploaded." />
-            </ListItem>
-          )}
-        </Card>
+      <Box width="100%" py={2}>
+        <Box py={2}>
+          <Typography variant="h3">Documents</Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            Documents uploaded by the student
+          </Typography>
+        </Box>
+        <Box>
+          <Card style={{ width: "100%" }}>
+            {documents.length ? (
+              <List component="nav">
+                {documents.map((d, index) => (
+                  <Link
+                    href={d.url}
+                    target="_blank"
+                    key={index}
+                    underline="none"
+                  >
+                    <ListItem button>
+                      <ListItemText primary={d.name} />
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            ) : (
+              <ListItem>
+                <ListItemText primary="There are no documents uploaded." />
+              </ListItem>
+            )}
+          </Card>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

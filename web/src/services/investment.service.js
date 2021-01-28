@@ -73,7 +73,19 @@ const getPersonal = (accountAddress) => {
       return response;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
+      console.log(error);
+      return false;
+    });
+};
+
+const getLoanSellPositions = (id) => {
+  return instance
+    .get(`/get/${id}/`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data.investment.sell_positions;
+    })
+    .catch((error) => {
       console.log(error);
       return false;
     });
@@ -83,4 +95,5 @@ export default {
   getPersonal,
   getInvestmentInLoan,
   getDashboardInvestments,
+  getLoanSellPositions,
 };
