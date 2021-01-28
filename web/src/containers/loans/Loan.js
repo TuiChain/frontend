@@ -518,7 +518,12 @@ function Loan(props) {
             {loan.state.toUpperCase() == "REJECTED" && rejected}
             {loan.state.toUpperCase() == "WITHDRAWN" && withdrawn}
             {loan.state.toUpperCase() == "FUNDING" && (
-              <LoanFunding loan={loan} setToast={setToast} setOpen={setOpen} setLoan={setLoan} />
+              <LoanFunding
+                loan={loan}
+                setToast={setToast}
+                setOpen={setOpen}
+                setLoan={setLoan}
+              />
             )}
             {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
             {loan.state.toUpperCase() == "FINALIZED" && (
