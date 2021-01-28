@@ -92,7 +92,7 @@ const FundingLoans = () => {
                 loanCard={
                   <LoanCard
                     name={l.user_full_name}
-                    photo={l.photo}
+                    photo={l.user_profile_pic}
                     school={l.school}
                     course={l.course}
                     destination={l.destination}
