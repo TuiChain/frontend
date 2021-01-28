@@ -15,51 +15,8 @@ import { CloudUpload } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
-function UserProfile() {
-  const fetchUser = async () => {
-    const tempUser = await UserService.getCurrentUserInfo();
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("full_name", "")
-      : formik.setFieldValue("full_name", tempUser.full_name);
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("short_bio", "")
-      : formik.setFieldValue("short_bio", tempUser.short_bio);
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("city", "")
-      : formik.setFieldValue("city", tempUser.city);
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("zip_code", "")
-      : formik.setFieldValue("zip_code", tempUser.zip_code);
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("address", "")
-      : formik.setFieldValue("address", tempUser.address);
-    tempUser.full_name === "null"
-      ? formik.setFieldValue("country", "")
-      : formik.setFieldValue("country", tempUser.country);
-    console.log(tempUser);
-  };
-  useEffect(() => {
-    fetchUser();
-  }, []);
-  var formPic = new FormData();
-  const changeImg = (e) => {
-    const file = e.target.files[0];
-    formPic.append("profile_pic", file);
-  };
-  const submitImg = () => {
-    UserService.updateInfo(formPic);
-  };
 
-  const onSubmit = () => {
-    var formData = new FormData();
-    formData.append("full_name", formik.values.full_name);
-    formData.append("address", formik.values.address);
-    formData.append("zip_code", formik.values.zip_code);
-    formData.append("short_bio", formik.values.short_bio);
-    formData.append("city", formik.values.city);
-    formData.append("country", formik.values.country);
-    UserService.updateInfo(formData);
-  };
+function UserProfile() {
   const formik = useFormik({
     initialValues: {
       address: "",
@@ -82,10 +39,45 @@ function UserProfile() {
       UserService.updateInfo(formData);
     },
   });
+
+  const fetchUser = async () => {
+    const [tempUser] = await UserService.getCurrentUserInfo();
+    tempUser.full_name === null
+      ? formik.setFieldValue("full_name", "")
+      : formik.setFieldValue("full_name", tempUser.full_name);
+    tempUser.full_name === null
+      ? formik.setFieldValue("short_bio", "")
+      : formik.setFieldValue("short_bio", tempUser.short_bio);
+    tempUser.full_name === null
+      ? formik.setFieldValue("city", "")
+      : formik.setFieldValue("city", tempUser.city);
+    tempUser.full_name === null
+      ? formik.setFieldValue("zip_code", "")
+      : formik.setFieldValue("zip_code", tempUser.zip_code);
+    tempUser.full_name === null
+      ? formik.setFieldValue("address", "")
+      : formik.setFieldValue("address", tempUser.address);
+    tempUser.full_name === null
+      ? formik.setFieldValue("country", "")
+      : formik.setFieldValue("country", tempUser.country);
+    console.log(tempUser);
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
+  var formPic = new FormData();
+  const changeImg = (e) => {
+    const file = e.target.files[0];
+    formPic.append("profile_pic", file);
+  };
+  const submitImg = () => {
+    UserService.updateInfo(formPic);
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Box paddingBottom="2%">
+        <Box py={2}>
           <Typography variant="h5" color="secondary">
             Personal Info
           </Typography>
@@ -98,8 +90,6 @@ function UserProfile() {
             label="Full name"
             value={formik.values.full_name}
             variant="outlined"
-            InputLabelProps={{ shrink: true }}
-            id="reddit-input"
             onChange={formik.handleChange("full_name")}
           />
         </Box>
@@ -107,10 +97,8 @@ function UserProfile() {
           <TextField
             fullWidth
             label="Bio"
-            InputLabelProps={{ shrink: true }}
             value={formik.values.short_bio}
             variant="outlined"
-            id="reddit-input"
             onChange={formik.handleChange("short_bio")}
           />
         </Box>
@@ -118,10 +106,8 @@ function UserProfile() {
           <TextField
             fullWidth
             label="City"
-            InputLabelProps={{ shrink: true }}
             value={formik.values.city}
             variant="outlined"
-            id="reddit-input"
             onChange={formik.handleChange("city")}
           />
         </Box>
@@ -129,10 +115,8 @@ function UserProfile() {
           <TextField
             fullWidth
             label="Zip-Code"
-            InputLabelProps={{ shrink: true }}
             value={formik.values.zip_code}
             variant="outlined"
-            id="reddit-input"
             onChange={formik.handleChange("zip_code")}
           />
         </Box>
@@ -140,14 +124,12 @@ function UserProfile() {
           <TextField
             fullWidth
             label="Address"
-            InputLabelProps={{ shrink: true }}
             value={formik.values.address}
             variant="outlined"
-            id="reddit-input"
             onChange={formik.handleChange("address")}
           />
         </Box>
-        <FormControl variant="outlined" fullWidth name="destination">
+        <FormControl variant="outlined" fullWidth name="country">
           <InputLabel shrink htmlFor="outlined-age-native-simple">
             Country
           </InputLabel>
@@ -156,7 +138,6 @@ function UserProfile() {
             value={formik.values.country}
             onChange={formik.handleChange("country")}
             label="Country"
-            InputLabelProps={{ shrink: true }}
             name="country"
             inputProps={{
               name: "country",
@@ -164,6 +145,7 @@ function UserProfile() {
             }}
           >
             <option aria-label="None" value="" />
+
             {countries.map((n) => (
               <option key={n.name} value={n.name}>
                 {n.name}
@@ -171,51 +153,56 @@ function UserProfile() {
             ))}
           </Select>
         </FormControl>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={formik.isSubmitting}
-          onClick={onSubmit}
-        >
-          Save
-        </Button>
+        <Box display="flex" justifyContent="flex-end" pt={2}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={formik.isSubmitting}
+          >
+            Save
+          </Button>
+        </Box>
         <hr />
-        <Typography variant="h5" color="secondary">
-          Profile Photo
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Submit a photo of yourself that will be used as your identification
-          photo on your loans.
-        </Typography>
-        <Button
-          variant="contained"
-          component="label"
-          type="submit"
-          color="primary"
-        >
-          Upload Photo
-          <input type="file" onChange={changeImg} />
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="secondary"
-          disabled={formik.isSubmitting}
-          startIcon={<CloudUpload />}
-          onClick={submitImg}
-        >
-          Submit
-        </Button>
+        <Box py={2}>
+          <Typography variant="h5" color="secondary">
+            Profile Photo
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Submit a photo of yourself that will be used as your identification
+            photo on your loans.
+          </Typography>
+          <Box display="flex">
+            <TextField
+              fullWidth
+              type="file"
+              variant="outlined"
+              onChange={changeImg}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              disabled={formik.isSubmitting}
+              startIcon={<CloudUpload />}
+              onClick={submitImg}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
         <hr />
-        <Typography variant="h5" color="secondary">
-          Identity Verification
-        </Typography>
-        <Typography variant="body1" color="textSecondary" paragraph>
-          Click the button below and follow the steps to verify your identity.
-          If you don&apos;t complete this process you can&apos;t receive loans.
-        </Typography>
-        <KycButton />
+        <Box pt={2}>
+          <Typography variant="h5" color="secondary">
+            Identity Verification
+          </Typography>
+          <Typography variant="body1" color="textSecondary" paragraph>
+            Click the button below and follow the steps to verify your identity.
+            If you don&apos;t complete this process you can&apos;t receive
+            loans.
+          </Typography>
+          <KycButton />
+        </Box>
       </Grid>
     </Grid>
   );
