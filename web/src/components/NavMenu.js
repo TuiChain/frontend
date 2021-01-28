@@ -167,14 +167,14 @@ const NavMenu = (props) => {
       handler: () => handleAction("/market"),
       icon: <MuseumIcon />,
     },
+  ];
+
+  const profileDrawerDivision = [
     {
       text: "Request a Loan",
       handler: () => handleAction("/request"),
       icon: <BorderColorIcon />,
     },
-  ];
-
-  const profileDrawerDivision = [
     {
       text: "My Loans",
       handler: () => handleAction("/personal/loans"),
