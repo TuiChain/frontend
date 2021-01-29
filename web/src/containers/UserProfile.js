@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
 import {
   TextField,
@@ -28,20 +28,25 @@ function UserProfile() {
       city: "",
       error: null,
     },
-    onSubmit: async (values) => {
-      var formData = new FormData();
-      formData.append("full_name", values.full_name);
-      formData.append("address", values.address);
-      formData.append("zip_code", values.zip_code);
-      formData.append("short_bio", values.short_bio);
-      formData.append("city", values.city);
-      formData.append("country", values.country);
-      UserService.updateInfo(formData);
-    },
   });
 
+  const onSubmit = async () => {
+    var formData = new FormData();
+    formData.append("full_name", formik.values.full_name);
+    formData.append("address", formik.values.address);
+    formData.append("zip_code", formik.values.zip_code);
+    formData.append("short_bio", formik.values.short_bio);
+    formData.append("city", formik.values.city);
+    formData.append("country", formik.values.country);
+    UserService.updateInfo(formData);
+  };
+
+  const [verificationStatus, setVerificationStatus] = useState(undefined);
+  const [intentId, setintentId] = useState(undefined);
+
   const fetchUser = async () => {
-    const [tempUser] = await UserService.getCurrentUserInfo();
+    const [tempUser, verification_id] = await UserService.getCurrentUserInfo();
+
     tempUser.full_name === null
       ? formik.setFieldValue("full_name", "")
       : formik.setFieldValue("full_name", tempUser.full_name);
@@ -60,11 +65,24 @@ function UserProfile() {
     tempUser.full_name === null
       ? formik.setFieldValue("country", "")
       : formik.setFieldValue("country", tempUser.country);
-    console.log(tempUser);
+
+    if (verification_id.verification_id) {
+      setintentId(verification_id.verification_id);
+
+      if (verification_id.validated !== undefined) {
+        if (verification_id.validated) {
+          setVerificationStatus("succeeded");
+        } else {
+          setVerificationStatus("processing");
+        }
+      }
+    }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);
+
   var formPic = new FormData();
   const changeImg = (e) => {
     const file = e.target.files[0];
@@ -159,6 +177,7 @@ function UserProfile() {
             variant="contained"
             color="secondary"
             disabled={formik.isSubmitting}
+            onClick={onSubmit}
           >
             Save
           </Button>
@@ -201,7 +220,10 @@ function UserProfile() {
             If you don&apos;t complete this process you can&apos;t receive
             loans.
           </Typography>
-          <KycButton />
+          <KycButton
+            verificationStatus={verificationStatus}
+            intentId={intentId}
+          />
         </Box>
       </Grid>
     </Grid>

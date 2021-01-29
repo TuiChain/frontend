@@ -33,7 +33,7 @@ const getCurrentUserInfo = () => {
   return instance
     .get("/get/")
     .then((response) => {
-      return response.data.user;
+      return [response.data.user, response.data.id_verification];
     })
     .catch((error) => {
       console.log(error);
