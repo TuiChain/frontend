@@ -82,12 +82,24 @@ const getLoanSellPositions = (id) => {
   return instance
     .get(`/get/${id}/`)
     .then((response) => {
-      console.log(response.data);
-      return response.data.investment.sell_positions;
+      const sell_positions = response.data.investment.sell_positions;
+      sell_positions.forEach((p, index) => {
+        p.id = index;
+
+        p.price_per_token = Number(
+          BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 18)
+        );
+      });
+      // TODO - REMOVE
+      sell_positions[1] = JSON.parse(JSON.stringify(sell_positions[0]));
+      sell_positions[1].id = 1;
+      console.log("Positions:", sell_positions);
+
+      return sell_positions;
     })
     .catch((error) => {
       console.log(error);
-      return false;
+      return [];
     });
 };
 

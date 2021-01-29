@@ -192,7 +192,7 @@ const getActiveLoans = () => {
       return loans;
     })
     .catch((error) => {
-      console.log(error.response);
+      console.log(error);
       return [];
     });
 };

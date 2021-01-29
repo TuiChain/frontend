@@ -214,4 +214,5 @@ export default {
   suggestDAI,
   suggestStudentToken,
   sendTransactions,
+  requestBlockchainInfo,
 };
