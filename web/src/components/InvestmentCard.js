@@ -120,7 +120,11 @@ const InvestmentCard = (props) => {
       />
       <InputWithLabel
         labelText="Price:"
-        defaultValue={props.tokens * props.redeemPrice}
+        defaultValue={
+            marketTransactionsService.priceAttoDaiToFloat(
+                BigInt(props.tokens) * BigInt(props.redeemPrice)
+                )
+        }
         isCurrency={true}
       />
     </Grid>

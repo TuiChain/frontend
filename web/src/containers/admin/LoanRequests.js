@@ -113,7 +113,11 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
           <Typography variant="h5" component="h3">
             Amount
             <Typography paragraph>
-              {Number(BigInt(modal.requested_value_atto_dai) / (10n ** 18n))}
+              {
+                modal.requested_value_atto_dai == null
+                  ? undefined
+                  : Number(BigInt(modal.requested_value_atto_dai) / (10n ** 18n))
+              }
               <DAI />
             </Typography>
           </Typography>
