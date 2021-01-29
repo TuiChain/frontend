@@ -1,6 +1,7 @@
 import axios from "axios";
 import Constants from "../constants";
 import TokenImageService from "./token-image.service";
+import Web3 from "web3";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -29,7 +30,7 @@ function checkConnection() {
 function checkAccount() {
   try {
     const ethereum = checkConnection();
-    return ethereum.selectedAddress;
+    return Web3.utils.toChecksumAddress(ethereum.selectedAddress);
   } catch (error) {
     return 0;
   }
@@ -207,6 +208,10 @@ async function sendTransactions(transactionsParameters) {
   }
 }
 
+function getCurrentAccount() {
+  return null;
+}
+
 export default {
   checkAccount,
   connectToWallet,
@@ -215,4 +220,5 @@ export default {
   suggestStudentToken,
   sendTransactions,
   requestBlockchainInfo,
+  getCurrentAccount,
 };

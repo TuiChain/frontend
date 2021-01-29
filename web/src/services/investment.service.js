@@ -46,13 +46,11 @@ const getDashboardInvestments = (account_address) => {
 
       investments.forEach((investment) => {
         investment.loan.requested_value = Number(
-          BigInt(investment.loan.requested_value_atto_dai) / (10n ** 18n)
+          BigInt(investment.loan.requested_value_atto_dai) / 10n ** 18n
         );
 
         investment.loan.funded_value = investment.loan.funded_value_atto_dai
-          ? Number(
-              BigInt(investment.loan.funded_value_atto_dai) / (10n ** 18n)
-            )
+          ? Number(BigInt(investment.loan.funded_value_atto_dai) / 10n ** 18n)
           : 0;
       });
 
@@ -86,14 +84,17 @@ const getLoanSellPositions = (id) => {
       sell_positions.forEach((p, index) => {
         p.id = index;
 
-        p.price_per_token = Number(
-          BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 18)
+        console.log(
+          "price BIG INT",
+          Number(BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 16)) / 100
         );
+        p.price_per_token =
+          Number(BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 16)) / 100;
       });
       // TODO - REMOVE
-      sell_positions[1] = JSON.parse(JSON.stringify(sell_positions[0]));
-      sell_positions[1].id = 1;
-      console.log("Positions:", sell_positions);
+      // sell_positions[1] = JSON.parse(JSON.stringify(sell_positions[0]));
+      // sell_positions[1].id = 1;
+      // console.log("Positions:", sell_positions);
 
       return sell_positions;
     })

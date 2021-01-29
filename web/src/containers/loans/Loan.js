@@ -219,6 +219,15 @@ const LoanActive = ({ loan }) => {
 
   const handleBuyClick = (index) => {
     console.log(current_values[index]);
+    const position = sell_positions[index];
+    const from = position.seller_address;
+    const to = walletService.checkAccount();
+    console.log(sell_positions[index]);
+    console.log("From:", from);
+    console.log("To (me):", to);
+    if (from === to) {
+      console.log("Nao podes comprar os teus");
+    }
   };
 
   const columns = [
@@ -264,29 +273,16 @@ const LoanActive = ({ loan }) => {
       width: 140,
 
       // eslint-disable-next-line react/display-name
-      renderCell: (props) => {
-        if (current_values[props.row.id])
-          console.log(
-            "Cnta:",
-            (BigInt(current_values[props.row.id]) *
-              BigInt(props.row.price_atto_dai_per_token)) /
-              10n ** 9n +
-              ((BigInt(current_values[props.row.id]) *
-                BigInt(props.row.price_atto_dai_per_token)) /
-                10n ** 9n) *
-                market_fee
-          );
-        return (
-          <Box display="flex" alignContent="center" alignItems="center">
-            <Typography style={{ paddingRight: 10 }}>
-              {/* TODO - ADD MARKET FEE */}
-              {current_values[props.row.id] &&
-                current_values[props.row.id] * props.row.price_per_token}
-            </Typography>
-            <DAI />
-          </Box>
-        );
-      },
+      renderCell: (props) => (
+        <Box display="flex" alignContent="center" alignItems="center">
+          <Typography style={{ paddingRight: 10 }}>
+            {/* TODO - ADD MARKET FEE */}
+            {current_values[props.row.id] &&
+              current_values[props.row.id] * props.row.price_per_token}
+          </Typography>
+          <DAI />
+        </Box>
+      ),
     },
     {
       field: "2",
