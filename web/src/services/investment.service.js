@@ -46,13 +46,11 @@ const getDashboardInvestments = (account_address) => {
 
       investments.forEach((investment) => {
         investment.loan.requested_value = Number(
-          BigInt(investment.loan.requested_value_atto_dai) / (10n ** 18n)
+          BigInt(investment.loan.requested_value_atto_dai) / 10n ** 18n
         );
 
         investment.loan.funded_value = investment.loan.funded_value_atto_dai
-          ? Number(
-              BigInt(investment.loan.funded_value_atto_dai) / (10n ** 18n)
-            )
+          ? Number(BigInt(investment.loan.funded_value_atto_dai) / 10n ** 18n)
           : 0;
       });
 
@@ -70,10 +68,9 @@ const getPersonal = (accountAddress) => {
   return instance
     .get(`/get_personal/${account}/`)
     .then((response) => {
-      return response;
+      return response.data.investments;
     })
     .catch((error) => {
-      // TODO : why is error overwritten in browser? we need to catch a specific error
       console.log(error);
       return false;
     });
