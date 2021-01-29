@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRouter";
-import Header from "./components/Header";
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
@@ -62,8 +61,7 @@ const App = (props) => {
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Header auth={auth} onLogout={handlerLogout} wallet={wallet} />
-            <Layout auth={auth}>
+            <Layout auth={auth} onLogout={handlerLogout} wallet={wallet} >
               <Switch>
                 <Route exact path="/">
                   {auth && auth.is_admin ? (
