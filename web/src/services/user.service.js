@@ -33,7 +33,7 @@ const getCurrentUserInfo = () => {
   return instance
     .get("/get/")
     .then((response) => {
-      return response.data.user;
+      return [response.data.user, response.data.id_verification];
     })
     .catch((error) => {
       console.log(error);
@@ -43,7 +43,7 @@ const getCurrentUserInfo = () => {
 
 const updateInfo = (info) => {
   return instance
-    .put("/update_profile/",info)
+    .put("/update_profile/", info)
     .then((response) => {
       console.log(response);
     })
@@ -55,5 +55,5 @@ const updateInfo = (info) => {
 export default {
   getUserInfo,
   getCurrentUserInfo,
-  updateInfo
+  updateInfo,
 };

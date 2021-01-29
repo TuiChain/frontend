@@ -88,10 +88,13 @@ const Investments = () => {
           flatEntry.tokensPriceMarket = marketTransactionsService.priceAttoDaiToFloat(
             entry.price_per_token_market
           );
-
+          flatEntry.current_value_atto_dai = marketTransactionsService.priceAttoDaiToFloat(
+            entry.loan.current_value_atto_dai
+          );
           return flatEntry;
         });
       setInvestments(investments);
+      console.log("investments:", investments);
       setSelected(investments ? investments[0] : undefined);
     }
 

@@ -31,7 +31,7 @@ const createLoan = (
       course,
       requested_value_atto_dai: (
         BigInt(amount) *
-        BigInt(10) ** BigInt(18)
+        (10n ** 18n)
       ).toString(),
       description,
       destination,
@@ -65,11 +65,11 @@ const validateLoan = (id, days_to_expiration, funding_fee, payment_fee) => {
       days_to_expiration,
       funding_fee_atto_dai_per_dai: (
         BigInt(funding_fee) *
-        BigInt(10) ** BigInt(16)
+        (10n ** 16n)
       ).toString(),
       payment_fee_atto_dai_per_dai: (
         BigInt(payment_fee) *
-        BigInt(10) ** BigInt(16)
+        (10n ** 16n)
       ).toString(),
     })
     .then((response) => {
@@ -102,11 +102,21 @@ const getLoan = (id) => {
       const loan = response.data.loan;
 
       loan.requested_value = Number(
-        BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+        BigInt(loan.requested_value_atto_dai) / (10n ** 18n)
       );
 
       loan.funded_value = loan.funded_value_atto_dai
-        ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+        ? Number(BigInt(loan.funded_value_atto_dai) / (10n ** 18n))
+        : 0;
+
+      loan.funding_fee = loan.funding_fee_atto_dai_per_dai
+        ? Number(BigInt(loan.funding_fee_atto_dai_per_dai) / (10n ** 16n)) /
+          100
+        : 0;
+
+      loan.payment_fee = loan.payment_fee_atto_dai_per_dai
+        ? Number(BigInt(loan.payment_fee_atto_dai_per_dai) / (10n ** 16n)) /
+          100
         : 0;
 
       return loan;
@@ -129,11 +139,11 @@ const getActiveLoan = () => {
         const loan = filtered[0];
 
         loan.requested_value = Number(
-          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+          BigInt(loan.requested_value_atto_dai) / (10n ** 18n)
         );
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          ? Number(BigInt(loan.funded_value_atto_dai) / (10n ** 18n))
           : 0;
 
         return loan;
@@ -167,15 +177,15 @@ const getActiveLoans = () => {
 
       loans.forEach((loan) => {
         loan.requested_value = Number(
-          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+          BigInt(loan.requested_value_atto_dai) / (10n ** 18n)
         );
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          ? Number(BigInt(loan.funded_value_atto_dai) / (10n ** 18n))
           : 0;
 
         loan.current_value = loan.current_value_atto_dai
-          ? Number(BigInt(loan.current_value_atto_dai) / BigInt(10 ** 18))
+          ? Number(BigInt(loan.current_value_atto_dai) / (10n ** 18n))
           : 0;
       });
 
@@ -199,11 +209,11 @@ const getFeaturedLoans = () => {
 
       loans.forEach((loan) => {
         loan.requested_value = Number(
-          BigInt(loan.requested_value_atto_dai) / BigInt(10 ** 18)
+          BigInt(loan.requested_value_atto_dai) / (10n ** 18n)
         );
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? Number(BigInt(loan.funded_value_atto_dai) / BigInt(10 ** 18))
+          ? Number(BigInt(loan.funded_value_atto_dai) / (10n ** 18n))
           : 0;
       });
 
@@ -222,10 +232,10 @@ const getStudentLoans = () => {
       const loans = response.data.loans;
       loans.forEach((loan) => {
         loan.requested_value =
-          parseInt(loan.requested_value_atto_dai) / 10 ** 18;
+          BigInt(loan.requested_value_atto_dai) / (10n ** 18n);
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? parseInt(loan.funded_value_atto_dai) / 10 ** 18
+          ? BigInt(loan.funded_value_atto_dai) / (10n ** 18n)
           : 0;
       });
 

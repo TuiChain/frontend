@@ -92,15 +92,15 @@ const FundingLoans = () => {
                 loanCard={
                   <LoanCard
                     name={l.user_full_name}
-                    photo={l.photo}
+                    photo={l.user_profile_pic}
                     school={l.school}
                     course={l.course}
                     destination={l.destination}
                     tuition={Number(
-                      BigInt(l.requested_value_atto_dai) / BigInt(10 ** 18)
+                      BigInt(l.requested_value_atto_dai) / (10n ** 18n)
                     )}
                     fundedPercentage={Number(
-                      BigInt(l.funded_value_atto_dai * 100) /
+                      BigInt(l.funded_value_atto_dai) * 100n /
                         BigInt(l.requested_value_atto_dai)
                     )}
                   />
