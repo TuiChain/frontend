@@ -587,7 +587,7 @@ function Loan(props) {
   const pending = message("Request waiting for approval!");
 
   const rejected = message(
-    "This loan request was rejected by Tuichain Administration!"
+    "This loan request was rejected by TuiChain Administration!"
   );
 
   const withdrawn = message("This loan request was withdrawn by the student!");
