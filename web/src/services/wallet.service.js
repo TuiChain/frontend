@@ -170,7 +170,7 @@ async function suggestStudentToken(student_token) {
 /**
  * Function that makes a request to an API for blickchain information
  *
- * @returns Tuichain Blockchain information
+ * @returns TuiChain Blockchain information
  */
 async function requestBlockchainInfo() {
   return instance
