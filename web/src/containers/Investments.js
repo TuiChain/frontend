@@ -84,12 +84,16 @@ const Investments = () => {
           const flatEntry = { ...entry.loan };
           flatEntry.nrTokens = entry.nrTokens;
           flatEntry.nrTokens_market = entry.nrTokens_market;
-          flatEntry.tokensPriceMarket = marketTransactionsService.priceAttoDaiToFloat(
-            entry.price_per_token_market
-          );
-          flatEntry.current_value_atto_dai = marketTransactionsService.priceAttoDaiToFloat(
-            entry.loan.current_value_atto_dai
-          );
+          flatEntry.tokensPriceMarket = entry.price_per_token_market
+            ? marketTransactionsService.priceAttoDaiToFloat(
+                entry.price_per_token_market
+              )
+            : 0;
+          flatEntry.current_value_atto_dai = entry.loan.current_value_atto_dai
+            ? marketTransactionsService.priceAttoDaiToFloat(
+                entry.loan.current_value_atto_dai
+              )
+            : 0;
           flatEntry.name = entry.name;
           return flatEntry;
         });

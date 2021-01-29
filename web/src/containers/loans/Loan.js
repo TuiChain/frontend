@@ -152,7 +152,7 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
       {tokens > 0 && (
         <Box paddingTop="5%">
           <Typography variant="body1" display="inline">
-            Buying {tokens} token{tokens > 1 && "s"}, will cost you
+            Buying {tokens} token{tokens > 1 && "s"}, will cost you{" "}
             {(tokens * (1 + loan.funding_fee)).toFixed(2)} <DAI /> !
           </Typography>
         </Box>
@@ -175,8 +175,17 @@ const LoanActive = ({ loan }) => {
   const [documents, setDocuments] = useState([]);
   const [sell_positions, setSellPositions] = useState([]);
   const [current_values, setCurrentValues] = useState([]);
-  const [market_fee, setMarketFee] = useState([]);
-  console.log("Fee:", market_fee);
+  //const [market_fee, setMarketFee] = useState([]);
+
+  // Toast
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -186,29 +195,30 @@ const LoanActive = ({ loan }) => {
     fetchDocuments();
   }, []);
 
+  const fetchSellPositions = async () => {
+    const positions = await investmentService.getLoanSellPositions(loan.id);
+    setSellPositions(positions);
+    const values = [];
+    positions.forEach((_, index) => {
+      values[index] = 0;
+    });
+    setCurrentValues(values);
+  };
+
   useEffect(() => {
-    const fetchSellPositions = async () => {
-      const positions = await investmentService.getLoanSellPositions(loan.id);
-      setSellPositions(positions);
-      const values = [];
-      positions.forEach((_, index) => {
-        values[index] = 0;
-      });
-      setCurrentValues(values);
-    };
     fetchSellPositions();
   }, []);
 
-  useEffect(() => {
-    const fetchFee = async () => {
-      const blockchain = await walletService.requestBlockchainInfo();
-      const big_fee = BigInt(blockchain.market_fee_atto_dai_per_nano_dai);
-      console.log("Big", big_fee);
+  // useEffect(() => {
+  //   const fetchFee = async () => {
+  //     const blockchain = await walletService.requestBlockchainInfo();
+  //     const big_fee = BigInt(blockchain.market_fee_atto_dai_per_nano_dai);
+  //     console.log("Big", big_fee);
 
-      setMarketFee(big_fee);
-    };
-    fetchFee();
-  }, []);
+  //     setMarketFee(big_fee);
+  //   };
+  //   fetchFee();
+  // }, []);
 
   const handleValueChange = (event, index) => {
     const value = event.target.value;
@@ -228,21 +238,21 @@ const LoanActive = ({ loan }) => {
     const blockchain = await walletService.requestBlockchainInfo();
     const fee_atto_nano = blockchain.market_fee_atto_dai_per_nano_dai;
 
-    console.log({
-      loan_id: loan.id,
-      from,
-      amount_tokens,
-      price_atto,
-      fee_atto_nano,
-    });
-
-    marketTransactionsService.purchasePosition(
+    await marketTransactionsService.purchasePosition(
       loan.id,
       from,
       amount_tokens,
       price_atto,
       fee_atto_nano
     );
+
+    setToast({
+      message: "Tokens bought!",
+      severity: "success",
+    });
+    setOpen(true);
+
+    fetchSellPositions();
   };
 
   const columns = [
@@ -405,6 +415,9 @@ const LoanActive = ({ loan }) => {
           </Box>
         </Grid>
       </Grid>
+      <Toast open={open} onClose={handleClose} severity={toast.severity}>
+        {toast.message}
+      </Toast>
     </>
   );
 };
