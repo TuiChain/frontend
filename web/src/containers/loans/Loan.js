@@ -30,6 +30,7 @@ import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import documentsService from "../../services/documents.service";
 import { Alert } from "@material-ui/lab";
 import investmentService from "../../services/investment.service";
+import marketTransactionsService from "../../services/market-transactions.service";
 
 const fetchInvestments = async (loan, setInvestment) => {
   const account = walletService.checkAccount();
@@ -217,17 +218,31 @@ const LoanActive = ({ loan }) => {
     setCurrentValues(current_values_copy);
   };
 
-  const handleBuyClick = (index) => {
+  const handleBuyClick = async (index) => {
     console.log(current_values[index]);
+    const amount_tokens = current_values[index];
     const position = sell_positions[index];
     const from = position.seller_address;
-    const to = walletService.checkAccount();
-    console.log(sell_positions[index]);
-    console.log("From:", from);
-    console.log("To (me):", to);
-    if (from === to) {
-      console.log("Nao podes comprar os teus");
-    }
+    const price_atto = String(position.price_atto_dai_per_token);
+
+    const blockchain = await walletService.requestBlockchainInfo();
+    const fee_atto_nano = blockchain.market_fee_atto_dai_per_nano_dai;
+
+    console.log({
+      loan_id: loan.id,
+      from,
+      amount_tokens,
+      price_atto,
+      fee_atto_nano,
+    });
+
+    marketTransactionsService.purchasePosition(
+      loan.id,
+      from,
+      amount_tokens,
+      price_atto,
+      fee_atto_nano
+    );
   };
 
   const columns = [
