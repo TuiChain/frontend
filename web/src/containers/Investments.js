@@ -14,7 +14,7 @@ const columns = [
     headerName: "Loan",
     width: 210,
     // eslint-disable-next-line react/display-name
-    renderCell: (params) => <div>{params.value ? params.value : "Nelson"}</div>,
+    renderCell: (params) => <div>{params.value}</div>,
   },
   {
     field: "nrTokens",
@@ -77,9 +77,8 @@ const Investments = () => {
 
   useEffect(() => {
     async function getResponseFromAPI(account) {
-      const resp = await investmentService.getPersonal(account);
-      console.log(resp);
-      const investments = resp.data.investments
+      let investments = await investmentService.getPersonal(account);
+      investments = investments
         .filter((entry) => validStates.includes(entry.loan.state))
         .map((entry) => {
           const flatEntry = { ...entry.loan };
@@ -91,10 +90,10 @@ const Investments = () => {
           flatEntry.current_value_atto_dai = marketTransactionsService.priceAttoDaiToFloat(
             entry.loan.current_value_atto_dai
           );
+          flatEntry.name = entry.name;
           return flatEntry;
         });
       setInvestments(investments);
-      console.log("investments:", investments);
       setSelected(investments ? investments[0] : undefined);
     }
 

@@ -69,10 +69,7 @@ const copy = {
 
 const InvestmentCard = (props) => {
   const investmentCardHeader = (classes, phase, loanName) => (
-    <CardHeader
-      className={classes.headers}
-      title={`Loan to ${loanName ? loanName : "Nelson"}`}
-    />
+    <CardHeader className={classes.headers} title={`Loan to ${loanName}`} />
   );
 
   const activePhaseInputContent = () => (
