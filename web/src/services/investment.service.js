@@ -46,12 +46,12 @@ const getDashboardInvestments = (account_address) => {
 
       investments.forEach((investment) => {
         investment.loan.requested_value = Number(
-          BigInt(investment.loan.requested_value_atto_dai) / BigInt(10 ** 18)
+          BigInt(investment.loan.requested_value_atto_dai) / (10n ** 18n)
         );
 
         investment.loan.funded_value = investment.loan.funded_value_atto_dai
           ? Number(
-              BigInt(investment.loan.funded_value_atto_dai) / BigInt(10 ** 18)
+              BigInt(investment.loan.funded_value_atto_dai) / (10n ** 18n)
             )
           : 0;
       });
