@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
 import {
   TextField,
@@ -16,8 +16,11 @@ import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
 function UserProfile() {
+  const [verificationStatus, setVerificationStatus] = useState(undefined);
+  const [intentId, setintentId] = useState(undefined);
+
   const fetchUser = async () => {
-    const tempUser = await UserService.getCurrentUserInfo();
+    const [tempUser, verification_id] = await UserService.getCurrentUserInfo();
     tempUser.full_name === "null"
       ? formik.setFieldValue("full_name", "")
       : formik.setFieldValue("full_name", tempUser.full_name);
@@ -36,11 +39,24 @@ function UserProfile() {
     tempUser.full_name === "null"
       ? formik.setFieldValue("country", "")
       : formik.setFieldValue("country", tempUser.country);
-    console.log(tempUser);
+
+    if (verification_id.verification_id) {
+      setintentId(verification_id.verification_id);
+
+      if (verification_id.validated !== undefined) {
+        if (verification_id.validated) {
+          setVerificationStatus("succeeded");
+        } else {
+          setVerificationStatus("processing");
+        }
+      }
+    }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);
+
   var formPic = new FormData();
   const changeImg = (e) => {
     const file = e.target.files[0];
@@ -215,7 +231,10 @@ function UserProfile() {
           Click the button below and follow the steps to verify your identity.
           If you don&apos;t complete this process you can&apos;t receive loans.
         </Typography>
-        <KycButton />
+        <KycButton
+          verificationStatus={verificationStatus}
+          intentId={intentId}
+        />
       </Grid>
     </Grid>
   );
