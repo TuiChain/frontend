@@ -68,7 +68,7 @@ const getPersonal = (accountAddress) => {
   return instance
     .get(`/get_personal/${account}/`)
     .then((response) => {
-      return response;
+      return response.data.investments;
     })
     .catch((error) => {
       console.log(error);

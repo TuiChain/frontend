@@ -12,7 +12,6 @@ import {
 import theme from "../theme";
 import SpinnerInputWithLabel from "./SpinnerInputWithLabel";
 import InputWithLabel from "./InputWithLabel";
-import Status from "./Status";
 import loansTransactionsService from "../services/loans-transactions.service";
 import marketTransactionsService from "../services/market-transactions.service";
 
@@ -70,11 +69,7 @@ const copy = {
 
 const InvestmentCard = (props) => {
   const investmentCardHeader = (classes, phase, loanName) => (
-    <CardHeader
-      className={classes.headers}
-      action={<Status state={phase} />}
-      title={`Loan to ${loanName ? loanName : "Nelson"}`}
-    />
+    <CardHeader className={classes.headers} title={`Loan to ${loanName}`} />
   );
 
   const activePhaseInputContent = () => (
@@ -120,7 +115,11 @@ const InvestmentCard = (props) => {
       />
       <InputWithLabel
         labelText="Price:"
-        defaultValue={props.tokens * props.redeemPrice}
+        defaultValue={
+            marketTransactionsService.priceAttoDaiToFloat(
+                BigInt(props.tokens) * BigInt(props.redeemPrice)
+                )
+        }
         isCurrency={true}
       />
     </Grid>
@@ -273,9 +272,9 @@ const InvestmentCard = (props) => {
               <Button
                 onClick={() => handleButtonClick(props)}
                 style={{ alignSelf: "flex-end", width: 120 }}
-                variant="contained"
+                variant="outlined"
                 size="medium"
-                color="primary"
+                color="secondary"
               >
                 {copy[props.phase].buttonText}
               </Button>

@@ -14,14 +14,14 @@ const styles = (theme) => ({
 const CustomNoRowsOverlay = () => {
   return (
     <GridOverlay>
-      <div>Sem investimentos</div>
+      <div>No investments...</div>
     </GridOverlay>
   );
 };
 
 const SimpleTable = (props) => (
   <DataGrid
-    headerHeight={63}
+    // headerHeight={63}
     rows={props.rows}
     columns={props.columns}
     pageSize={10}
