@@ -279,7 +279,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await userService.getCurrentUserInfo();
+      const [user] = await userService.getCurrentUserInfo();
       setUser(user);
       setLoading(false);
     };
