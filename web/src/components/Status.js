@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Chip } from "@material-ui/core";
 import theme from "./../theme";
 
-const Status = ({ state }) => {
+const Status = ({ state, size }) => {
   const matchState = (state) => {
     switch (state?.toUpperCase()) {
       case "FUNDING":
@@ -30,12 +30,21 @@ const Status = ({ state }) => {
   const color = matchState(state);
 
   return (
-    <Chip label={state} style={{ backgroundColor: color, color: "white" }} />
+    <Chip
+      label={state}
+      size={size}
+      style={{ backgroundColor: color, color: "white" }}
+    />
   );
+};
+
+Status.defaultProps = {
+  size: "medium",
 };
 
 Status.propTypes = {
   state: PropTypes.string,
+  size: PropTypes.string,
 };
 
 export default Status;

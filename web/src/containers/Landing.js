@@ -177,17 +177,17 @@ function getSteps(user) {
 function getStepContent(stepIndex, user) {
   const steps = {
     student: [
-      "Create an account to fund your studies and achieve your dreams!",
-      "Make a request so other people can help you get the financing you need!",
-      "Wait to be funded because not everyone can finance your request and other students can be in the same situation as you!",
-      "Pay back the money you received through planned payments only when you have the financial means to do so!",
+      "Create an account to fund your studies and achieve your dreams.",
+      "Make a request so other people can help you get the financing you need.",
+      "Wait to be funded because not everyone can finance your request and other students can be in the same situation as you.",
+      "Pay back the money you received through planned payments only when you have the financial means to do so.",
     ],
     investor: [
-      "Create an account to help others get the money they need to study",
-      "Make an investment to finance a loan requested by a student",
-      "Receive tokens that represent your funding and can be exchanged later",
-      "Sell or buy tokens in the market to possibly get a better return on your investment",
-      "Exchange your tokens for currency when the loan is paid off by the student",
+      "Create an account to help others get the money they need to study.",
+      "Make an investment to finance a loan requested by a student.",
+      "Receive tokens that represent your funding and can be exchanged later.",
+      "Sell or buy tokens in the market to possibly get a better return on your investment.",
+      "Exchange your tokens for currency when the loan is paid off by the student.",
     ],
   };
 
@@ -412,7 +412,7 @@ const Landing = () => {
                   viewBox="0 0 320 512"
                   icon={Ethereum}
                   name="Crypto friendly"
-                  desc="Invest your idle assets while supporting a good cause"
+                  desc="Invest your idle assets while supporting a good cause."
                 />
               </Box>
             </Grid>
@@ -450,7 +450,7 @@ const Landing = () => {
 
       <Panel
         background="secondary.main"
-        title="Bring Education to the World"
+        title="Sharing Education through the World"
         subtitle="Connecting and helping people all over the world"
         theme="dark"
         hasPadding={false}

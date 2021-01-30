@@ -24,6 +24,8 @@ import ViewComfyIcon from "@material-ui/icons/ViewComfy";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import MuseumIcon from "@material-ui/icons/Museum";
+import ShowChartIcon from "@material-ui/icons/ShowChart";
 
 const drawerWidth = 240;
 
@@ -42,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: "flex-start",
   },
+  divider: {
+    background: theme.palette.secondary.main,
+  },
 }));
 
 const NavMenu = (props) => {
@@ -56,10 +61,6 @@ const NavMenu = (props) => {
   const handleLogout = () => {
     history.push("/");
     onLogout();
-  };
-
-  const handleProfile = () => {
-    history.push("/personal/profile");
   };
 
   const handleAction = (path) => {
@@ -131,23 +132,11 @@ const NavMenu = (props) => {
     </Button>
   );
 
-  const loanRequestButton = (
-    <Button
-      variant="contained"
-      color="secondary"
-      component={RouterLink}
-      to="/request"
-    >
-      Request a Loan
-    </Button>
-  );
-
   const nav_items = (
     <>
       {dashboardButton}
       {loansButton}
       {marketButton}
-      {loanRequestButton}
       {connect_button}
     </>
   );
@@ -163,37 +152,47 @@ const NavMenu = (props) => {
 
   const actionsDrawerDivision = [
     {
-      text: "Loans",
-      handler: () => handleAction("/loans"),
-      icon: <MonetizationOnIcon />,
-    },
-    {
       text: "Dashboard",
       handler: () => handleAction("/dashboard"),
-      icon: <ViewComfyIcon />,
+      icon: <ViewComfyIcon color="secondary" />,
     },
     {
-      text: "Request a Loan",
-      handler: () => handleAction("/request"),
-      icon: <BorderColorIcon />,
+      text: "Loans",
+      handler: () => handleAction("/loans"),
+      icon: <MonetizationOnIcon color="secondary" />,
+    },
+    {
+      text: "Market",
+      handler: () => handleAction("/market"),
+      icon: <MuseumIcon color="secondary" />,
     },
   ];
 
   const profileDrawerDivision = [
     {
-      text: "My loans",
+      text: "Request a Loan",
+      handler: () => handleAction("/request"),
+      icon: <BorderColorIcon color="secondary" />,
+    },
+    {
+      text: "My Loans",
       handler: () => handleAction("/personal/loans"),
-      icon: <AccountBalanceIcon />,
+      icon: <AccountBalanceIcon color="secondary" />,
+    },
+    {
+      text: "My Investments",
+      handler: () => handleAction("/investments"),
+      icon: <ShowChartIcon color="secondary" />,
     },
     {
       text: "My Account",
-      handler: handleProfile,
-      icon: <AccountBoxIcon />,
+      handler: () => handleAction("/personal/profile"),
+      icon: <AccountBoxIcon color="secondary" />,
     },
     {
       text: "Logout",
       handler: handleLogout,
-      icon: <ExitToAppIcon />,
+      icon: <ExitToAppIcon color="secondary" />,
     },
   ];
 
@@ -216,15 +215,17 @@ const NavMenu = (props) => {
         classes={{
           paper: classes.drawerPaper,
         }}
+        onEscapeKeyDown={handleDrawerClose}
+        onBackdropClick={handleDrawerClose}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            <ChevronRightIcon />
+            <ChevronRightIcon fontSize="large" color="secondary" />
           </IconButton>
         </div>
         {mobile && (
           <>
-            <Divider />
+            <Divider className={classes.divider} />
             <List>
               {actionsDrawerDivision.map((option) => (
                 <DrawerItem key={option.text} item={option} />
@@ -232,7 +233,7 @@ const NavMenu = (props) => {
             </List>
           </>
         )}
-        <Divider />
+        <Divider className={classes.divider} />
         <List>
           {profileDrawerDivision.map((option) => (
             <DrawerItem key={option.text} item={option} />
