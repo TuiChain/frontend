@@ -68,7 +68,7 @@ const copy = {
 };
 
 const InvestmentCard = (props) => {
-  const investmentCardHeader = (classes, phase, loanName) => (
+  const investmentCardHeader = (classes, loanName) => (
     <CardHeader className={classes.headers} title={`Loan to ${loanName}`} />
   );
 
@@ -218,8 +218,12 @@ const InvestmentCard = (props) => {
           newPrice
         );
       } else {
-        await handleSellPositionQuantityChange();
-        await handleSellPositionPriceChange();
+        if(newPrice !== 0){
+          await handleSellPositionPriceChange();
+        }
+        if(newQuantity !== 0){
+          await handleSellPositionQuantityChange();
+        }
       }
     } catch (e) {
       console.log(e);

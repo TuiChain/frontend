@@ -87,9 +87,7 @@ const Investments = () => {
           flatEntry.tokensPriceMarket = marketTransactionsService.priceAttoDaiToFloat(
             entry.price_per_token_market
           );
-          flatEntry.current_value_atto_dai = marketTransactionsService.priceAttoDaiToFloat(
-            entry.loan.current_value_atto_dai
-          );
+          flatEntry.current_value_atto_dai = entry.loan.current_value_atto_dai;
           flatEntry.name = entry.name;
           return flatEntry;
         });
