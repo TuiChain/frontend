@@ -15,8 +15,19 @@ import { CloudUpload } from "@material-ui/icons";
 import { useFormik } from "formik";
 import { countries } from "../util/countries";
 import KycButton from "../components/KycButton";
+import Toast from "../components/Toast";
 
 function UserProfile() {
+  // Toast
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   const formik = useFormik({
     initialValues: {
       address: "",
@@ -38,7 +49,20 @@ function UserProfile() {
     formData.append("short_bio", formik.values.short_bio);
     formData.append("city", formik.values.city);
     formData.append("country", formik.values.country);
-    UserService.updateInfo(formData);
+    const sucess = await UserService.updateInfo(formData);
+    if (sucess){
+      setToast({
+        message: "Information updated!",
+        severity: "success",
+      });
+    }
+    else {
+      setToast({
+        message: "Save failed!",
+        severity: "error",
+      });
+    }
+    setOpen(true);
   };
 
   const [verificationStatus, setVerificationStatus] = useState(undefined);
@@ -88,145 +112,164 @@ function UserProfile() {
     const file = e.target.files[0];
     formPic.append("profile_pic", file);
   };
-  const submitImg = () => {
-    UserService.updateInfo(formPic);
+
+  const submitImg = async () => {
+    const sucess = await UserService.updateInfo(formPic);
+    if (sucess){
+      setToast({
+        message: "Photo uploaded!",
+        severity: "success",
+      });
+    }
+    else {
+      setToast({
+        message: "Upload failed!",
+        severity: "error",
+      });
+    }
+    setOpen(true);
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Box py={2}>
-          <Typography variant="h5" color="secondary">
-            Personal Info
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Fill in the fields below with your personal information and then
-            click save.
-          </Typography>
-          <TextField
-            fullWidth
-            label="Full name"
-            value={formik.values.full_name}
-            variant="outlined"
-            onChange={formik.handleChange("full_name")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Bio"
-            value={formik.values.short_bio}
-            variant="outlined"
-            onChange={formik.handleChange("short_bio")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="City"
-            value={formik.values.city}
-            variant="outlined"
-            onChange={formik.handleChange("city")}
-          />
-        </Box>
-        <Box paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Zip-Code"
-            value={formik.values.zip_code}
-            variant="outlined"
-            onChange={formik.handleChange("zip_code")}
-          />
-        </Box>
-        <Box display="block" paddingBottom="2%">
-          <TextField
-            fullWidth
-            label="Address"
-            value={formik.values.address}
-            variant="outlined"
-            onChange={formik.handleChange("address")}
-          />
-        </Box>
-        <FormControl variant="outlined" fullWidth name="country">
-          <InputLabel shrink htmlFor="outlined-age-native-simple">
-            Country
-          </InputLabel>
-          <Select
-            native
-            value={formik.values.country}
-            onChange={formik.handleChange("country")}
-            label="Country"
-            name="country"
-            inputProps={{
-              name: "country",
-              id: "outlined-age-native-simple",
-            }}
-          >
-            <option aria-label="None" value="" />
-
-            {countries.map((n) => (
-              <option key={n.name} value={n.name}>
-                {n.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            disabled={formik.isSubmitting}
-            onClick={onSubmit}
-          >
-            Save
-          </Button>
-        </Box>
-        <hr />
-        <Box py={2}>
-          <Typography variant="h5" color="secondary">
-            Profile Photo
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Submit a photo of yourself that will be used as your identification
-            photo on your loans.
-          </Typography>
-          <Box display="flex">
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box py={2}>
+            <Typography variant="h5" color="secondary">
+              Personal Info
+            </Typography>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              Fill in the fields below with your personal information and then
+              click save.
+            </Typography>
             <TextField
               fullWidth
-              type="file"
+              label="Full name"
+              value={formik.values.full_name}
               variant="outlined"
-              onChange={changeImg}
+              onChange={formik.handleChange("full_name")}
             />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Bio"
+              value={formik.values.short_bio}
+              variant="outlined"
+              onChange={formik.handleChange("short_bio")}
+            />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="City"
+              value={formik.values.city}
+              variant="outlined"
+              onChange={formik.handleChange("city")}
+            />
+          </Box>
+          <Box paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Zip-Code"
+              value={formik.values.zip_code}
+              variant="outlined"
+              onChange={formik.handleChange("zip_code")}
+            />
+          </Box>
+          <Box display="block" paddingBottom="2%">
+            <TextField
+              fullWidth
+              label="Address"
+              value={formik.values.address}
+              variant="outlined"
+              onChange={formik.handleChange("address")}
+            />
+          </Box>
+          <FormControl variant="outlined" fullWidth name="country">
+            <InputLabel shrink htmlFor="outlined-age-native-simple">
+              Country
+            </InputLabel>
+            <Select
+              native
+              value={formik.values.country}
+              onChange={formik.handleChange("country")}
+              label="Country"
+              name="country"
+              inputProps={{
+                name: "country",
+                id: "outlined-age-native-simple",
+              }}
+            >
+              <option aria-label="None" value="" />
+
+              {countries.map((n) => (
+                <option key={n.name} value={n.name}>
+                  {n.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <Box display="flex" justifyContent="flex-end" pt={2}>
             <Button
               type="submit"
               variant="contained"
               color="secondary"
               disabled={formik.isSubmitting}
-              startIcon={<CloudUpload />}
-              onClick={submitImg}
+              onClick={onSubmit}
             >
-              Submit
+              Save
             </Button>
           </Box>
-        </Box>
-        <hr />
-        <Box pt={2}>
-          <Typography variant="h5" color="secondary">
-            Identity Verification
-          </Typography>
-          <Typography variant="body1" color="textSecondary" paragraph>
-            Click the button below and follow the steps to verify your identity.
-            If you don&apos;t complete this process you can&apos;t receive
-            loans.
-          </Typography>
-          <KycButton
-            verificationStatus={verificationStatus}
-            intentId={intentId}
-          />
-        </Box>
+          <hr />
+          <Box py={2}>
+            <Typography variant="h5" color="secondary">
+              Profile Photo
+            </Typography>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              Submit a photo of yourself that will be used as your
+              identification photo on your loans.
+            </Typography>
+            <Box display="flex">
+              <TextField
+                fullWidth
+                type="file"
+                variant="outlined"
+                onChange={changeImg}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="secondary"
+                disabled={formik.isSubmitting}
+                startIcon={<CloudUpload />}
+                onClick={submitImg}
+              >
+                Submit
+              </Button>
+            </Box>
+          </Box>
+          <hr />
+          <Box pt={2}>
+            <Typography variant="h5" color="secondary">
+              Identity Verification
+            </Typography>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              Click the button below and follow the steps to verify your
+              identity. If you don&apos;t complete this process you can&apos;t
+              receive loans.
+            </Typography>
+            <KycButton
+              verificationStatus={verificationStatus}
+              intentId={intentId}
+            />
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
+      <Toast open={open} onClose={handleClose} severity={toast.severity}>
+        {toast.message}
+      </Toast>
+    </>
   );
 }
 
