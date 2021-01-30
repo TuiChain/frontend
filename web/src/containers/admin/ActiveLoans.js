@@ -111,7 +111,9 @@ const ActiveLoans = (props) => {
         return (
           <>
             <Box pr={1}>
-              <Typography>{Number(BigInt(props.value) / (10n ** 18n))}</Typography>
+              <Typography>
+                {Number(BigInt(props.value) / 10n ** 18n)}
+              </Typography>
             </Box>
             <DAI size={16} />
           </>

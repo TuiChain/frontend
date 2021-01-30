@@ -61,7 +61,7 @@ const App = (props) => {
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Layout auth={auth} onLogout={handlerLogout} wallet={wallet} >
+            <Layout auth={auth} onLogout={handlerLogout} wallet={wallet}>
               <Switch>
                 <Route exact path="/">
                   {auth && auth.is_admin ? (

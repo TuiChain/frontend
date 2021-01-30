@@ -130,7 +130,7 @@ const Investments = () => {
         My Investments
       </Typography>
       <Grid container spacing={4}>
-        <Grid item xs={8}>
+        <Grid item xs={7}>
           <Box
             style={{ display: "flex", width: "100%" }}
             className={classes.root}
@@ -147,7 +147,7 @@ const Investments = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           {selected != undefined && (
             <InvestmentCard
               loanName={selected.name}
