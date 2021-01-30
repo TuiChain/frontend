@@ -23,7 +23,6 @@ const SpinnerInput = (props) => {
     let nextValue = parseFloat(value + step);
 
     if (isPrice) {
-      console.log(nextValue, value, step);
       nextValue = parseFloat(nextValue.toFixed(2));
     }
 
@@ -36,7 +35,6 @@ const SpinnerInput = (props) => {
       setIsMinusEnable(true);
     }
 
-    console.log(nextValue);
     setValue(nextValue);
     props.onNewValue(nextValue);
   };

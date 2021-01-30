@@ -222,14 +222,12 @@ const LoanActive = ({ loan }) => {
 
   const handleValueChange = (event, index) => {
     const value = event.target.value;
-    console.log(value, index);
     current_values[index] = value;
     const current_values_copy = JSON.parse(JSON.stringify(current_values));
     setCurrentValues(current_values_copy);
   };
 
   const handleBuyClick = async (index) => {
-    console.log(current_values[index]);
     const amount_tokens = current_values[index];
     const position = sell_positions[index];
     const from = position.seller_address;
@@ -279,18 +277,15 @@ const LoanActive = ({ loan }) => {
       headerName: "Amount to buy",
       width: 200,
       // eslint-disable-next-line react/display-name
-      renderCell: (props) => {
-        console.log(props);
-        return (
-          <TextField
-            label="Amount"
-            name="amount"
-            type="number"
-            variant="outlined"
-            onChange={(e) => handleValueChange(e, props.row.id)}
-          />
-        );
-      },
+      renderCell: (props) => (
+        <TextField
+          label="Amount"
+          name="amount"
+          type="number"
+          variant="outlined"
+          onChange={(e) => handleValueChange(e, props.row.id)}
+        />
+      ),
     },
     {
       field: "1",
@@ -562,11 +557,9 @@ function Loan(props) {
     const fetchLoan = async () => {
       const loan = await LoansService.getLoan(props.match.params.id);
       setLoan(loan);
-      console.log("loan:", loan);
 
       const Info = await UserService.getUserInfo(loan.student);
       setUser(Info.user);
-      console.log("user:", Info.user);
 
       setFetching(false);
     };

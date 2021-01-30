@@ -74,34 +74,34 @@ const validStates = ["ACTIVE", "EXPIRED", "FUNDING", "FINALIZED"];
 const Investments = () => {
   const [investments, setInvestments] = useState([]);
   const [selected, setSelected] = useState();
+  const [account] = useState(walletService.checkAccount());
+
+  async function getResponseFromAPI(account) {
+    let investments = await investmentService.getPersonal(account);
+    investments = investments
+      .filter((entry) => validStates.includes(entry.loan.state))
+      .map((entry) => {
+        const flatEntry = { ...entry.loan };
+        flatEntry.nrTokens = entry.nrTokens;
+        flatEntry.nrTokens_market = entry.nrTokens_market;
+        flatEntry.tokensPriceMarket = entry.price_per_token_market
+          ? marketTransactionsService.priceAttoDaiToFloat(
+              entry.price_per_token_market
+            )
+          : 0;
+        flatEntry.current_value_atto_dai = entry.loan.current_value_atto_dai
+          ? marketTransactionsService.priceAttoDaiToFloat(
+              entry.loan.current_value_atto_dai
+            )
+          : 0;
+        flatEntry.name = entry.name;
+        return flatEntry;
+      });
+    setInvestments(investments);
+    setSelected(investments ? investments[0] : undefined);
+  }
 
   useEffect(() => {
-    async function getResponseFromAPI(account) {
-      let investments = await investmentService.getPersonal(account);
-      investments = investments
-        .filter((entry) => validStates.includes(entry.loan.state))
-        .map((entry) => {
-          const flatEntry = { ...entry.loan };
-          flatEntry.nrTokens = entry.nrTokens;
-          flatEntry.nrTokens_market = entry.nrTokens_market;
-          flatEntry.tokensPriceMarket = entry.price_per_token_market
-            ? marketTransactionsService.priceAttoDaiToFloat(
-                entry.price_per_token_market
-              )
-            : 0;
-          flatEntry.current_value_atto_dai = entry.loan.current_value_atto_dai
-            ? marketTransactionsService.priceAttoDaiToFloat(
-                entry.loan.current_value_atto_dai
-              )
-            : 0;
-          flatEntry.name = entry.name;
-          return flatEntry;
-        });
-      setInvestments(investments);
-      setSelected(investments ? investments[0] : undefined);
-    }
-
-    const account = walletService.checkAccount();
     if (account != null) {
       getResponseFromAPI(account);
     }
@@ -127,6 +127,12 @@ const Investments = () => {
       },
     },
   }));
+
+  const handleRefresh = () => {
+    if (account != null) {
+      getResponseFromAPI(account);
+    }
+  };
 
   const classes = useStyles();
 
@@ -156,6 +162,7 @@ const Investments = () => {
         <Grid item xs={4}>
           {selected != undefined && (
             <InvestmentCard
+              handleRefresh={handleRefresh}
               loanName={selected.name}
               phase={selected.state}
               tokens={selected.nrTokens}
