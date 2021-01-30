@@ -52,6 +52,7 @@ const copy = {
   ACTIVE: {
     titleText: "List your tokens in the marketplace",
     buttonText: "List",
+    removeText: "Remove all",
   },
   FUNDING: {
     titleText: "Cancel your funding",
@@ -216,10 +217,10 @@ const InvestmentCard = (props) => {
           newPrice
         );
       } else {
-        if(newPrice !== 0){
+        if (newPrice !== 0) {
           await handleSellPositionPriceChange();
         }
-        if(newQuantity !== 0){
+        if (newQuantity !== 0) {
           await handleSellPositionQuantityChange();
         }
       }
@@ -232,6 +233,14 @@ const InvestmentCard = (props) => {
   const handleRedeemClick = async () => {
     try {
       await loansTransactionsService.redeemTokens(props.loanId, props.tokens);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleRemoveButtonClick = async () => {
+    try {
+      await marketTransactionsService.removeSellPosition(props.loanId);
     } catch (e) {
       console.log(e);
     }
@@ -271,6 +280,19 @@ const InvestmentCard = (props) => {
             {renderPhaseInputContent(props)}
           </Grid>
           <Grid container justify="flex-end">
+            {props.inMarketplace > 0 && (
+              <Grid item>
+                <Button
+                  onClick={() => handleRemoveButtonClick(props)}
+                  style={{ alignSelf: "flex-end", width: 120 }}
+                  variant="outlined"
+                  size="medium"
+                  color="secondary"
+                >
+                  {copy[props.phase].removeText}
+                </Button>
+              </Grid>
+            )}
             <Grid item>
               <Button
                 onClick={() => handleButtonClick(props)}

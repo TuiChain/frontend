@@ -97,10 +97,10 @@ const FundingLoans = () => {
                     course={l.course}
                     destination={l.destination}
                     tuition={Number(
-                      BigInt(l.requested_value_atto_dai) / (10n ** 18n)
+                      BigInt(l.requested_value_atto_dai) / 10n ** 18n
                     )}
                     fundedPercentage={Number(
-                      BigInt(l.funded_value_atto_dai) * 100n /
+                      (BigInt(l.funded_value_atto_dai) * 100n) /
                         BigInt(l.requested_value_atto_dai)
                     )}
                   />
