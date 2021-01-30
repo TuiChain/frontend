@@ -171,23 +171,22 @@ const getActiveLoans = () => {
       let loans = response.data.loans;
 
       loans.forEach((loan) => {
-        loan.requested_value = Number(
-          BigInt(loan.requested_value_atto_dai) / 10n ** 18n
-        );
+        loan.requested_value =
+          Number(BigInt(loan.requested_value_atto_dai) / 10n ** 16n) / 100;
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? Number(BigInt(loan.funded_value_atto_dai) / 10n ** 18n)
+          ? Number(BigInt(loan.funded_value_atto_dai) / 10n ** 16n) / 100
           : 0;
 
         loan.current_value = loan.current_value_atto_dai
-          ? Number(BigInt(loan.current_value_atto_dai) / 10n ** 18n)
+          ? Number(BigInt(loan.current_value_atto_dai) / 10n ** 16n) / 100
           : 0;
       });
 
       return loans;
     })
     .catch((error) => {
-      console.log(error.response);
+      console.log(error);
       return [];
     });
 };

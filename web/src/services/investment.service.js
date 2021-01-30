@@ -76,8 +76,37 @@ const getPersonal = (accountAddress) => {
     });
 };
 
+const getLoanSellPositions = (id) => {
+  return instance
+    .get(`/get/${id}/`)
+    .then((response) => {
+      const sell_positions = response.data.investment.sell_positions;
+      sell_positions.forEach((p, index) => {
+        p.id = index;
+
+        console.log(
+          "price BIG INT",
+          Number(BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 16)) / 100
+        );
+        p.price_per_token =
+          Number(BigInt(p.price_atto_dai_per_token) / BigInt(10 ** 16)) / 100;
+      });
+      // TODO - REMOVE
+      // sell_positions[1] = JSON.parse(JSON.stringify(sell_positions[0]));
+      // sell_positions[1].id = 1;
+      // console.log("Positions:", sell_positions);
+
+      return sell_positions;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
+    });
+};
+
 export default {
   getPersonal,
   getInvestmentInLoan,
   getDashboardInvestments,
+  getLoanSellPositions,
 };

@@ -207,6 +207,10 @@ async function sendTransactions(transactionsParameters) {
   }
 }
 
+function getCurrentAccount() {
+  return null;
+}
+
 export default {
   checkAccount,
   connectToWallet,
@@ -214,4 +218,6 @@ export default {
   suggestDAI,
   suggestStudentToken,
   sendTransactions,
+  requestBlockchainInfo,
+  getCurrentAccount,
 };

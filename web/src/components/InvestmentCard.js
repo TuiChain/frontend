@@ -224,6 +224,7 @@ const InvestmentCard = (props) => {
           await handleSellPositionQuantityChange();
         }
       }
+      props.handleRefresh();
     } catch (e) {
       console.log(e);
     }
@@ -323,7 +324,7 @@ const InvestmentCard = (props) => {
 
   return (
     <Card className={classes.root}>
-      {investmentCardHeader(classes, props.phase, props.loanName)}
+      {investmentCardHeader(classes, props.loanName)}
       {renderPhaseContent()}
     </Card>
   );
@@ -337,6 +338,7 @@ InvestmentCard.propTypes = {
   inMarketplace: PropTypes.number.isRequired,
   tokensPriceMarket: PropTypes.number.isRequired,
   redeemPrice: PropTypes.number,
+  handleRefresh: PropTypes.func,
 };
 
 export default InvestmentCard;
