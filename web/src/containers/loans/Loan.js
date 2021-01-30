@@ -23,11 +23,14 @@ import {
   Card,
   Link,
 } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { DataGrid } from "@material-ui/data-grid";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import walletService from "../../services/wallet.service";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
 import documentsService from "../../services/documents.service";
 import { Alert } from "@material-ui/lab";
+import investmentService from "../../services/investment.service";
+import marketTransactionsService from "../../services/market-transactions.service";
 
 const fetchInvestments = async (loan, setInvestment) => {
   const account = walletService.checkAccount();
@@ -170,6 +173,19 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
 
 const LoanActive = ({ loan }) => {
   const [documents, setDocuments] = useState([]);
+  const [sell_positions, setSellPositions] = useState([]);
+  const [current_values, setCurrentValues] = useState([]);
+  //const [market_fee, setMarketFee] = useState([]);
+
+  // Toast
+  const [toast, setToast] = React.useState({});
+  const [open, setOpen] = React.useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -179,34 +195,225 @@ const LoanActive = ({ loan }) => {
     fetchDocuments();
   }, []);
 
+  const fetchSellPositions = async () => {
+    const positions = await investmentService.getLoanSellPositions(loan.id);
+    setSellPositions(positions);
+    const values = [];
+    positions.forEach((_, index) => {
+      values[index] = 0;
+    });
+    setCurrentValues(values);
+  };
+
+  useEffect(() => {
+    fetchSellPositions();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchFee = async () => {
+  //     const blockchain = await walletService.requestBlockchainInfo();
+  //     const big_fee = BigInt(blockchain.market_fee_atto_dai_per_nano_dai);
+  //     console.log("Big", big_fee);
+
+  //     setMarketFee(big_fee);
+  //   };
+  //   fetchFee();
+  // }, []);
+
+  const handleValueChange = (event, index) => {
+    const value = event.target.value;
+    current_values[index] = value;
+    const current_values_copy = JSON.parse(JSON.stringify(current_values));
+    setCurrentValues(current_values_copy);
+  };
+
+  const handleBuyClick = async (index) => {
+    const amount_tokens = current_values[index];
+    const position = sell_positions[index];
+    const from = position.seller_address;
+    const price_atto = String(position.price_atto_dai_per_token);
+
+    const blockchain = await walletService.requestBlockchainInfo();
+    const fee_atto_nano = blockchain.market_fee_atto_dai_per_nano_dai;
+
+    await marketTransactionsService.purchasePosition(
+      loan.id,
+      from,
+      amount_tokens,
+      price_atto,
+      fee_atto_nano
+    );
+
+    setToast({
+      message: "Tokens bought!",
+      severity: "success",
+    });
+    setOpen(true);
+
+    fetchSellPositions();
+  };
+
+  const columns = [
+    { field: "id", headerName: "ID", hide: true },
+    {
+      field: "amount_tokens",
+      headerName: "Total tokens",
+      width: 130,
+    },
+    {
+      field: "price_per_token",
+      headerName: "Price per token",
+      width: 150,
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Box display="flex" alignContent="center" alignItems="center" pr={2}>
+          <Box pr={1}>{props.value}</Box>
+          <DAI />
+        </Box>
+      ),
+    },
+    {
+      field: "0",
+      headerName: "Amount to buy",
+      width: 200,
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <TextField
+          label="Amount"
+          name="amount"
+          type="number"
+          variant="outlined"
+          onChange={(e) => handleValueChange(e, props.row.id)}
+        />
+      ),
+    },
+    {
+      field: "1",
+      headerName: "Total cost",
+      width: 140,
+
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Box display="flex" alignContent="center" alignItems="center">
+          <Typography style={{ paddingRight: 10 }}>
+            {/* TODO - ADD MARKET FEE */}
+            {current_values[props.row.id] &&
+              current_values[props.row.id] * props.row.price_per_token}
+          </Typography>
+          <DAI />
+        </Box>
+      ),
+    },
+    {
+      field: "2",
+      headerName: "Action",
+      width: 130,
+
+      // eslint-disable-next-line react/display-name
+      renderCell: (props) => (
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => handleBuyClick(props.row.id)}
+        >
+          Buy
+        </Button>
+      ),
+    },
+  ];
+
+  const useStyles = makeStyles(() => ({
+    root: {
+      "& .MuiDataGrid-root input": {
+        boxSizing: "initial",
+      },
+    },
+  }));
+
+  const classes = useStyles();
+
   return (
-    <Box width="100%">
-      <Box py={2}>
-        <Typography variant="h3">Documents</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          Documents uploaded by the student
-        </Typography>
-      </Box>
-      <Box>
-        <Card style={{ width: "100%" }}>
-          {documents.length ? (
-            <List component="nav">
-              {documents.map((d, index) => (
-                <Link href={d.url} target="_blank" key={index} underline="none">
-                  <ListItem button>
-                    <ListItemText primary={d.name} />
+    <>
+      <Grid container spacing={4}>
+        <Grid item xs={12} lg={7}>
+          <Box width="100%">
+            <Box py={2}>
+              <Typography variant="h3">Market</Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                Tokens available to buy
+              </Typography>
+            </Box>
+            <Box>
+              <Card style={{ width: "100%" }}>
+                {sell_positions.length ? (
+                  <Box
+                    className={classes.root}
+                    style={{
+                      display: "flex",
+                      height:
+                        sell_positions.length < 10
+                          ? sell_positions.length * 81 + 110
+                          : 920,
+                    }}
+                  >
+                    <DataGrid
+                      rows={sell_positions}
+                      columns={columns}
+                      pageSize={10}
+                      rowHeight={82}
+                      autoHeight
+                    />
+                  </Box>
+                ) : (
+                  <List>
+                    <ListItem>
+                      <ListItemText primary="There are no tokens for sale." />
+                    </ListItem>
+                  </List>
+                )}
+              </Card>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} lg={5}>
+          <Box width="100%">
+            <Box py={2}>
+              <Typography variant="h3">Documents</Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                Documents uploaded by the student
+              </Typography>
+            </Box>
+            <Box>
+              <Card style={{ width: "100%" }}>
+                {documents.length ? (
+                  <List component="nav">
+                    {documents.map((d, index) => (
+                      <Link
+                        href={d.url}
+                        target="_blank"
+                        key={index}
+                        underline="none"
+                      >
+                        <ListItem button>
+                          <ListItemText primary={d.name} />
+                        </ListItem>
+                      </Link>
+                    ))}
+                  </List>
+                ) : (
+                  <ListItem>
+                    <ListItemText primary="There are no documents uploaded." />
                   </ListItem>
-                </Link>
-              ))}
-            </List>
-          ) : (
-            <ListItem>
-              <ListItemText primary="There are no documents uploaded." />
-            </ListItem>
-          )}
-        </Card>
-      </Box>
-    </Box>
+                )}
+              </Card>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+      <Toast open={open} onClose={handleClose} severity={toast.severity}>
+        {toast.message}
+      </Toast>
+    </>
   );
 };
 
@@ -350,11 +557,9 @@ function Loan(props) {
     const fetchLoan = async () => {
       const loan = await LoansService.getLoan(props.match.params.id);
       setLoan(loan);
-      console.log("loan:", loan);
 
       const Info = await UserService.getUserInfo(loan.student);
       setUser(Info.user);
-      console.log("user:", Info.user);
 
       setFetching(false);
     };
@@ -437,7 +642,7 @@ function Loan(props) {
               <Box>
                 <Box2 alignItems="baseline">
                   <Typography variant="h3" display="inline">
-                    {user.full_name}
+                    {user.user_full_name}
                   </Typography>
                 </Box2>
                 <Grid container spacing={2}>
