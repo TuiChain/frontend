@@ -5,7 +5,7 @@ import TransitionsModal from "../components/Modal";
 import { green, yellow, red } from "@material-ui/core/colors";
 import kycService from "../services/kyc.service";
 import theme from "../theme";
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 const useStyles = makeStyles((theme) => ({
   iframe: {
@@ -134,12 +134,11 @@ const KycButton = (props) => {
       >
         {renderText()}
       </Button>
-      {
-        verificationStatus === 'requires_action' &&
+      {verificationStatus === "requires_action" && (
         <IconButton onClick={() => setVerificationStatus(undefined)}>
           <RefreshIcon />
         </IconButton>
-      }
+      )}
     </div>
   );
 };

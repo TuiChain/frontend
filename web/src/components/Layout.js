@@ -21,7 +21,6 @@ const Inside = styled(Box)({
   },
 });
 
-
 const Layout = ({ children, match, auth, onLogout, wallet }) => {
   const is_home_page = match.isExact; // "/" is the only exact path
 

@@ -47,7 +47,7 @@ const Header = (props) => {
   return (
     <AppBar
       position="sticky"
-      style={{ boxShadow: landing && !trigger &&  "none" }}
+      style={{ boxShadow: landing && !trigger && "none" }}
     >
       <Toolbar>
         <IconButton

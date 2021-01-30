@@ -38,11 +38,7 @@ SimpleTable.propTypes = {
   classes: PropTypes.object.isRequired,
   columns: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
-<<<<<<< HEAD
-  onSelectionChange: PropTypes.func
-=======
   onSelectionChange: PropTypes.func,
->>>>>>> fa0f09397cc86e0e64e2a7cd1be20fe5bb4e34a5
 };
 
 export default withStyles(styles)(SimpleTable);
