@@ -216,8 +216,12 @@ const InvestmentCard = (props) => {
           newPrice
         );
       } else {
-        await handleSellPositionQuantityChange();
-        await handleSellPositionPriceChange();
+        if(newPrice !== 0){
+          await handleSellPositionPriceChange();
+        }
+        if(newQuantity !== 0){
+          await handleSellPositionQuantityChange();
+        }
       }
       props.handleRefresh();
     } catch (e) {
