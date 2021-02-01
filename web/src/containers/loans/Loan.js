@@ -287,6 +287,7 @@ const LoanActive = ({ loan, wallet }) => {
           name="amount"
           type="number"
           variant="outlined"
+          InputProps={{ inputProps: { min: 0 } }}
           onChange={(e) => handleValueChange(e, props.row.id)}
         />
       ),
@@ -631,7 +632,12 @@ function Loan(props) {
             <Grid item xs={12} md={6}>
               {matches === true ? (
                 <Box display="flex" justifyContent="center">
-                  <img height="300px" width="300px" src={user.profile_pic} />
+                  <img
+                    height="300px"
+                    width="300px"
+                    style={{ borderRadius: "50%" }}
+                    src={user.profile_pic}
+                  />
                 </Box>
               ) : (
                 <Box>
