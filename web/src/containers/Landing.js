@@ -364,7 +364,7 @@ const Landing = () => {
                   textAlign="center"
                   style={{ padding: "0 14%" }}
                 >
-                  A Blockchain Platform for Higher Education Funding
+                  A Blockchain Platform for Higher Education Financing
                 </Box>
               </Typography>
             </Box>
