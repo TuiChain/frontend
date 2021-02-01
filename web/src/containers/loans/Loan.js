@@ -101,6 +101,8 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
   const handleWithdrawClick = async () => {
     try {
       await LoansTransactionsService.withdrawFunds(loan.id, tokens);
+
+      await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
       buttonErrorTreatment(e, setToast, setOpen);
     }
@@ -243,6 +245,8 @@ const LoanActive = ({ loan }) => {
       price_atto,
       fee_atto_nano
     );
+
+    await walletService.suggestStudentToken(loan.token_address);
 
     setToast({
       message: "Tokens bought!",
@@ -434,6 +438,8 @@ const LoanCanceledExpired = ({ loan, setToast, setOpen, message }) => {
   const handleClick = async () => {
     try {
       await LoansTransactionsService.withdrawFunds(loan.id, tokens);
+
+      await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
       buttonErrorTreatment(e, setToast, setOpen);
     }
@@ -500,6 +506,8 @@ const LoanFinalized = ({ loan, setToast, setOpen, message }) => {
   const handleClick = async () => {
     try {
       await LoansTransactionsService.redeemTokens(loan.id, tokens);
+
+      await walletService.suggestStudentToken(loan.token_address);
     } catch (e) {
       buttonErrorTreatment(e, setToast, setOpen);
     }
