@@ -102,7 +102,7 @@ const Investments = () => {
   }
 
   useEffect(() => {
-    if (account != null) {
+    if (account) {
       getResponseFromAPI(account);
     }
   }, []);
@@ -129,7 +129,7 @@ const Investments = () => {
   }));
 
   const handleRefresh = () => {
-    if (account != null) {
+    if (account) {
       getResponseFromAPI(account);
     }
   };

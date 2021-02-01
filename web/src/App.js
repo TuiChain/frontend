@@ -77,6 +77,7 @@ const App = (props) => {
                 />
                 <ProtectedRoute
                   auth={auth}
+                  wallet={wallet}
                   path="/loans/:id"
                   component={Loan}
                 />
