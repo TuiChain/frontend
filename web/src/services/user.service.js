@@ -37,7 +37,7 @@ const getCurrentUserInfo = () => {
     })
     .catch((error) => {
       console.log(error);
-      return false;
+      return [false, false];
     });
 };
 
@@ -45,11 +45,11 @@ const updateInfo = (info) => {
   return instance
     .put("/update_profile/", info)
     .then((response) => {
-      console.log("response", response)
+      console.log("response", response);
       return true;
     })
     .catch((error) => {
-      console.log("error", error)
+      console.log("error", error);
       return false;
     });
 };

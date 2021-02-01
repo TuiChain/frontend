@@ -50,12 +50,12 @@ const Market = () => {
     {
       field: "school",
       headerName: "School",
-      width: 220,
+      width: 250,
     },
     {
       field: "course",
       headerName: "Course",
-      width: 240,
+      width: 250,
     },
     {
       field: "destination",
@@ -65,6 +65,7 @@ const Market = () => {
     {
       field: "current_value",
       headerName: "Price",
+      width: 140,
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
         <Box display="flex" alignContent="center" alignItems="center" pr={2}>
@@ -82,6 +83,7 @@ const Market = () => {
     {
       field: "requested_value",
       headerName: "Requested",
+      width: 140,
       // eslint-disable-next-line react/display-name
       renderCell: (props) => (
         <Box display="flex" alignContent="center" alignItems="center" pr={2}>
