@@ -3,11 +3,8 @@ import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
 import {
   TextField,
-  Select,
   Box,
   Grid,
-  FormControl,
-  InputLabel,
   Button,
   Typography,
 } from "@material-ui/core";
@@ -186,30 +183,26 @@ function UserProfile() {
               onChange={formik.handleChange("address")}
             />
           </Box>
-          <FormControl variant="outlined" fullWidth name="country">
-            <InputLabel shrink htmlFor="outlined-age-native-simple">
-              Country
-            </InputLabel>
-            <Select
-              native
-              value={formik.values.country}
-              onChange={formik.handleChange("country")}
-              label="Country"
-              name="country"
-              inputProps={{
-                name: "country",
-                id: "outlined-age-native-simple",
-              }}
-            >
-              <option aria-label="None" value="" />
-
-              {countries.map((n) => (
-                <option key={n.name} value={n.name}>
-                  {n.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          <Box display="block">
+          <TextField
+            fullWidth
+            select
+            label="Country"
+            value={formik.values.country}
+            SelectProps={{
+              native: true,
+            }}
+            onChange={formik.handleChange("country")}
+            variant="outlined"
+          >
+            <option aria-label="None" value="" />
+            {countries.map((option) => (
+              <option key={option.name} value={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </TextField>
+        </Box>
           <Box display="flex" justifyContent="flex-end" pt={2}>
             <Button
               type="submit"
