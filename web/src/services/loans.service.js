@@ -226,10 +226,10 @@ const getStudentLoans = () => {
       const loans = response.data.loans;
       loans.forEach((loan) => {
         loan.requested_value =
-          BigInt(loan.requested_value_atto_dai) / 10n ** 18n;
+          Number(BigInt(loan.requested_value_atto_dai) / 10n ** 16n) / 100;
 
         loan.funded_value = loan.funded_value_atto_dai
-          ? BigInt(loan.funded_value_atto_dai) / 10n ** 18n
+          ? Number(BigInt(loan.funded_value_atto_dai) / 10n ** 16n) / 100
           : 0;
       });
 

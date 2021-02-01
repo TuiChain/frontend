@@ -117,7 +117,8 @@ const InvestmentCard = (props) => {
       <InputWithLabel
         labelText="Price:"
         defaultValue={marketTransactionsService.priceAttoDaiToFloat(
-          BigInt(props.tokens) * BigInt(props.redeemPrice)
+          (BigInt(props.tokens) * BigInt(props.redeemPrice * 1000)) /
+            BigInt(10 ** 3) // Cheat because redeemPrice can be decimal
         )}
         isCurrency={true}
       />

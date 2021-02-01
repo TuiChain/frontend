@@ -41,7 +41,6 @@ const getDashboardInvestments = (account_address) => {
       console.log(response);
       let investments = response.data.investments;
 
-      // TODO WAIT BACKEND TO CHANGE NAME
       investments = investments.slice(0, 3);
 
       investments.forEach((investment) => {

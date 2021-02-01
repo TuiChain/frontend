@@ -142,7 +142,7 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 label="Funding Fee (%)"
                 name="funding_fee"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                InputProps={{ inputProps: { min: 0 } }}
                 onChange={(e) => {
                   setFundingFee(e.target.value);
                 }}
@@ -154,7 +154,7 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 label="Payment Fee (%)"
                 name="payment_fee"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                InputProps={{ inputProps: { min: 0 } }}
                 onChange={(e) => {
                   setPaymentFee(e.target.value);
                 }}
