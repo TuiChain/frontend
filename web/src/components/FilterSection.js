@@ -255,7 +255,7 @@ const FilterSection = ({ loans, onChange, ...props }) => {
     setCountryList(Array.from(countries));
     setSchoolFilter(schoolFilterStatus);
     setCourseFilter(courseFilterStatus);
-  }, []);
+  }, [loans]);
 
   const updateInput = (input) => {
     setInput(input);

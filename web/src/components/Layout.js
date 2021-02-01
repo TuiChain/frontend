@@ -4,6 +4,7 @@ import { styled } from "@material-ui/styles";
 import Box from "@material-ui/core/Box";
 import theme from "./../theme";
 import { withRouter } from "react-router";
+import Header from "./Header";
 
 const Content = styled(Box)({
   minHeight: "calc(100vh - 112px)",
@@ -20,15 +21,21 @@ const Inside = styled(Box)({
   },
 });
 
-const Layout = ({ children, match }) => {
+const Layout = ({ children, match, auth, onLogout, wallet }) => {
   const is_home_page = match.isExact; // "/" is the only exact path
 
   return is_home_page ? (
-    <Content>{children}</Content>
+    <>
+      <Header auth={auth} onLogout={onLogout} wallet={wallet} landing />
+      <Content>{children}</Content>
+    </>
   ) : (
-    <Content>
-      <Inside>{children}</Inside>
-    </Content>
+    <>
+      <Header auth={auth} onLogout={onLogout} wallet={wallet} />
+      <Content>
+        <Inside>{children}</Inside>
+      </Content>
+    </>
   );
 };
 
@@ -37,6 +44,15 @@ Layout.propTypes = {
   match: PropTypes.shape({
     isExact: PropTypes.bool,
   }),
+  auth: PropTypes.oneOfType([
+    PropTypes.object, // user token & type
+    PropTypes.bool, // no auth token (false)
+  ]),
+  onLogout: PropTypes.func,
+  wallet: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number, // 0 - uninstalled
+  ]),
 };
 
 export default withRouter(Layout);

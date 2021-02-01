@@ -5,8 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import { styled, withStyles } from "@material-ui/core/styles";
 import { useWideCardMediaStyles } from "@mui-treasury/styles/cardMedia/wide";
-import Progress from "../components/Progress";
-import DAI from "../components/DAI";
+import Progress from "./Progress";
+import DAI from "./DAI";
 import { Create, School, Room } from "@material-ui/icons";
 
 const StyledCardActionArea = withStyles({
@@ -79,7 +79,7 @@ const LoanCard = ({
   return (
     <StyledCardActionArea>
       <StyledCard>
-        <CardMedia classes={styles} image={photo} component="img" />
+        <CardMedia image={photo} classes={styles} />
         <CardContent>
           <LoanInfo
             name={name}

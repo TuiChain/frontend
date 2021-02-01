@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRouter";
-import Header from "./components/Header";
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/authentication/Login";
 import Signup from "./containers/authentication/Signup";
@@ -19,9 +18,12 @@ import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
 import ManageLoan from "./containers/loans/ManageLoan";
+import Market from "./containers/Market";
 import Investments from "./containers/Investments";
 import PersonalLoans from "./containers/loans/PersonalLoans";
 import Documents from "./containers/admin/Documents";
+import Profile from "./containers/UserProfile";
+import ActiveLoans from "./containers/admin/ActiveLoans";
 
 const styles = {
   back: {
@@ -59,8 +61,7 @@ const App = (props) => {
       {!loading && (
         <div className={classes.back}>
           <BrowserRouter>
-            <Header auth={auth} onLogout={handlerLogout} wallet={wallet} />
-            <Layout auth={auth}>
+            <Layout auth={auth} onLogout={handlerLogout} wallet={wallet}>
               <Switch>
                 <Route exact path="/">
                   {auth && auth.is_admin ? (
@@ -92,10 +93,16 @@ const App = (props) => {
                 />
                 <ProtectedRoute
                   auth={auth}
+                  path="/personal/profile/"
+                  component={Profile}
+                />
+                <ProtectedRoute
+                  auth={auth}
                   path="/request"
                   component={LoanRequest}
                   wallet={wallet}
                 />
+                <ProtectedRoute auth={auth} path="/market" component={Market} />
                 <ProtectedRoute
                   auth={auth}
                   path="/investments"
@@ -136,6 +143,12 @@ const App = (props) => {
                   type="admin"
                   path="/admin/documents"
                   component={Documents}
+                />
+                <ProtectedRoute
+                  auth={auth}
+                  type="admin"
+                  path="/admin/active"
+                  component={ActiveLoans}
                 />
                 <Route component={Error} />
               </Switch>

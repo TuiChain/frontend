@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoansService from "../../services/loans.service";
 import { Box, Grid, Typography, withWidth, Link } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import LoanCard from "../../components/StudentCard";
+import LoanCard from "../../components/LoanCard";
 import theme from "../../theme";
 import PropTypes from "prop-types";
 import LoadingPageAnimation from "../../components/LoadingPageAnimation";
@@ -65,6 +65,7 @@ const FundingLoans = () => {
   useEffect(() => {
     LoansService.getFundingLoans().then((loanList) => {
       setLoans(loanList);
+      setFilteredLoans(loanList);
       setFetching(false);
     });
   }, []);
@@ -87,19 +88,19 @@ const FundingLoans = () => {
               <LoansGridItem
                 key={l.id}
                 width={width}
-                loan_id={l.id}
+                loanId={l.id}
                 loanCard={
                   <LoanCard
                     name={l.user_full_name}
-                    photo={l.photo}
+                    photo={l.user_profile_pic}
                     school={l.school}
                     course={l.course}
                     destination={l.destination}
                     tuition={Number(
-                      BigInt(l.requested_value_atto_dai) / BigInt(10 ** 18)
+                      BigInt(l.requested_value_atto_dai) / 10n ** 18n
                     )}
                     fundedPercentage={Number(
-                      BigInt(l.funded_value_atto_dai * 100) /
+                      (BigInt(l.funded_value_atto_dai) * 100n) /
                         BigInt(l.requested_value_atto_dai)
                     )}
                   />

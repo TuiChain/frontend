@@ -32,17 +32,25 @@ const NavMenuAdmin = (props) => {
         variant="contained"
         color="secondary"
         component={RouterLink}
-        to="/admin/documents"
+        to="/admin/requests"
       >
-        Documents
+        Pending
       </Button>
       <Button
         variant="contained"
         color="secondary"
         component={RouterLink}
-        to="/admin/requests"
+        to="/admin/active"
       >
-        Pending
+        Active
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        component={RouterLink}
+        to="/admin/documents"
+      >
+        Documents
       </Button>
     </>
   );
@@ -57,7 +65,7 @@ const NavMenuAdmin = (props) => {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <AccountCircle />
+        <AccountCircle style={{ fontSize: 32 }} />
       </IconButton>
       <Menu
         id="simple-menu"

@@ -113,7 +113,9 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
           <Typography variant="h5" component="h3">
             Amount
             <Typography paragraph>
-              {modal.requested_value_atto_dai / 10 ** 18}
+              {modal.requested_value_atto_dai == null
+                ? undefined
+                : Number(BigInt(modal.requested_value_atto_dai) / 10n ** 18n)}
               <DAI />
             </Typography>
           </Typography>
@@ -140,7 +142,7 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 label="Funding Fee (%)"
                 name="funding_fee"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                InputProps={{ inputProps: { min: 0 } }}
                 onChange={(e) => {
                   setFundingFee(e.target.value);
                 }}
@@ -152,7 +154,7 @@ const Description = ({ modal, onAccept, onReject, onClose }) => {
                 label="Payment Fee (%)"
                 name="payment_fee"
                 variant="outlined"
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                InputProps={{ inputProps: { min: 0 } }}
                 onChange={(e) => {
                   setPaymentFee(e.target.value);
                 }}
@@ -280,7 +282,9 @@ const LoanRequests = (props) => {
         return (
           <>
             <Box pr={1}>
-              <Typography>{props.value / 10 ** 18}</Typography>
+              <Typography>
+                {Number(BigInt(props.value) / 10n ** 18n)}
+              </Typography>
             </Box>
             <DAI size={16} />
           </>

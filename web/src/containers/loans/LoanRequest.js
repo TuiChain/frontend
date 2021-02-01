@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   TextField,
   Button,
   Grid,
+  Box,
   Typography,
   withStyles,
   InputAdornment,
@@ -20,6 +21,7 @@ import { useHistory } from "react-router";
 import { countries } from "../../util/countries";
 import DAI from "../../components/DAI";
 import Web3 from "web3";
+import userService from "../../services/user.service";
 
 const styles = (theme) => ({
   fullWidth: {
@@ -43,6 +45,20 @@ const LoanRequest = (props) => {
   const history = useHistory();
 
   const [recipient_touched, setRecipientTouched] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const [kyc, setKYC] = useState(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const [, kyc] = await userService.getCurrentUserInfo();
+      console.log(kyc);
+      if (kyc.validated) {
+        setKYC(true);
+      }
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -112,8 +128,14 @@ const LoanRequest = (props) => {
       <Typography variant="h2" paragraph>
         Loan Request
       </Typography>
+
       <form onSubmit={formik.handleSubmit} className={classes.fullWidth}>
         <Grid className={classes.form} container spacing={2}>
+          {!loading && !kyc && (
+            <Box py={2} width="100%">
+              <Alert severity="error">Please, finish your KYC process.</Alert>
+            </Box>
+          )}
           {/* TODO: form validation */}
           <Grid item xs={12}>
             <FormControl variant="outlined" fullWidth name="destination">
@@ -278,7 +300,7 @@ const LoanRequest = (props) => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={!wallet || formik.isSubmitting}
+              disabled={!wallet || !kyc || formik.isSubmitting}
             >
               {formik.isSubmitting ? (
                 <CircularProgress color="secondary" size={20} />

@@ -23,7 +23,6 @@ const SpinnerInput = (props) => {
     let nextValue = parseFloat(value + step);
 
     if (isPrice) {
-      console.log(nextValue, value, step);
       nextValue = parseFloat(nextValue.toFixed(2));
     }
 
@@ -36,7 +35,6 @@ const SpinnerInput = (props) => {
       setIsMinusEnable(true);
     }
 
-    console.log(nextValue);
     setValue(nextValue);
     props.onNewValue(nextValue);
   };
@@ -95,7 +93,7 @@ const SpinnerInput = (props) => {
     }
   };
 
-  const onChageCurrency = (value) => {
+  const onChangeCurrency = (value) => {
     setValue(value);
 
     if (props.onNewValue) {
@@ -112,7 +110,7 @@ const SpinnerInput = (props) => {
           value={value}
           currencySymbol={<DAI />}
           outputFormat="number"
-          onChange={(event, value) => onChageCurrency(value)}
+          onChange={(event, value) => onChangeCurrency(value)}
           minimumValue={props.minValue.toString()}
           disabled={props.disabled}
         />

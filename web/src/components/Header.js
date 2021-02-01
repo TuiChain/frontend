@@ -1,13 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { AppBar, Toolbar, Button, Grid, IconButton } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Grid,
+  IconButton,
+  useScrollTrigger,
+} from "@material-ui/core";
 import NavMenu from "../components/NavMenu";
 import { Link as RouterLink } from "react-router-dom";
 import NavMenuAdmin from "./NavMenuAdmin";
 import Logo from "./Logo";
 
 const Header = (props) => {
-  const { auth, onLogout, wallet, setWallet } = props;
+  const { auth, onLogout, wallet, setWallet, landing } = props;
+
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 1,
+  });
 
   const account_btns = (
     <>
@@ -33,7 +45,10 @@ const Header = (props) => {
   );
 
   return (
-    <AppBar position="sticky">
+    <AppBar
+      position="sticky"
+      style={{ boxShadow: landing && !trigger && "none" }}
+    >
       <Toolbar>
         <IconButton
           variant="contained"
@@ -74,6 +89,7 @@ Header.propTypes = {
     PropTypes.number, // 0 - uninstalled
   ]),
   setWallet: PropTypes.func,
+  landing: PropTypes.bool,
 };
 
 export default Header;

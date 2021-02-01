@@ -12,7 +12,6 @@ import {
 import theme from "../theme";
 import SpinnerInputWithLabel from "./SpinnerInputWithLabel";
 import InputWithLabel from "./InputWithLabel";
-import Status from "./Status";
 import loansTransactionsService from "../services/loans-transactions.service";
 import marketTransactionsService from "../services/market-transactions.service";
 
@@ -53,6 +52,7 @@ const copy = {
   ACTIVE: {
     titleText: "List your tokens in the marketplace",
     buttonText: "List",
+    removeText: "Remove all",
   },
   FUNDING: {
     titleText: "Cancel your funding",
@@ -69,12 +69,8 @@ const copy = {
 };
 
 const InvestmentCard = (props) => {
-  const investmentCardHeader = (classes, phase, loanName) => (
-    <CardHeader
-      className={classes.headers}
-      action={<Status state={phase} />}
-      title={`Loan to ${loanName ? loanName : "Nelson"}`}
-    />
+  const investmentCardHeader = (classes, loanName) => (
+    <CardHeader className={classes.headers} title={`Loan to ${loanName}`} />
   );
 
   const activePhaseInputContent = () => (
@@ -120,7 +116,10 @@ const InvestmentCard = (props) => {
       />
       <InputWithLabel
         labelText="Price:"
-        defaultValue={props.tokens * props.redeemPrice}
+        defaultValue={marketTransactionsService.priceAttoDaiToFloat(
+          (BigInt(props.tokens) * BigInt(props.redeemPrice * 1000)) /
+            BigInt(10 ** 3) // Cheat because redeemPrice can be decimal
+        )}
         isCurrency={true}
       />
     </Grid>
@@ -219,9 +218,14 @@ const InvestmentCard = (props) => {
           newPrice
         );
       } else {
-        await handleSellPositionQuantityChange();
-        await handleSellPositionPriceChange();
+        if (newPrice !== 0) {
+          await handleSellPositionPriceChange();
+        }
+        if (newQuantity !== 0) {
+          await handleSellPositionQuantityChange();
+        }
       }
+      props.handleRefresh();
     } catch (e) {
       console.log(e);
     }
@@ -230,6 +234,14 @@ const InvestmentCard = (props) => {
   const handleRedeemClick = async () => {
     try {
       await loansTransactionsService.redeemTokens(props.loanId, props.tokens);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleRemoveButtonClick = async () => {
+    try {
+      await marketTransactionsService.removeSellPosition(props.loanId);
     } catch (e) {
       console.log(e);
     }
@@ -269,13 +281,26 @@ const InvestmentCard = (props) => {
             {renderPhaseInputContent(props)}
           </Grid>
           <Grid container justify="flex-end">
+            {props.inMarketplace > 0 && (
+              <Grid item>
+                <Button
+                  onClick={() => handleRemoveButtonClick(props)}
+                  style={{ alignSelf: "flex-end", width: 120 }}
+                  variant="outlined"
+                  size="medium"
+                  color="secondary"
+                >
+                  {copy[props.phase].removeText}
+                </Button>
+              </Grid>
+            )}
             <Grid item>
               <Button
                 onClick={() => handleButtonClick(props)}
                 style={{ alignSelf: "flex-end", width: 120 }}
-                variant="contained"
+                variant="outlined"
                 size="medium"
-                color="primary"
+                color="secondary"
               >
                 {copy[props.phase].buttonText}
               </Button>
@@ -300,7 +325,7 @@ const InvestmentCard = (props) => {
 
   return (
     <Card className={classes.root}>
-      {investmentCardHeader(classes, props.phase, props.loanName)}
+      {investmentCardHeader(classes, props.loanName)}
       {renderPhaseContent()}
     </Card>
   );
@@ -314,6 +339,7 @@ InvestmentCard.propTypes = {
   inMarketplace: PropTypes.number.isRequired,
   tokensPriceMarket: PropTypes.number.isRequired,
   redeemPrice: PropTypes.number,
+  handleRefresh: PropTypes.func,
 };
 
 export default InvestmentCard;

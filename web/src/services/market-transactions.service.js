@@ -114,6 +114,24 @@ function priceAttoDaiToFloat(priceAttoDai) {
   return Number(BigInt(priceAttoDai) / BigInt(10) ** BigInt(16)) / 100;
 }
 
+async function purchasePosition(
+  loan_id,
+  seller_address,
+  amount_tokens,
+  price_atto,
+  fee_atto_nano
+) {
+  let post = {
+    loan_id: loan_id,
+    seller_address: seller_address,
+    amount_tokens: amount_tokens,
+    price_atto_dai_per_token: price_atto,
+    fee_atto_dai_per_nano_dai: fee_atto_nano,
+  };
+
+  await walletTransaction("/purchase/", post);
+}
+
 export default {
   createSellPosition,
   decreaseSellPositionAmount,
@@ -121,4 +139,5 @@ export default {
   updateSellPositionPrice,
   removeSellPosition,
   priceAttoDaiToFloat,
+  purchasePosition,
 };
