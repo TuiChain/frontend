@@ -34,7 +34,7 @@ import marketTransactionsService from "../../services/market-transactions.servic
 
 const fetchInvestments = async (loan, setInvestment) => {
   const account = walletService.checkAccount();
-  if (loan && account != null) {
+  if (loan && account) {
     const investment = await InvestmentsService.getInvestmentInLoan(
       loan.id,
       account
@@ -63,7 +63,7 @@ const buttonErrorTreatment = (e, setToast, setOpen) => {
   }
 };
 
-const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
+const LoanFunding = ({ loan, setToast, setOpen, setLoan, wallet }) => {
   const [investment, setInvestment] = useState(0);
   const [tokens, setTokens] = useState(0);
   const [percentage, setPercentage] = useState(0);
@@ -135,7 +135,7 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
         >
           <Button
             type="submit"
-            disabled={tokens == 0}
+            disabled={tokens == 0 || !wallet}
             onClick={handleBuyClick}
             style={{ margin: 0 }}
           >
@@ -143,7 +143,7 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
           </Button>
           <Button
             type="submit"
-            disabled={investment == 0 || tokens == 0}
+            disabled={investment == 0 || tokens == 0 || !wallet}
             onClick={handleWithdrawClick}
             style={{ margin: 0 }}
           >
@@ -173,7 +173,7 @@ const LoanFunding = ({ loan, setToast, setOpen, setLoan }) => {
   );
 };
 
-const LoanActive = ({ loan }) => {
+const LoanActive = ({ loan, wallet }) => {
   const [documents, setDocuments] = useState([]);
   const [sell_positions, setSellPositions] = useState([]);
   const [current_values, setCurrentValues] = useState([]);
@@ -319,6 +319,7 @@ const LoanActive = ({ loan }) => {
         <Button
           variant="outlined"
           color="secondary"
+          disabled={!wallet}
           onClick={() => handleBuyClick(props.row.id)}
         >
           Buy
@@ -742,9 +743,10 @@ function Loan(props) {
                 setToast={setToast}
                 setOpen={setOpen}
                 setLoan={setLoan}
+                wallet={props.wallet}
               />
             )}
-            {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} />}
+            {loan.state.toUpperCase() == "ACTIVE" && <LoanActive loan={loan} wallet={props.wallet} />}
             {loan.state.toUpperCase() == "FINALIZED" && (
               <LoanFinalized
                 loan={loan}
