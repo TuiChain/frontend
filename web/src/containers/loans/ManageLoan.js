@@ -121,7 +121,9 @@ const ManageLoan = (props) => {
   };
 
   const canSubmitDocuments = (status) => {
-    return ["ACTIVE", "FINALIZED"].includes(status.toUpperCase());
+    return ["PENDING", "FUNDING", "ACTIVE", "FINALIZED"].includes(
+      status.toUpperCase()
+    );
   };
 
   const canPayback = (status) => {
