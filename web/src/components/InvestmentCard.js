@@ -61,6 +61,7 @@ const copy = {
   FINALIZED: {
     titleText: "Reedem your tokens",
     buttonText: "Redeem",
+    removeText: "Remove all",
   },
   EXPIRED: {
     titleText: "Cash out your tokens",
